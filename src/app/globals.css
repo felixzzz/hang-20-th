@@ -5,11 +5,12 @@
 @layer base {
   :root {
     --color-primary: #831f1f;
-    --color-gold: #d49b28;
-    --color-bg: #faf7f2;
+    --color-gold: #c8932c;
+    --color-gold-light: #f3d489;
+    --color-bg: #f9f6f0;
     --color-surface: #ffffff;
-    --color-text: #1c1815;
-    --color-muted: #6e6459;
+    --color-text: #1a1614;
+    --color-muted: #5e544b;
   }
 
   html {
@@ -22,44 +23,98 @@
     background-color: var(--color-bg);
     color: var(--color-text);
     overflow-x: hidden;
+    /* Subtle Xuan rice paper texture */
+    background-image: radial-gradient(rgba(200, 147, 44, 0.04) 1px, transparent 0);
+    background-size: 24px 24px;
   }
 
   ::selection {
-    background-color: #fbe495;
+    background-color: #f5dc99;
     color: #6e1c1c;
   }
 }
 
-/* Custom traditional oriental border patterns */
-.fothang-border {
-  border-image: linear-gradient(to right, #d49b28, #f8d05b, #b5791c) 1;
+/* Traditional Oriental Text and Border Utilities */
+.writing-vertical-rl {
+  writing-mode: vertical-rl;
+  text-orientation: mixed;
 }
 
 .gold-gradient-text {
-  background: linear-gradient(135deg, #d49b28 0%, #fbe495 50%, #b5791c 100%);
+  background: linear-gradient(135deg, #b88220 0%, #ecd07a 45%, #9e6c14 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
 .red-gradient-text {
-  background: linear-gradient(135deg, #9e2222 0%, #dc2626 50%, #831f1f 100%);
+  background: linear-gradient(135deg, #831f1f 0%, #aa2b2b 50%, #631414 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
+/* Authentic Cinnabar Seal Stamp (朱文/白文印章) */
+.chinese-seal-red {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #9e2222;
+  color: #9e2222;
+  background-color: rgba(158, 34, 34, 0.05);
+  font-family: var(--font-noto-serif-sc), serif;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  border-radius: 4px;
+  box-shadow: inset 0 0 0 1px rgba(158, 34, 34, 0.3), 0 1px 3px rgba(158, 34, 34, 0.15);
+}
+
+.chinese-seal-filled {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #831f1f;
+  color: #f7e3af;
+  font-family: var(--font-noto-serif-sc), serif;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  border-radius: 3px;
+  box-shadow: inset 0 0 0 1px #d49b28, 0 2px 6px rgba(131, 31, 31, 0.4);
+}
+
+/* Gold Hairline Dual Border for Commemorative Plates */
+.border-gold-double {
+  border: 3px double rgba(200, 147, 44, 0.4);
+}
+
+/* Authentic Parchment / Rice Paper Card */
+.xuan-paper-card {
+  background-color: #faf7f2;
+  background-image: 
+    radial-gradient(#e2d5c3 0.75px, transparent 0.75px),
+    radial-gradient(#eedfce 0.75px, #faf7f2 0.75px);
+  background-size: 30px 30px;
+  background-position: 0 0, 15px 15px;
+}
+
+/* Prayer Slip Styling (祈願箋) */
+.prayer-slip-card {
+  background: linear-gradient(180deg, #fffcf7 0%, #f7f1e5 100%);
+  border-left: 3px solid #831f1f;
+  box-shadow: 0 4px 15px -3px rgba(30, 26, 23, 0.06), 0 2px 6px -2px rgba(30, 26, 23, 0.04);
+}
+
 /* Elegant glass effect */
 .glass-panel {
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(212, 155, 40, 0.2);
+  background: rgba(250, 247, 242, 0.88);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(200, 147, 44, 0.25);
 }
 
 .glass-panel-dark {
-  background: rgba(28, 24, 21, 0.88);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(212, 155, 40, 0.25);
+  background: rgba(28, 22, 20, 0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(200, 147, 44, 0.3);
 }
 
 /* Custom scrollbar */
@@ -70,6 +125,9 @@
   background: #f4eee4;
 }
 ::-webkit-scrollbar-thumb {
-  background: #d49b28;
+  background: #c8932c;
   border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #831f1f;
 }

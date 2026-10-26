@@ -147,79 +147,95 @@ export default function RsvpSection({ initialGuestName = "" }: RsvpSectionProps)
   };
 
   return (
-    <section id="rsvp" className="py-20 sm:py-28 px-4 sm:px-6 relative">
+    <section id="rsvp" className="py-16 sm:py-24 px-4 sm:px-6 relative">
       <div className="max-w-4xl mx-auto">
+        
         {/* Section Header */}
-        <div className="text-center mb-12">
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-fothang-red-100/80 border border-fothang-red-300 text-fothang-red-900 text-xs font-semibold tracking-wider uppercase mb-3">
-            <HeartHandshake className="w-3.5 h-3.5 text-fothang-red-700" />
-            <span>Konfirmasi Kehadiran & Doa Umat</span>
+        <div className="flex flex-col items-center text-center mb-12">
+          <div className="inline-flex items-center gap-2 mb-3">
+            <span className="w-8 h-px bg-amber-600/60" />
+            <span className="text-xs uppercase tracking-widest text-amber-800 font-semibold font-serif">
+              Konfirmasi Kehadiran & Doa Umat
+            </span>
+            <span className="w-8 h-px bg-amber-600/60" />
           </div>
-          <h2 className="text-3xl sm:text-5xl font-serif font-bold text-fothang-red-950 mb-3">
-            RSVP & Untaian Pelita Doa
+
+          <h2 className="text-3xl sm:text-5xl font-chinese font-bold text-red-950 mb-2">
+            功德名冊 • 祈願雅集
           </h2>
-          <p className="text-sm text-stone-600 max-w-lg mx-auto">
-            Kehadiran serta doa tulus dari Bapak/Ibu/Saudara/i sekalian adalah suluh penerang yang menyempurnakan hari bahagia 20 tahun Kuang Hang.
+          <p className="text-sm font-serif text-stone-600 max-w-lg">
+            Kehadiran serta doa tulus dari Bapak/Ibu/Saudara/i sekalian adalah suluh penerang yang menyempurnakan peringatan 20 tahun Kuang Hang.
           </p>
         </div>
 
-        {/* Live Attendance Stats Summary */}
-        <div className="grid grid-cols-3 gap-3 sm:gap-4 max-w-lg mx-auto mb-10 text-center">
-          <div className="p-4 rounded-3xl bg-white/95 border border-fothang-gold-200/80 shadow-md">
-            <span className="block text-2xl sm:text-3xl font-serif font-bold text-fothang-red-900">
+        {/* Live Attendance Ledger Tally */}
+        <div className="grid grid-cols-3 gap-3 sm:gap-6 max-w-xl mx-auto mb-10 text-center">
+          <div className="p-4 rounded-xl bg-[#faf7f2] border border-amber-800/15 shadow-sm">
+            <span className="block text-2xl sm:text-3xl font-serif font-bold text-red-950">
               {summary.totalResponses}
             </span>
-            <span className="text-[11px] text-stone-500 font-medium">Tanggapan Masuk</span>
+            <span className="text-[10px] sm:text-xs text-stone-500 font-serif">Konfirmasi Masuk</span>
           </div>
-          <div className="p-4 rounded-3xl bg-white/95 border border-fothang-gold-200/80 shadow-md">
-            <span className="block text-2xl sm:text-3xl font-serif font-bold text-emerald-700">
+          <div className="p-4 rounded-xl bg-[#faf7f2] border border-amber-800/15 shadow-sm">
+            <span className="block text-2xl sm:text-3xl font-serif font-bold text-emerald-800">
               {summary.attending}
             </span>
-            <span className="text-[11px] text-stone-500 font-medium">Keluarga Hadir</span>
+            <span className="text-[10px] sm:text-xs text-stone-500 font-serif">Keluarga Hadir</span>
           </div>
-          <div className="p-4 rounded-3xl bg-white/95 border border-fothang-gold-200/80 shadow-md">
-            <span className="block text-2xl sm:text-3xl font-serif font-bold text-fothang-gold-700">
+          <div className="p-4 rounded-xl bg-[#faf7f2] border border-amber-800/15 shadow-sm">
+            <span className="block text-2xl sm:text-3xl font-serif font-bold text-amber-800">
               {summary.totalGuests}
             </span>
-            <span className="text-[11px] text-stone-500 font-medium">Estimasi Umat</span>
+            <span className="text-[10px] sm:text-xs text-stone-500 font-serif">Estimasi Jiwa Umat</span>
           </div>
         </div>
 
-        {/* RSVP Card Form */}
-        <div className="rounded-3xl bg-white border-2 border-fothang-gold-300 shadow-2xl p-6 sm:p-10 mb-16 relative overflow-hidden">
-          {/* Top Gold Border Accent */}
-          <div className="absolute top-0 inset-x-0 h-2 bg-gradient-to-r from-fothang-gold-400 via-fothang-red-700 to-fothang-gold-400" />
+        {/* Ceremonial Inscription Form (簽到名冊) */}
+        <div className="xuan-paper-card rounded-2xl border border-amber-600/30 shadow-xl p-6 sm:p-10 mb-14 relative overflow-hidden">
+          
+          {/* Top Gold Inscription Hairline */}
+          <div className="absolute top-0 inset-x-0 h-1.5 bg-gradient-to-r from-amber-700 via-amber-400 to-amber-700" />
 
           {submitted ? (
             <div className="text-center py-8 animate-fade-in">
-              <div className="w-16 h-16 rounded-full bg-emerald-100 text-emerald-700 mx-auto flex items-center justify-center mb-4 ring-8 ring-emerald-50">
-                <CheckCircle2 className="w-9 h-9" />
+              <div className="w-14 h-14 rounded-full bg-emerald-100 text-emerald-800 mx-auto flex items-center justify-center mb-4 ring-8 ring-emerald-50">
+                <CheckCircle2 className="w-8 h-8" />
               </div>
-              <h3 className="text-2xl sm:text-3xl font-serif font-bold text-stone-900 mb-2">
-                Terima Kasih Atas Konfirmasinya!
+              <h3 className="text-2xl font-serif font-bold text-stone-900 mb-2">
+                Terima Kasih Atas Konfirmasi Anda!
               </h3>
-              <p className="text-sm text-stone-600 max-w-md mx-auto mb-6 leading-relaxed">
-                Konfirmasi kehadiran dan doa restu Anda telah tercatat dengan baik serta diteruskan ke panitia. Semoga Tian En Shi De senantiasa melimpahkan berkah kedamaian dan kesehatan bagi keluarga Anda.
+              <p className="text-xs sm:text-sm font-serif text-stone-600 max-w-md mx-auto mb-6 leading-relaxed">
+                Konfirmasi kehadiran dan doa restu Anda telah tercatat dalam buku tamu resmi panitia 20 Tahun Kuang Hang Fo Thang.
               </p>
               <button
                 onClick={() => setSubmitted(false)}
-                className="text-xs font-semibold text-fothang-red-800 hover:text-fothang-red-900 underline underline-offset-4 cursor-pointer"
+                className="text-xs font-serif font-semibold text-red-900 hover:text-red-950 underline underline-offset-4 cursor-pointer"
               >
                 Ingin mengubah data atau mengirimkan doa tambahan? Klik di sini
               </button>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-6">
+              
+              <div className="flex items-center justify-between pb-3 border-b border-amber-900/15 mb-2">
+                <span className="text-xs font-serif font-bold text-red-950 uppercase tracking-widest">
+                  Formulir Konfirmasi Kehadiran
+                </span>
+                <span className="chinese-seal-red text-xs px-2 py-0.5">
+                  敬請賜復
+                </span>
+              </div>
+
               {errorMessage && (
-                <div className="p-3.5 rounded-xl bg-red-50 border border-red-200 text-xs text-red-700">
+                <div className="p-3 rounded-lg bg-red-50 border border-red-200 text-xs text-red-700 font-serif">
                   {errorMessage}
                 </div>
               )}
 
               {/* Input Nama */}
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-stone-700 mb-2">
-                  Nama Lengkap / Nama Keluarga <span className="text-red-600">*</span>
+                <label className="block text-xs font-serif font-bold uppercase tracking-wider text-stone-800 mb-2">
+                  Nama Lengkap / Nama Keluarga <span className="text-red-700">*</span>
                 </label>
                 <input
                   type="text"
@@ -227,52 +243,52 @@ export default function RsvpSection({ initialGuestName = "" }: RsvpSectionProps)
                   value={name}
                   onChange={(e) => setName(e.target.value)}
                   placeholder="Contoh: Lim TC Felix Salim & Keluarga"
-                  className="w-full px-4 py-3.5 rounded-2xl border border-stone-300 focus:border-fothang-gold-500 focus:ring-2 focus:ring-fothang-gold-200 outline-none transition text-sm text-stone-800 bg-stone-50/50"
+                  className="w-full px-4 py-3 rounded-xl border border-stone-300 focus:border-amber-600 focus:ring-1 focus:ring-amber-500 outline-none transition text-sm text-stone-900 bg-white font-serif"
                 />
               </div>
 
-              {/* Status Kehadiran */}
+              {/* Status Kehadiran - Traditional Choice Tiles */}
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-stone-700 mb-2">
-                  Konfirmasi Kehadiran <span className="text-red-600">*</span>
+                <label className="block text-xs font-serif font-bold uppercase tracking-wider text-stone-800 mb-2">
+                  Konfirmasi Kehadiran <span className="text-red-700">*</span>
                 </label>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   <button
                     type="button"
                     onClick={() => setStatus("hadir")}
-                    className={`flex items-center justify-center gap-2 p-3.5 rounded-2xl border text-xs font-semibold transition-all cursor-pointer ${
+                    className={`flex items-center justify-center gap-2 p-3 rounded-xl border text-xs font-serif font-semibold transition-all cursor-pointer ${
                       status === "hadir"
-                        ? "bg-fothang-red-900 text-fothang-gold-200 border-fothang-gold-400 shadow-md"
+                        ? "bg-[#831f1f] text-amber-200 border-amber-500 shadow-sm"
                         : "bg-white text-stone-700 border-stone-200 hover:bg-stone-50"
                     }`}
                   >
-                    <CheckCircle2 className="w-4 h-4 text-fothang-gold-300" />
-                    <span>Iya, Saya Akan Hadir</span>
+                    <CheckCircle2 className="w-3.5 h-3.5 text-amber-300" />
+                    <span>Hadir Bersyukur (出席)</span>
                   </button>
 
                   <button
                     type="button"
                     onClick={() => setStatus("ragu")}
-                    className={`flex items-center justify-center gap-2 p-3.5 rounded-2xl border text-xs font-semibold transition-all cursor-pointer ${
+                    className={`flex items-center justify-center gap-2 p-3 rounded-xl border text-xs font-serif font-semibold transition-all cursor-pointer ${
                       status === "ragu"
-                        ? "bg-fothang-gold-600 text-white border-fothang-gold-700 shadow-md"
+                        ? "bg-amber-700 text-white border-amber-800 shadow-sm"
                         : "bg-white text-stone-700 border-stone-200 hover:bg-stone-50"
                     }`}
                   >
-                    <Sparkles className="w-4 h-4" />
-                    <span>Masih Belum Pasti</span>
+                    <Sparkles className="w-3.5 h-3.5" />
+                    <span>Masih Menyesuaikan (待定)</span>
                   </button>
 
                   <button
                     type="button"
                     onClick={() => setStatus("tidak_hadir")}
-                    className={`flex items-center justify-center gap-2 p-3.5 rounded-2xl border text-xs font-semibold transition-all cursor-pointer ${
+                    className={`flex items-center justify-center gap-2 p-3 rounded-xl border text-xs font-serif font-semibold transition-all cursor-pointer ${
                       status === "tidak_hadir"
-                        ? "bg-stone-700 text-white border-stone-800 shadow-md"
+                        ? "bg-stone-800 text-stone-200 border-stone-900 shadow-sm"
                         : "bg-white text-stone-700 border-stone-200 hover:bg-stone-50"
                     }`}
                   >
-                    <span>Maaf, Belum Bisa Hadir</span>
+                    <span>Belum Dapat Hadir (祝福)</span>
                   </button>
                 </div>
               </div>
@@ -280,34 +296,39 @@ export default function RsvpSection({ initialGuestName = "" }: RsvpSectionProps)
               {/* Jumlah Hadir */}
               {status !== "tidak_hadir" && (
                 <div>
-                  <label className="block text-xs font-semibold uppercase tracking-wider text-stone-700 mb-2">
+                  <label className="block text-xs font-serif font-bold uppercase tracking-wider text-stone-800 mb-2">
                     Jumlah Orang yang Akan Hadir
                   </label>
-                  <select
-                    value={guests}
-                    onChange={(e) => setGuests(e.target.value)}
-                    className="w-full px-4 py-3.5 rounded-2xl border border-stone-300 focus:border-fothang-gold-500 focus:ring-2 focus:ring-fothang-gold-200 outline-none transition text-sm text-stone-800 bg-stone-50/50 cursor-pointer"
-                  >
-                    <option value="1">1 Orang</option>
-                    <option value="2">2 Orang</option>
-                    <option value="3">3 Orang</option>
-                    <option value="4">4 Orang</option>
-                    <option value="5">5 Orang atau Lebih</option>
-                  </select>
+                  <div className="grid grid-cols-5 gap-2">
+                    {["1", "2", "3", "4", "5"].map((num) => (
+                      <button
+                        key={num}
+                        type="button"
+                        onClick={() => setGuests(num)}
+                        className={`py-2 rounded-lg border text-xs font-serif font-bold transition-all cursor-pointer ${
+                          guests === num
+                            ? "bg-amber-700 text-white border-amber-800 shadow-inner"
+                            : "bg-white text-stone-700 border-stone-200 hover:bg-stone-50"
+                        }`}
+                      >
+                        {num === "5" ? "5+ Orang" : `${num} Orang`}
+                      </button>
+                    ))}
+                  </div>
                 </div>
               )}
 
               {/* Pesan Doa / Harapan */}
               <div>
-                <label className="block text-xs font-semibold uppercase tracking-wider text-stone-700 mb-2">
-                  Untaian Doa & Harapan untuk Kuang Hang Fo Thang
+                <label className="block text-xs font-serif font-bold uppercase tracking-wider text-stone-800 mb-2">
+                  Untaian Doa & Ucapan Syukur
                 </label>
                 <textarea
                   rows={3}
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
-                  placeholder="Tuliskan ucapan selamat 20 tahun, kenangan indah, atau doa restu terbaik Anda..."
-                  className="w-full px-4 py-3.5 rounded-2xl border border-stone-300 focus:border-fothang-gold-500 focus:ring-2 focus:ring-fothang-gold-200 outline-none transition text-sm text-stone-800 bg-stone-50/50"
+                  placeholder="Tuliskan ucapan selamat 20 tahun, kenangan masa lampau, atau doa tulus bagi Kuang Hang Fo Thang..."
+                  className="w-full px-4 py-3 rounded-xl border border-stone-300 focus:border-amber-600 focus:ring-1 focus:ring-amber-500 outline-none transition text-sm text-stone-900 bg-white font-serif leading-relaxed"
                 />
               </div>
 
@@ -315,92 +336,94 @@ export default function RsvpSection({ initialGuestName = "" }: RsvpSectionProps)
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full inline-flex items-center justify-center gap-2.5 px-6 py-4 rounded-2xl bg-gradient-to-r from-fothang-red-950 via-fothang-red-800 to-fothang-red-950 text-fothang-gold-200 font-semibold text-sm shadow-xl hover:shadow-2xl hover:brightness-110 active:scale-[0.99] transition-all cursor-pointer disabled:opacity-50"
+                className="w-full inline-flex items-center justify-center gap-2.5 px-6 py-3.5 rounded-xl bg-gradient-to-r from-[#831f1f] via-[#751919] to-[#831f1f] text-amber-200 font-serif font-bold text-sm shadow-lg hover:brightness-110 active:scale-[0.99] transition-all cursor-pointer disabled:opacity-50 border border-amber-500/40"
               >
                 {isSubmitting ? (
-                  <span>Menyimpan ke Google Sheets & Arsip...</span>
+                  <span>Menyimpan ke Daftar Hadir...</span>
                 ) : (
                   <>
-                    <Send className="w-4 h-4 text-fothang-gold-300" />
-                    <span>Kirim Konfirmasi Kehadiran & Doa Restu</span>
+                    <Send className="w-4 h-4 text-amber-300" />
+                    <span>Bubuhkan Tanda Kehadiran & Doa Restu</span>
                   </>
                 )}
               </button>
+
             </form>
           )}
+
         </div>
 
-        {/* Wishes Lantern Wall */}
-        <div className="rounded-3xl bg-white border-2 border-fothang-gold-200/80 p-6 sm:p-10 shadow-lg">
-          <div className="flex items-center justify-between mb-8 pb-4 border-b border-stone-100">
+        {/* Wishes Corridor of Blessing Slips (祈願長廊) */}
+        <div className="bg-[#faf7f2] rounded-2xl border border-amber-700/20 p-6 sm:p-9 shadow-lg">
+          
+          <div className="flex items-center justify-between mb-6 pb-4 border-b border-amber-900/15">
             <div className="flex items-center gap-2.5">
-              <div className="w-9 h-9 rounded-full bg-fothang-gold-500/10 text-fothang-gold-700 flex items-center justify-center">
-                <Flame className="w-5 h-5 text-amber-500 animate-pulse" />
+              <div className="w-8 h-8 rounded-full bg-amber-600/15 text-amber-800 flex items-center justify-center">
+                <Flame className="w-4 h-4 text-amber-600 animate-pulse" />
               </div>
               <div>
-                <h3 className="text-xl font-serif font-bold text-stone-900">
-                  Lautan Pelita Doa Saudara Se-Dharma ({wishes.length})
+                <h3 className="text-lg sm:text-xl font-serif font-bold text-stone-900">
+                  Lautan Doa & Restu Saudara Se-Dharma ({wishes.length})
                 </h3>
-                <p className="text-[11px] text-stone-500">
-                  Untaian doa restu yang dipersembahkan untuk Kuang Hang Fo Thang
+                <p className="text-[11px] text-stone-500 font-serif">
+                  Doa tulus yang terpahat abadi menyertai langkah 20 tahun Kuang Hang
                 </p>
               </div>
             </div>
-            <span className="text-xs font-chinese text-fothang-gold-700 font-bold hidden sm:inline">
-              萬佛燈海 • 同沾法喜
+            <span className="chinese-seal-red text-xs px-2 py-0.5 hidden sm:inline">
+              萬家同福
             </span>
           </div>
 
-          <div className="space-y-4 max-h-[500px] overflow-y-auto pr-1">
+          <div className="space-y-3.5 max-h-[500px] overflow-y-auto pr-1">
             {wishes.map((item) => (
               <div
                 key={item.id}
-                className="p-5 rounded-2xl bg-gradient-to-br from-fothang-ivory/80 via-white to-fothang-gold-50/40 border border-fothang-gold-200/80 shadow-sm hover:shadow-md transition-all relative overflow-hidden"
+                className="prayer-slip-card p-4 sm:p-5 rounded-xl border border-amber-800/10 transition-all hover:border-amber-600/30"
               >
-                {/* Subtle lantern lamp indicator */}
-                <div className="absolute top-0 right-0 w-16 h-16 bg-gradient-to-bl from-amber-400/10 to-transparent pointer-events-none rounded-bl-3xl" />
-
-                <div className="flex items-start justify-between gap-2 mb-2.5">
-                  <div className="flex items-center gap-2.5">
-                    <div className="w-9 h-9 rounded-full bg-gradient-to-br from-fothang-red-800 to-fothang-red-950 text-fothang-gold-200 font-serif font-bold text-xs flex items-center justify-center shadow-sm">
+                <div className="flex items-start justify-between gap-2 mb-2">
+                  <div className="flex items-center gap-2">
+                    <span className="w-7 h-7 rounded bg-[#831f1f] text-amber-200 font-chinese font-bold text-xs flex items-center justify-center shrink-0 shadow-xs">
                       {item.name.charAt(0).toUpperCase()}
-                    </div>
+                    </span>
                     <div>
-                      <h4 className="text-sm font-bold text-stone-900">
+                      <h4 className="text-xs sm:text-sm font-serif font-bold text-stone-900">
                         {item.name}
                       </h4>
-                      <span className="text-[10px] text-stone-400">
+                      <span className="text-[10px] text-stone-400 font-serif">
                         {item.timestamp}
                       </span>
                     </div>
                   </div>
 
                   <span
-                    className={`px-3 py-0.5 rounded-full text-[10px] font-semibold border ${
+                    className={`px-2.5 py-0.5 rounded text-[10px] font-serif font-medium border ${
                       item.status === "hadir"
                         ? "bg-emerald-50 text-emerald-800 border-emerald-200"
                         : item.status === "ragu"
                         ? "bg-amber-50 text-amber-800 border-amber-200"
-                        : "bg-stone-100 text-stone-700 border-stone-200"
+                        : "bg-stone-100 text-stone-600 border-stone-200"
                     }`}
                   >
                     {item.status === "hadir"
                       ? `Hadir (${item.guests || 1} orang)`
                       : item.status === "ragu"
-                      ? "Masih Ragu"
-                      : "Berhalangan"}
+                      ? "Masih Menyesuaikan"
+                      : "Mendoakan Dari Jauh"}
                   </span>
                 </div>
 
                 {item.message && (
-                  <p className="text-xs sm:text-sm text-stone-700 italic leading-relaxed pl-11">
+                  <p className="text-xs sm:text-sm font-serif italic text-stone-700 leading-relaxed pl-9">
                     &ldquo;{item.message}&rdquo;
                   </p>
                 )}
               </div>
             ))}
           </div>
+
         </div>
+
       </div>
     </section>
   );
