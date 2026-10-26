@@ -42,6 +42,19 @@ function InvitationContent() {
     setTimeout(() => {
       window.scrollTo({ top: 0, behavior: "smooth" });
     }, 100);
+
+    // Track invitation opened in Supabase
+    if (rawTo && rawTo.trim()) {
+      try {
+        fetch("/api/guests", {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name: guestName, has_opened: true }),
+        }).catch(() => {});
+      } catch (e) {
+        // Non-blocking
+      }
+    }
   };
 
   const handleReopen = () => {

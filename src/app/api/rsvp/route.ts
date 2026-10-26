@@ -1,38 +1,63 @@
 import { NextResponse } from "next/server";
 import { initialWishes, WishItem } from "@/data/defaultWishes";
-
-// In-memory cache for serverless lifecycle
-let cachedWishes: WishItem[] = [...initialWishes];
+import { supabaseAdmin } from "@/lib/supabase";
 
 export async function GET() {
-  const webhookUrl = process.env.GOOGLE_SHEET_WEBHOOK_URL;
+  try {
+    const { data, error } = await supabaseAdmin
+      .from("rsvps")
+      .select("*")
+      .order("created_at", { ascending: false });
 
-  if (webhookUrl) {
-    try {
-      const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 3500);
-      const res = await fetch(webhookUrl, { signal: controller.signal });
-      clearTimeout(timeoutId);
-      const json = await res.json();
-      if (json && json.success && Array.isArray(json.data) && json.data.length > 0) {
-        cachedWishes = json.data;
-      }
-    } catch (err) {
-      // fallback to cachedWishes on timeout or offline
+    if (error) {
+      console.error("Supabase GET error:", error);
+      return NextResponse.json({
+        success: true,
+        data: initialWishes,
+        summary: {
+          totalResponses: initialWishes.length,
+          attending: initialWishes.filter((w) => w.status === "hadir").length,
+          totalGuests: initialWishes
+            .filter((w) => w.status === "hadir")
+            .reduce((sum, w) => sum + (w.guests || 1), 0),
+        },
+      });
     }
-  }
 
-  return NextResponse.json({
-    success: true,
-    data: cachedWishes,
-    summary: {
-      totalResponses: cachedWishes.length,
-      attending: cachedWishes.filter((w) => w.status === "hadir").length,
-      totalGuests: cachedWishes
-        .filter((w) => w.status === "hadir")
-        .reduce((sum, w) => sum + (w.guests || 1), 0),
-    },
-  });
+    const wishes: WishItem[] = (data || []).map((row) => ({
+      id: row.id,
+      name: row.name,
+      status: row.status as "hadir" | "tidak_hadir" | "ragu",
+      guests: Number(row.guests) || 1,
+      message: row.message || "",
+      timestamp: row.timestamp || new Date(row.created_at).toLocaleString("id-ID"),
+    }));
+
+    return NextResponse.json({
+      success: true,
+      data: wishes,
+      summary: {
+        totalResponses: wishes.length,
+        attending: wishes.filter((w) => w.status === "hadir").length,
+        totalGuests: wishes
+          .filter((w) => w.status === "hadir")
+          .reduce((sum, w) => sum + (w.guests || 1), 0),
+      },
+    });
+  } catch (err) {
+    console.error("GET /api/rsvp unexpected error:", err);
+    return NextResponse.json({
+      success: true,
+      data: initialWishes,
+      summary: {
+        totalResponses: initialWishes.length,
+        attending: initialWishes.filter((w) => w.status === "hadir").length,
+        totalGuests: initialWishes
+          .filter((w) => w.status === "hadir")
+          .reduce((sum, w) => sum + (w.guests || 1), 0),
+      },
+    });
+  }
 }
 
 export async function POST(request: Request) {
@@ -47,6 +72,7 @@ export async function POST(request: Request) {
       );
     }
 
+    const trimmedName = name.trim();
     const validStatus = ["hadir", "tidak_hadir", "ragu"].includes(status)
       ? status
       : "hadir";
@@ -54,7 +80,7 @@ export async function POST(request: Request) {
 
     const newWish: WishItem = {
       id: `wish-${Date.now()}-${Math.random().toString(36).substring(2, 6)}`,
-      name: name.trim(),
+      name: trimmedName,
       status: validStatus as "hadir" | "tidak_hadir" | "ragu",
       guests: guestCount,
       message: (message || "").trim(),
@@ -65,32 +91,65 @@ export async function POST(request: Request) {
       }),
     };
 
-    // Prepend to top of list
-    cachedWishes = [newWish, ...cachedWishes];
+    // Insert into Supabase rsvps table
+    const { error: insertError } = await supabaseAdmin.from("rsvps").insert([
+      {
+        id: newWish.id,
+        name: newWish.name,
+        status: newWish.status,
+        guests: newWish.guests,
+        message: newWish.message,
+        timestamp: newWish.timestamp,
+      },
+    ]);
 
-    // Forward to Google Sheets Webhook if configured
-    const webhookUrl = process.env.GOOGLE_SHEET_WEBHOOK_URL;
-    if (webhookUrl) {
-      try {
-        await fetch(webhookUrl, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(newWish),
-        });
-      } catch (sheetError) {
-        console.error("Gagal mengirim ke Google Sheets:", sheetError);
-      }
+    if (insertError) {
+      console.error("Supabase RSVP insert error:", insertError);
+      return NextResponse.json(
+        { success: false, error: "Gagal menyimpan konfirmasi ke basis data." },
+        { status: 500 }
+      );
     }
+
+    // Sync guest table if name exists
+    try {
+      await supabaseAdmin
+        .from("guests")
+        .update({
+          rsvp_status: validStatus,
+          has_opened: true,
+          opened_at: new Date().toISOString(),
+        })
+        .ilike("name", trimmedName);
+    } catch (guestSyncErr) {
+      // Non-blocking
+    }
+
+    // Retrieve fresh list
+    const { data: updatedList } = await supabaseAdmin
+      .from("rsvps")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    const allWishes: WishItem[] = (updatedList || []).map((row) => ({
+      id: row.id,
+      name: row.name,
+      status: row.status as "hadir" | "tidak_hadir" | "ragu",
+      guests: Number(row.guests) || 1,
+      message: row.message || "",
+      timestamp: row.timestamp,
+    }));
 
     return NextResponse.json({
       success: true,
       message: "Konfirmasi kehadiran dan doa restu berhasil dikirimkan.",
       data: newWish,
-      allWishes: cachedWishes,
+      allWishes,
     });
   } catch (error) {
+    console.error("POST /api/rsvp error:", error);
     return NextResponse.json(
-      { success: false, error: "Terjadi kesalahan saat menyimpan konfirmasi." },
+      { success: false, error: "Terjadi kesalahan saat memproses konfirmasi." },
       { status: 500 }
     );
   }
