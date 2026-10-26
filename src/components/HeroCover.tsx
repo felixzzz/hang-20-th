@@ -2,8 +2,7 @@
 
 import React, { useState } from "react";
 import Image from "next/image";
-import { MailOpen, Calendar, MapPin, Sparkles, Building2 } from "lucide-react";
-import Link from "next/link";
+import { MailOpen, Calendar, MapPin, Sparkles } from "lucide-react";
 
 interface HeroCoverProps {
   guestName: string;
@@ -142,17 +141,6 @@ export default function HeroCover({ guestName, isOpen, onOpen }: HeroCoverProps)
           <span className="text-[11px] text-fothang-gold-300 font-medium tracking-wider mt-3 animate-pulse">
             Sentuh Segel Emas untuk Membuka Undangan
           </span>
-        </div>
-
-        {/* Direct Link to 3D Building Comparison */}
-        <div className="mt-5 pt-4 border-t border-white/10 flex items-center justify-center gap-2">
-          <Link
-            href="/3d"
-            className="inline-flex items-center gap-1.5 text-xs text-stone-300 hover:text-fothang-gold-300 transition cursor-pointer"
-          >
-            <Building2 className="w-3.5 h-3.5 text-fothang-gold-400" />
-            <span>Lihat Eksplorasi Gedung 3D (Halaman Pembanding)</span>
-          </Link>
         </div>
       </div>
     </aside>

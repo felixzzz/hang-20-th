@@ -12,7 +12,6 @@ import PhotoGallery from "@/components/PhotoGallery";
 import RsvpSection from "@/components/RsvpSection";
 import DonationSection from "@/components/DonationSection";
 import LocationMap from "@/components/LocationMap";
-import ShareGenerator from "@/components/ShareGenerator";
 import Footer from "@/components/Footer";
 import AudioPlayer from "@/components/AudioPlayer";
 import AmbientLanternCanvas from "@/components/AmbientLanternCanvas";
@@ -82,7 +81,6 @@ function InvitationContent() {
         <RsvpSection initialGuestName={guestName === "Bapak / Ibu / Saudara/i" ? "" : guestName} />
         <DonationSection />
         <LocationMap />
-        <ShareGenerator />
         <Footer onReopenEnvelope={handleReopen} />
       </div>
     </main>

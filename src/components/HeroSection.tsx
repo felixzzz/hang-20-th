@@ -2,8 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
-import Link from "next/link";
-import { Calendar, Clock, MapPin, Sparkles, HeartHandshake, Building2, Flame } from "lucide-react";
+import { Calendar, Clock, MapPin, Sparkles, HeartHandshake, History, Flame } from "lucide-react";
 
 interface HeroSectionProps {
   guestName: string;
@@ -53,23 +52,6 @@ export default function HeroSection({ guestName }: HeroSectionProps) {
       </div>
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 relative text-center">
-        {/* Floating Comparison Banner Switcher */}
-        <div className="inline-flex items-center gap-1.5 p-1 rounded-full bg-white/80 border border-fothang-gold-300 shadow-md backdrop-blur-md mb-8">
-          <span className="px-3 py-1 rounded-full bg-fothang-red-800 text-fothang-gold-200 text-xs font-semibold">
-            Undangan Resmi
-          </span>
-          <Link
-            href="/3d"
-            className="flex items-center gap-1.5 px-3 py-1 rounded-full text-stone-700 hover:text-fothang-red-800 hover:bg-stone-100 text-xs font-medium transition cursor-pointer"
-          >
-            <Building2 className="w-3.5 h-3.5 text-fothang-gold-600" />
-            <span>Lihat Gedung 3D</span>
-            <span className="px-1.5 py-0.2 rounded bg-amber-100 text-amber-800 text-[9px] font-bold uppercase">
-              Baru
-            </span>
-          </Link>
-        </div>
-
         {/* Sacred Header Motif */}
         <div className="flex items-center justify-center gap-2 mb-3">
           <div className="w-8 h-px bg-fothang-gold-400" />
@@ -198,13 +180,13 @@ export default function HeroSection({ guestName }: HeroSectionProps) {
             <HeartHandshake className="w-4 h-4 text-fothang-gold-300" />
             <span>Konfirmasi Kehadiran (RSVP)</span>
           </a>
-          <Link
-            href="/3d"
+          <a
+            href="#sejarah"
             className="inline-flex items-center gap-2 px-6 py-3.5 rounded-full bg-white text-stone-800 border-2 border-fothang-gold-400 hover:bg-stone-50 font-semibold text-sm shadow-md transition-all cursor-pointer"
           >
-            <Building2 className="w-4 h-4 text-fothang-gold-600" />
-            <span>Eksplorasi Gedung 3D</span>
-          </Link>
+            <History className="w-4 h-4 text-fothang-gold-600" />
+            <span>Napak Tilas 20 Tahun</span>
+          </a>
         </div>
       </div>
     </section>
