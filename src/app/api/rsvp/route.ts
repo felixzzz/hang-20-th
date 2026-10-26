@@ -5,6 +5,23 @@ import { initialWishes, WishItem } from "@/data/defaultWishes";
 let cachedWishes: WishItem[] = [...initialWishes];
 
 export async function GET() {
+  const webhookUrl = process.env.GOOGLE_SHEET_WEBHOOK_URL;
+
+  if (webhookUrl) {
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 3500);
+      const res = await fetch(webhookUrl, { signal: controller.signal });
+      clearTimeout(timeoutId);
+      const json = await res.json();
+      if (json && json.success && Array.isArray(json.data) && json.data.length > 0) {
+        cachedWishes = json.data;
+      }
+    } catch (err) {
+      // fallback to cachedWishes on timeout or offline
+    }
+  }
+
   return NextResponse.json({
     success: true,
     data: cachedWishes,
