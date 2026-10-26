@@ -4,6 +4,7 @@ import React from "react";
 import Image from "next/image";
 import { Heart, Instagram, MailOpen, ArrowUp } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
+import { useCms } from "@/context/CmsContext";
 
 interface FooterProps {
   onReopenEnvelope: () => void;
@@ -11,105 +12,91 @@ interface FooterProps {
 
 export default function Footer({ onReopenEnvelope }: FooterProps) {
   const { showId, showZh } = useLanguage();
+  const { cms } = useCms();
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
+  const logoImg = cms.cover.logoImage || "/images/logo-guang-ji.png";
+
   return (
-    <footer className="mt-20 bg-gradient-to-b from-[#250d0d] via-[#1a0707] to-[#110404] text-stone-200 border-t border-amber-500/30 pt-16 pb-24 px-4 sm:px-6 relative text-center">
+    <footer className="mt-20 bg-[#1c1815] text-[#fbf5e8] border-t border-[#dfba6d]/30 pt-16 pb-20 px-4 sm:px-6 relative text-center">
       <div className="max-w-3xl mx-auto">
         
         {/* Guang Ji Sacred Emblem */}
-        <div className="relative w-16 h-16 mx-auto mb-4 group-hover:scale-105 transition-transform drop-shadow-[0_8px_20px_rgba(212,155,40,0.35)]">
+        <div className="relative w-14 h-14 mx-auto mb-3">
           <Image
-            src="/images/logo-guang-ji.png"
+            src={logoImg}
             alt="Logo Guang Ji"
             fill
-            sizes="64px"
-            className="object-contain rounded-full"
+            sizes="56px"
+            className="object-contain rounded-full shadow-sm"
+            unoptimized={logoImg.startsWith("http")}
           />
         </div>
 
-        <h3 className="text-3xl sm:text-4xl font-chinese font-bold text-amber-200 tracking-widest mb-1">
-          廣航佛堂
+        <h3 className="text-3xl sm:text-4xl font-chinese font-bold text-[#fbf5e8] tracking-widest mb-1">
+          {cms.cover.titleZh || "廣航佛堂"}
         </h3>
-        <p className="text-xs sm:text-sm font-chinese text-amber-400/80 tracking-widest mb-4">
+        <p className="text-xs sm:text-sm font-chinese text-[#dfba6d] tracking-widest mb-4">
           成立二十週年堂慶紀念 (2006 — 2026)
         </p>
 
-        <div className="w-20 h-px mx-auto bg-gradient-to-r from-transparent via-amber-500 to-transparent mb-6" />
+        <div className="w-16 h-px mx-auto bg-[#dfba6d]/40 mb-6" />
 
         <div className="max-w-lg mx-auto mb-6 space-y-2">
           {showId && (
-            <p className="font-serif text-sm sm:text-base text-stone-300 italic leading-relaxed">
+            <p className="font-serif text-sm text-stone-300 italic leading-relaxed">
               &ldquo;Tiada kata yang mampu melukiskan rasa syukur atas Tian En Shi De serta ketulusan seluruh umat yang telah menyatukan hati dalam mengarungi samudra kebajikan selama dua dasawarsa.&rdquo;
             </p>
           )}
           {showZh && (
-            <p className="font-chinese text-xs sm:text-sm text-amber-300/90 leading-relaxed font-normal">
+            <p className="font-chinese text-xs sm:text-sm text-[#dfba6d]/90 leading-relaxed font-normal">
               「叩謝天恩師德浩瀚加被，感恩前賢大德至誠護持。廿載同舟普化，萬里慈航不捨眾生。」
             </p>
           )}
         </div>
 
-        {/* Action Controls - Bilingual */}
+        {/* Action Controls */}
         <div className="flex flex-wrap items-center justify-center gap-3 mb-8">
           <a
             href="https://www.instagram.com/guanghangfotang"
             target="_blank"
             rel="noopener noreferrer"
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-serif text-stone-200 transition cursor-pointer"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 hover:bg-white/15 border border-white/15 text-xs font-serif text-stone-200 transition cursor-pointer"
           >
-            <Instagram className="w-3.5 h-3.5 text-amber-400" />
+            <Instagram className="w-3.5 h-3.5 text-[#dfba6d]" />
             <span>@guanghangfotang</span>
           </a>
 
           <button
             onClick={onReopenEnvelope}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-serif text-amber-300 transition cursor-pointer"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 hover:bg-white/15 border border-white/15 text-xs font-serif text-[#dfba6d] transition cursor-pointer"
           >
             <MailOpen className="w-3.5 h-3.5" />
-            <span>
-              {showId && "Buka Sampul Undangan"}
-              {showId && showZh && " • "}
-              {showZh && "重啟禮函"}
-            </span>
+            <span>{showId ? "Buka Ulang Sampul" : "重啟封套"}</span>
           </button>
 
           <button
             onClick={scrollToTop}
-            className="inline-flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-serif text-stone-300 transition cursor-pointer"
-            aria-label="Kembali ke atas"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 hover:bg-white/15 border border-white/15 text-xs font-serif text-stone-200 transition cursor-pointer"
           >
-            <ArrowUp className="w-3.5 h-3.5" />
-            <span>
-              {showId && "Ke Atas"}
-              {showId && showZh && " • "}
-              {showZh && "頂部"}
-            </span>
+            <ArrowUp className="w-3.5 h-3.5 text-[#dfba6d]" />
+            <span>{showId ? "Kembali ke Atas" : "回頂部"}</span>
           </button>
         </div>
 
-        {/* Address and Sanctuary Notation */}
-        <p className="text-xs sm:text-sm text-stone-300 font-serif max-w-sm mx-auto leading-relaxed mb-1">
-          Kuang Hang Fo Thang • Jl. Palmerah Utara III No. 186A, Palmerah, Jakarta Barat 11480
-        </p>
-        <p className="text-xs font-chinese text-stone-300 mb-6">
-          雅加達西區巴美拉北三路186A號
-        </p>
+        {/* Footer Bottom Line */}
+        <div className="pt-6 border-t border-white/10 text-xs text-stone-400 font-serif flex flex-col sm:flex-row items-center justify-between gap-3">
+          <div>
+            <span>© 2006 — 2026 Kuang Hang Fo Thang. Seluruh Hak Dilindungi.</span>
+          </div>
 
-        {/* Colophon */}
-        <div className="pt-6 border-t border-white/10 flex items-center justify-center text-xs text-stone-300 font-serif">
-          <div className="flex items-center gap-1.5">
-            <span>
-              {showId ? "Dipersembahkan dengan ketulusan oleh" : "虔誠奉獻："}
-            </span>
-            <Heart className="w-3.5 h-3.5 text-red-500 fill-red-500" />
-            <span className="text-stone-200">
-              {showId ? "Keluarga Besar Kuang Hang" : "廣航佛堂闔體"}
-              {showId && showZh && " (廣航佛堂闔體)"}
-            </span>
+          <div className="flex items-center gap-1.5 text-stone-400">
+            <span>Dirajut dengan ketulusan hati</span>
+            <Heart className="w-3.5 h-3.5 text-[#7c1818] fill-[#7c1818]" />
+            <span>demi kelestarian dharma</span>
           </div>
         </div>
 

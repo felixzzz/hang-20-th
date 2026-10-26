@@ -1,0 +1,197 @@
+"use client";
+
+import React, { useState, useRef } from "react";
+import Image from "next/image";
+import { UploadCloud, Image as ImageIcon, Check, Loader2, Link as LinkIcon, X } from "lucide-react";
+
+interface ImageUploadFieldProps {
+  label: string;
+  value: string;
+  onChange: (url: string) => void;
+  description?: string;
+  aspectRatio?: "square" | "landscape" | "banner";
+}
+
+export default function ImageUploadField({
+  label,
+  value,
+  onChange,
+  description,
+  aspectRatio = "landscape",
+}: ImageUploadFieldProps) {
+  const [isUploading, setIsUploading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
+  const [mode, setMode] = useState<"upload" | "url">("upload");
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setErrorMsg("");
+    setIsUploading(true);
+
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+
+      const res = await fetch("/api/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      const json = await res.json();
+      if (json.success && json.url) {
+        onChange(json.url);
+      } else {
+        setErrorMsg(json.error || "Gagal mengunggah gambar ke Supabase.");
+      }
+    } catch (err: any) {
+      setErrorMsg("Terjadi gangguan jaringan saat mengunggah.");
+    } finally {
+      setIsUploading(false);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+    }
+  };
+
+  const getAspectClass = () => {
+    switch (aspectRatio) {
+      case "square":
+        return "aspect-square w-24 h-24";
+      case "banner":
+        return "aspect-[21/9] w-full max-h-36";
+      default:
+        return "aspect-video w-full max-h-36";
+    }
+  };
+
+  return (
+    <div className="space-y-2">
+      <div className="flex items-center justify-between">
+        <label className="block text-xs font-semibold text-stone-200 uppercase tracking-wider">
+          {label}
+        </label>
+        <div className="flex items-center gap-1 text-[11px] bg-stone-900/60 p-0.5 rounded-lg border border-stone-800">
+          <button
+            type="button"
+            onClick={() => setMode("upload")}
+            className={`px-2 py-0.5 rounded transition ${
+              mode === "upload"
+                ? "bg-amber-600 text-white font-medium"
+                : "text-stone-400 hover:text-stone-200"
+            }`}
+          >
+            Upload
+          </button>
+          <button
+            type="button"
+            onClick={() => setMode("url")}
+            className={`px-2 py-0.5 rounded transition ${
+              mode === "url"
+                ? "bg-amber-600 text-white font-medium"
+                : "text-stone-400 hover:text-stone-200"
+            }`}
+          >
+            URL
+          </button>
+        </div>
+      </div>
+
+      {description && (
+        <p className="text-[11px] text-stone-400 leading-relaxed">{description}</p>
+      )}
+
+      {/* Preview & Controls */}
+      <div className="flex flex-col sm:flex-row items-start gap-3 p-3 rounded-xl bg-stone-900/80 border border-stone-800">
+        {/* Thumbnail Preview */}
+        <div
+          className={`relative rounded-lg overflow-hidden bg-stone-950 border border-stone-800 flex items-center justify-center shrink-0 ${getAspectClass()}`}
+        >
+          {value ? (
+            <Image
+              src={value}
+              alt={label}
+              fill
+              className="object-cover"
+              sizes="200px"
+              unoptimized={value.startsWith("data:") || value.startsWith("http")}
+            />
+          ) : (
+            <div className="flex flex-col items-center justify-center text-stone-600 p-2 text-center">
+              <ImageIcon className="w-6 h-6 mb-1" />
+              <span className="text-[10px]">Belum ada foto</span>
+            </div>
+          )}
+
+          {isUploading && (
+            <div className="absolute inset-0 bg-black/70 flex flex-col items-center justify-center text-amber-300">
+              <Loader2 className="w-5 h-5 animate-spin mb-1" />
+              <span className="text-[10px]">Mengunggah...</span>
+            </div>
+          )}
+        </div>
+
+        {/* Action Controls */}
+        <div className="flex-1 w-full space-y-2">
+          {mode === "upload" ? (
+            <div>
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                onChange={handleFileChange}
+                className="hidden"
+                id={`upload-${label.replace(/[^a-zA-Z0-9]/g, "-")}`}
+              />
+              <label
+                htmlFor={`upload-${label.replace(/[^a-zA-Z0-9]/g, "-")}`}
+                className="inline-flex items-center justify-center gap-2 px-3 py-2 rounded-lg bg-amber-600 hover:bg-amber-500 text-stone-950 font-semibold text-xs transition cursor-pointer w-full sm:w-auto shadow-sm"
+              >
+                <UploadCloud className="w-4 h-4" />
+                <span>Pilih Foto dari Perangkat</span>
+              </label>
+              <p className="text-[10px] text-stone-400 mt-1">
+                Format: JPG, PNG, WebP (Maks. 12MB). Disimpan langsung di Supabase Storage.
+              </p>
+            </div>
+          ) : (
+            <div className="flex items-center gap-2">
+              <div className="relative flex-1">
+                <LinkIcon className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-stone-400" />
+                <input
+                  type="text"
+                  value={value}
+                  onChange={(e) => onChange(e.target.value)}
+                  placeholder="https://... atau /images/..."
+                  className="w-full pl-8 pr-3 py-1.5 rounded-lg bg-stone-950 border border-stone-700 text-xs text-white placeholder-stone-500 focus:border-amber-500 outline-none"
+                />
+              </div>
+            </div>
+          )}
+
+          {value && (
+            <div className="flex items-center justify-between text-[11px] pt-1 border-t border-stone-800">
+              <span className="text-stone-400 truncate max-w-[200px]" title={value}>
+                {value}
+              </span>
+              <button
+                type="button"
+                onClick={() => onChange("")}
+                className="inline-flex items-center gap-1 text-red-400 hover:text-red-300 transition"
+              >
+                <X className="w-3.5 h-3.5" />
+                <span>Hapus</span>
+              </button>
+            </div>
+          )}
+
+          {errorMsg && (
+            <p className="text-xs text-red-400 font-medium">{errorMsg}</p>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}

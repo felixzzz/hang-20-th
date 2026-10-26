@@ -27,7 +27,7 @@ export async function GET() {
     const wishes: WishItem[] = (data || []).map((row) => ({
       id: row.id,
       name: row.name,
-      status: row.status as "hadir" | "tidak_hadir" | "ragu",
+      status: (row.status as "hadir" | "tidak_hadir" | "ragu") || "hadir",
       guests: Number(row.guests) || 1,
       message: row.message || "",
       timestamp: row.timestamp || new Date(row.created_at).toLocaleString("id-ID"),
@@ -106,7 +106,7 @@ export async function POST(request: Request) {
     if (insertError) {
       console.error("Supabase RSVP insert error:", insertError);
       return NextResponse.json(
-        { success: false, error: "Gagal menyimpan konfirmasi ke basis data." },
+        { success: false, error: "Gagal menyimpan konfirmasi ke basis data: " + insertError.message },
         { status: 500 }
       );
     }
@@ -150,6 +150,89 @@ export async function POST(request: Request) {
     console.error("POST /api/rsvp error:", error);
     return NextResponse.json(
       { success: false, error: "Terjadi kesalahan saat memproses konfirmasi." },
+      { status: 500 }
+    );
+  }
+}
+
+// PUT: Update existing RSVP / Wish (CRUD - Update)
+export async function PUT(request: Request) {
+  try {
+    const body = await request.json();
+    const { id, name, status, guests, message } = body;
+
+    if (!id) {
+      return NextResponse.json(
+        { success: false, error: "ID ucapan / RSVP dibutuhkan untuk memperbarui." },
+        { status: 400 }
+      );
+    }
+
+    const updates: any = {};
+    if (name && typeof name === "string") updates.name = name.trim();
+    if (status && ["hadir", "tidak_hadir", "ragu"].includes(status)) updates.status = status;
+    if (guests !== undefined) updates.guests = Math.max(1, Math.min(20, parseInt(guests) || 1));
+    if (message !== undefined) updates.message = String(message).trim();
+
+    const { data, error } = await supabaseAdmin
+      .from("rsvps")
+      .update(updates)
+      .eq("id", id)
+      .select();
+
+    if (error) {
+      console.error("PUT /api/rsvp error:", error);
+      return NextResponse.json(
+        { success: false, error: "Gagal memperbarui ucapan di Supabase: " + error.message },
+        { status: 500 }
+      );
+    }
+
+    return NextResponse.json({
+      success: true,
+      message: "Ucapan berhasil diperbarui di Supabase.",
+      data: data?.[0] || null,
+    });
+  } catch (err: any) {
+    console.error("PUT /api/rsvp error:", err);
+    return NextResponse.json(
+      { success: false, error: err?.message || "Internal server error" },
+      { status: 500 }
+    );
+  }
+}
+
+// DELETE: Delete RSVP / Wish (CRUD - Delete)
+export async function DELETE(request: Request) {
+  try {
+    const { searchParams } = new URL(request.url);
+    const id = searchParams.get("id");
+
+    if (!id) {
+      return NextResponse.json(
+        { success: false, error: "ID ucapan / RSVP dibutuhkan untuk menghapus." },
+        { status: 400 }
+      );
+    }
+
+    const { error } = await supabaseAdmin.from("rsvps").delete().eq("id", id);
+
+    if (error) {
+      console.error("DELETE /api/rsvp error:", error);
+      return NextResponse.json(
+        { success: false, error: "Gagal menghapus ucapan dari Supabase: " + error.message },
+        { status: 500 }
+      );
+    }
+
+    return NextResponse.json({
+      success: true,
+      message: "Ucapan berhasil dihapus dari Supabase.",
+    });
+  } catch (err: any) {
+    console.error("DELETE /api/rsvp error:", err);
+    return NextResponse.json(
+      { success: false, error: err?.message || "Internal server error" },
       { status: 500 }
     );
   }

@@ -2,229 +2,176 @@
 
 import React, { useState } from "react";
 import Image from "next/image";
-import { historyMilestones, Milestone } from "@/data/history";
+import { historyMilestones } from "@/data/history";
 import { MapPin, ChevronRight, ChevronLeft } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
+import { useCms } from "@/context/CmsContext";
 
 export default function HistoryTimeline() {
   const { showId, showZh } = useLanguage();
+  const { cms } = useCms();
+  const milestones = cms.milestones && cms.milestones.length > 0 ? cms.milestones : historyMilestones;
+
   const [selectedIdx, setSelectedIdx] = useState(0);
-  const current = historyMilestones[selectedIdx];
+  const current = milestones[selectedIdx] || milestones[0];
 
   const handleNext = () => {
-    setSelectedIdx((prev) => (prev + 1) % historyMilestones.length);
+    setSelectedIdx((prev) => (prev + 1) % milestones.length);
   };
 
   const handlePrev = () => {
-    setSelectedIdx((prev) => (prev - 1 + historyMilestones.length) % historyMilestones.length);
+    setSelectedIdx((prev) => (prev - 1 + milestones.length) % milestones.length);
   };
 
   return (
-    <section id="sejarah" className="py-16 sm:py-24 px-4 sm:px-6 relative bg-[#f5efe4]/60">
+    <section id="sejarah" className="py-16 sm:py-24 px-4 sm:px-6 relative bg-[#f5efe6]/40">
       
       {/* Background Archival Seal */}
-      <div className="absolute right-4 top-12 select-none pointer-events-none opacity-[0.03]" aria-hidden="true">
+      <div className="absolute right-4 top-12 select-none pointer-events-none opacity-[0.02]" aria-hidden="true">
         <svg aria-hidden="true" role="presentation" className="w-56 h-56 sm:w-80 sm:h-80" viewBox="0 0 100 100">
-          <text x="50" y="80" textAnchor="middle" fontSize="85" fontFamily="serif" fontWeight="900" fill="#1c1917">史</text>
+          <text x="50" y="80" textAnchor="middle" fontSize="85" fontFamily="serif" fontWeight="900" fill="#211c19">史</text>
         </svg>
       </div>
 
       <div className="max-w-6xl mx-auto relative z-10">
         
-        {/* Section Header - Bilingual */}
+        {/* Section Header */}
         <div className="flex flex-col items-center text-center mb-10">
-          <h2 className="text-3xl sm:text-5xl font-chinese font-bold text-red-950 mb-2">
+          <span className="text-xs font-serif tracking-[0.25em] text-[#9e7631] uppercase mb-1 font-semibold">
+            Napak Tilas 20 Tahun Gedung (1997 — 2026)
+          </span>
+          <h2 className="text-3xl sm:text-5xl font-chinese font-bold text-[#7c1818] mb-2">
             歲月印記 • 薪火相傳
           </h2>
-          <div className="text-sm sm:text-base font-serif font-semibold text-amber-900 mb-2">
-            {showId && "Napak Tilas 20 Tahun Gedung Kuang Hang (1997 — 2026)"}
-            {showId && showZh && " • "}
-            {showZh && "廣航廿載光輝史話"}
+          <div className="text-sm font-serif text-stone-600 max-w-xl">
+            {showId && (
+              <p>
+                Mengenang jejak tetesan keringat, doa tulus, dan pengorbanan para perintis awal yang memungkinkan pelita Kuang Hang bersinar terang hari ini.
+              </p>
+            )}
+            {showZh && (
+              <p className="font-chinese text-xs sm:text-sm text-stone-500 mt-1">
+                追思前賢開荒啟航之大願與辛勞，一磚一瓦凝聚願力，薪火相傳二十載，廣航慧燈恆久普照。
+              </p>
+            )}
           </div>
-          {showId && (
-            <p className="text-sm sm:text-base font-serif text-stone-700 max-w-xl">
-              Mengenang jejak tetesan keringat, doa tulus, dan pengorbanan para perintis awal yang memungkinkan pelita Kuang Hang bersinar terang hari ini.
-            </p>
-          )}
-          {showZh && (
-            <p className="text-xs sm:text-sm font-chinese text-stone-600 max-w-xl mt-1 leading-relaxed">
-              追思前賢開荒啟航之大願與辛勞，一磚一瓦凝聚願力，薪火相傳二十載，廣航慧燈恆久普照。
-            </p>
-          )}
         </div>
 
-        {/* Horizontal Timeline Ribbon with Years & Chinese Titles */}
-        <div className="flex items-center justify-between gap-2 overflow-x-auto pb-4 mb-8 no-scrollbar">
-          {historyMilestones.map((m, idx) => (
+        {/* Horizontal Timeline Track */}
+        <div className="flex items-center gap-2 overflow-x-auto pb-4 mb-8 no-scrollbar">
+          {milestones.map((m, idx) => (
             <button
               key={m.year + idx}
               onClick={() => setSelectedIdx(idx)}
-              className={`shrink-0 flex flex-col items-center px-4 py-2.5 rounded-xl transition-all duration-300 cursor-pointer ${
+              className={`shrink-0 flex flex-col items-center px-4 py-2.5 rounded-xl transition-all duration-200 cursor-pointer ${
                 selectedIdx === idx
-                  ? "bg-[#831f1f] text-amber-200 shadow-md scale-105 border border-amber-400/40"
-                  : "bg-white/80 text-stone-700 hover:bg-white hover:text-red-900 border border-stone-200/80"
+                  ? "bg-[#7c1818] text-[#fbf5e8] shadow-sm border border-[#dfba6d]/50"
+                  : "bg-white text-stone-700 hover:text-[#7c1818] hover:bg-stone-50 border border-stone-200"
               }`}
             >
-              <span className="font-serif font-bold text-sm sm:text-base leading-none">
+              <span className="font-serif font-bold text-sm leading-none">
                 {m.year}
               </span>
-              <span className="text-xs font-chinese mt-1 opacity-90 truncate max-w-[110px]">
-                {showZh ? m.chineseTitle.split("•")[0]?.trim() : m.title}
+              <span className="text-[10px] uppercase tracking-wider mt-1 font-serif opacity-80 truncate max-w-[90px]">
+                {m.title}
               </span>
             </button>
           ))}
         </div>
 
-        {/* Monograph Book Spread (典藏書刊開頁) - Fully Bilingual */}
-        <div className="rounded-2xl bg-[#faf7f2] border border-amber-700/25 shadow-2xl overflow-hidden grid grid-cols-1 lg:grid-cols-12 gap-0 relative">
-          
-          {/* Left Column: Archival Photograph (Museum Matting Frame) */}
-          <div className="lg:col-span-6 relative min-h-[340px] sm:min-h-[440px] bg-stone-950 overflow-hidden flex flex-col justify-end p-6">
-            <Image
-              src={current.image || "/images/guang-hang-15.jpg"}
-              alt={current.title}
-              fill
-              className="object-cover transition-all duration-700 opacity-90 hover:scale-105"
-            />
-            <div className="absolute inset-0 bg-gradient-to-t from-stone-950 via-stone-950/30 to-transparent" />
-
-            {/* Archival Reference Tag */}
-            <div className="absolute top-5 left-5 flex items-center gap-2">
-              <span className="chinese-seal-filled text-xs px-2.5 py-0.5 shadow-md">
-                Tahun {current.year}
-                {showZh && ` • ${current.year}年`}
-              </span>
-              <span className="px-2.5 py-0.5 rounded bg-black/60 backdrop-blur-sm border border-white/20 text-xs text-stone-200 font-serif">
-                Bab {selectedIdx + 1} / {historyMilestones.length}
-              </span>
-            </div>
-
-            {/* Inset Photo Caption */}
-            <div className="relative z-10 text-white">
-              {showZh && (
-                <div className="text-xl sm:text-2xl font-chinese font-bold text-amber-300 mb-0.5 drop-shadow">
-                  {current.chineseTitle}
-                </div>
-              )}
-              {showId && (
-                <div className="text-sm font-serif font-semibold text-stone-200 mb-1">
-                  {current.title}
-                </div>
-              )}
-              <p className="text-xs text-amber-200/90 font-serif italic">
-                {showId ? current.highlight : current.chineseHighlight}
-              </p>
-            </div>
-          </div>
-
-          {/* Right Column: Historical Narrative Text - Fully Bilingual */}
-          <div className="lg:col-span-6 p-7 sm:p-10 flex flex-col justify-between">
-            
-            <div>
-              <div className="flex items-center justify-between pb-3 border-b border-amber-900/15 mb-4">
-                <span className="text-xs uppercase tracking-widest text-amber-800 font-semibold font-serif">
-                  {showId && "Kilas Balik Sejarah Perintisan"}
-                  {showId && showZh && " • "}
-                  {showZh && "歷程文獻"}
-                </span>
-                <span className="chinese-seal-red text-xs px-2 py-0.5">
-                  文獻珍藏
-                </span>
-              </div>
-
-              {/* Title Bilingual */}
-              <div className="mb-3">
-                {showId && (
-                  <h3 className="text-2xl sm:text-3xl font-serif font-bold text-red-950 leading-tight">
-                    {current.title}
-                  </h3>
-                )}
-                {showZh && (
-                  <h4 className="text-lg font-chinese text-amber-800 font-bold mt-0.5">
-                    {current.chineseTitle}
-                  </h4>
-                )}
-              </div>
-
-              {/* Location Bilingual */}
-              {current.location && (
-                <div className="flex items-center gap-1.5 text-xs text-stone-600 font-serif mb-4">
-                  <MapPin className="w-3.5 h-3.5 text-amber-700 shrink-0" />
-                  {showId && <span>{current.location}</span>}
-                  {showZh && current.chineseLocation && (
-                    <span className="font-chinese text-stone-600 font-medium">
-                      {showId ? `(${current.chineseLocation})` : current.chineseLocation}
-                    </span>
+        {/* Featured Milestone Card */}
+        {current && (
+          <div className="bg-[#ffffff] rounded-2xl border border-[#dfba6d]/35 shadow-sm p-6 sm:p-10 relative">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+              
+              {/* Text Narrative */}
+              <div className="lg:col-span-7 flex flex-col">
+                <div className="flex items-center gap-3 mb-2">
+                  <span className="text-3xl sm:text-4xl font-serif font-bold text-[#7c1818]">
+                    {current.year}
+                  </span>
+                  {current.location && (
+                    <div className="flex items-center gap-1 text-xs text-stone-500 font-serif">
+                      <MapPin className="w-3.5 h-3.5 text-[#9e7631]" />
+                      <span>{current.location}</span>
+                    </div>
                   )}
                 </div>
-              )}
 
-              {/* Indonesian Narrative */}
-              {showId && (
-                <p className="text-stone-800 text-xs sm:text-sm leading-relaxed mb-3 font-serif">
-                  {current.description}
-                </p>
-              )}
+                <h3 className="text-2xl sm:text-3xl font-serif font-bold text-[#211c19] mb-1">
+                  {showId && current.title}
+                  {showId && showZh && current.chineseTitle && " • "}
+                  {showZh && <span className="font-chinese font-bold text-[#7c1818]">{current.chineseTitle}</span>}
+                </h3>
 
-              {/* Chinese Narrative */}
-              {showZh && (
-                <p className="text-stone-600 text-xs sm:text-sm font-chinese leading-relaxed mb-6 font-normal">
-                  {current.chineseDescription}
-                </p>
-              )}
+                <div className="my-4 text-stone-700 font-serif text-sm sm:text-base leading-relaxed space-y-2">
+                  {showId && <p>{current.description}</p>}
+                  {showZh && current.chineseDescription && (
+                    <p className="font-chinese text-xs sm:text-sm text-stone-600 leading-relaxed mt-2 pt-2 border-t border-stone-100">
+                      {current.chineseDescription}
+                    </p>
+                  )}
+                </div>
 
-              {/* Archival Pull Quote - Typography lead */}
-              <div className="my-4 py-2 space-y-1">
-                {showId && (
-                  <blockquote className="text-xs sm:text-sm text-stone-800 font-serif italic leading-relaxed">
-                    &ldquo;{current.highlight}&rdquo;
-                  </blockquote>
-                )}
-                {showZh && (
-                  <div className="text-xs sm:text-sm text-amber-950 font-chinese font-medium">
-                    「{current.chineseHighlight}」
+                {/* Highlight Plaque */}
+                {(current.highlight || current.chineseHighlight) && (
+                  <div className="mt-4 p-4 rounded-xl bg-[#faf8f5] border-l-3 border-[#dfba6d] text-xs sm:text-sm text-stone-800 font-serif italic">
+                    {showId && current.highlight && <p>&ldquo;{current.highlight}&rdquo;</p>}
+                    {showZh && current.chineseHighlight && (
+                      <p className="font-chinese not-italic text-stone-600 mt-1">
+                        「{current.chineseHighlight}」
+                      </p>
+                    )}
                   </div>
                 )}
+
+                {/* Navigation Arrows */}
+                <div className="flex items-center gap-2 mt-6 pt-4 border-t border-stone-100">
+                  <button
+                    onClick={handlePrev}
+                    aria-label="Tahap Sebelumnya"
+                    className="p-2 rounded-full border border-stone-200 text-stone-700 hover:bg-[#7c1818] hover:text-[#fbf5e8] hover:border-[#7c1818] transition-colors cursor-pointer"
+                  >
+                    <ChevronLeft className="w-4 h-4" />
+                  </button>
+                  <span className="text-xs font-serif text-stone-500 px-2">
+                    {selectedIdx + 1} / {milestones.length}
+                  </span>
+                  <button
+                    onClick={handleNext}
+                    aria-label="Tahap Selanjutnya"
+                    className="p-2 rounded-full border border-stone-200 text-stone-700 hover:bg-[#7c1818] hover:text-[#fbf5e8] hover:border-[#7c1818] transition-colors cursor-pointer"
+                  >
+                    <ChevronRight className="w-4 h-4" />
+                  </button>
+                </div>
               </div>
-            </div>
 
-            {/* Stepper Navigation */}
-            <div className="mt-8 pt-4 border-t border-amber-900/10 flex items-center justify-between">
-              <button
-                onClick={handlePrev}
-                className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-serif font-medium text-stone-700 hover:text-red-900 transition-colors cursor-pointer"
-              >
-                <ChevronLeft className="w-4 h-4" />
-                <span>
-                  {showId && "Sebelumnya"}
-                  {showId && showZh && " • "}
-                  {showZh && "上一章"}
-                </span>
-              </button>
-
-              <div className="text-xs font-serif text-stone-600">
-                {selectedIdx + 1} / {historyMilestones.length}
+              {/* Archival Photo */}
+              <div className="lg:col-span-5">
+                <div className="relative aspect-[4/3] rounded-xl overflow-hidden bg-stone-100 border border-stone-200 shadow-sm">
+                  {current.image ? (
+                    <Image
+                      src={current.image}
+                      alt={current.title}
+                      fill
+                      className="object-cover"
+                      sizes="(max-width: 1024px) 100vw, 40vw"
+                      unoptimized={current.image.startsWith("http")}
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-stone-400 font-serif text-xs">
+                      Foto Dokumentasi Kuang Hang
+                    </div>
+                  )}
+                </div>
               </div>
 
-              <button
-                onClick={handleNext}
-                className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-serif font-medium text-stone-700 hover:text-red-900 transition-colors cursor-pointer"
-              >
-                <span>
-                  {showId && "Selanjutnya"}
-                  {showId && showZh && " • "}
-                  {showZh && "下一章"}
-                </span>
-                <ChevronRight className="w-4 h-4" />
-              </button>
             </div>
-
           </div>
-
-        </div>
+        )}
 
       </div>
-
     </section>
   );
 }

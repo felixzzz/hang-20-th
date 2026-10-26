@@ -2,8 +2,9 @@
 
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
-import { Calendar, MapPin, Clock } from "lucide-react";
+import { Calendar, MapPin, Clock, ArrowDown } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
+import { useCms } from "@/context/CmsContext";
 
 interface HeroSectionProps {
   guestName: string;
@@ -11,9 +12,11 @@ interface HeroSectionProps {
 
 export default function HeroSection({ guestName }: HeroSectionProps) {
   const { showId, showZh } = useLanguage();
+  const { cms } = useCms();
 
-  // Countdown to Saturday, Nov 14, 2026, 19:00:00 WIB (UTC+7)
-  const targetDate = new Date("2026-11-14T19:00:00+07:00").getTime();
+  // Target countdown date from CMS or default to Saturday, Nov 14, 2026, 19:00 WIB
+  const targetDateStr = cms.hero.countdownDate || "2026-11-14T19:00:00+07:00";
+  const targetDate = new Date(targetDateStr).getTime();
 
   const [timeLeft, setTimeLeft] = useState({
     days: 0,
@@ -45,229 +48,239 @@ export default function HeroSection({ guestName }: HeroSectionProps) {
     return () => clearInterval(interval);
   }, [targetDate]);
 
+  const heroImg = cms.cover.bgImage || "/images/guang-hang-15.jpg";
+
   return (
-    <section id="top" className="relative pt-8 pb-16 sm:py-20 px-4 sm:px-6 overflow-hidden">
+    <section id="top" className="relative pt-6 sm:pt-10 pb-16 sm:pb-24 px-4 sm:px-6 overflow-hidden">
       
-      {/* Subtle Atmospheric Watermark */}
-      <div className="absolute top-0 right-0 translate-x-1/4 -translate-y-12 select-none pointer-events-none opacity-[0.03]">
-        <span className="text-[18rem] sm:text-[28rem] font-chinese font-black text-red-950 leading-none">
+      {/* Subtle Background Watermark */}
+      <div className="absolute top-8 right-4 sm:right-12 select-none pointer-events-none opacity-[0.03]" aria-hidden="true">
+        <span className="text-[16rem] sm:text-[26rem] font-chinese font-black text-[#7c1818] leading-none">
           航
         </span>
       </div>
 
       <div className="max-w-6xl mx-auto relative z-10">
         
-        {/* Top Editorial Banner Bar */}
-        <div className="flex items-center justify-between border-b border-amber-900/15 pb-4 mb-10">
-          <div className="flex items-center gap-2">
-            <span className="chinese-seal-filled text-xs px-2 py-0.5">
+        {/* Top Editorial Bar */}
+        <div className="flex flex-wrap items-center justify-between border-b border-[#dfba6d]/30 pb-3 mb-10 text-xs text-stone-600 font-serif">
+          <div className="flex items-center gap-2.5">
+            <span className="chinese-seal-filled text-[11px] px-2 py-0.5">
               天恩師德
             </span>
-            <span className="text-xs uppercase tracking-widest text-stone-600 font-serif">
-              {showId && <span>Memorabilia Dua Dasawarsa (2006 — 2026)</span>}
-              {showId && showZh && <span> • </span>}
-              {showZh && <span className="font-chinese">廿週年誌慶</span>}
+            <span className="tracking-widest uppercase">
+              {showId && (cms.hero.topBannerId || "Peringatan 20 Tahun Gedung (2006 — 2026)")}
+              {showId && showZh && " • "}
+              {showZh && (
+                <span className="font-chinese font-normal">
+                  {cms.hero.topBannerZh || "落成廿週年堂慶大典"}
+                </span>
+              )}
             </span>
           </div>
-          <div className="hidden sm:flex items-center gap-2 text-xs font-serif text-amber-800">
-            {showId && <span>Palmerah, Jakarta Barat</span>}
-            {showId && showZh && <span> • </span>}
-            {showZh && <span className="font-chinese">雅加達巴美拉</span>}
+
+          <div className="hidden sm:flex items-center gap-3 text-stone-600">
+            <span>{cms.hero.cityId || "Palmerah, Jakarta Barat"}</span>
             <span>•</span>
-            <span>14 November 2026</span>
+            <span className="font-semibold text-[#7c1818]">{cms.hero.eventDateBadge || "14 November 2026"}</span>
           </div>
         </div>
 
-        {/* Main Hero Grid: Asymmetrical Editorial Spread */}
+        {/* Hero Grid */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start mb-16">
           
-          {/* Left Column: Grand Typography & Monograph Thesis */}
+          {/* Left Column: Monograph Title & Honored Guest Invitation */}
           <div className="lg:col-span-7 flex flex-col justify-center">
             
-            <h1 className="text-4xl sm:text-6xl lg:text-7xl font-chinese font-bold text-red-950 tracking-wide leading-tight mb-2">
-              廣航佛堂
-              <span className="block text-2xl sm:text-3xl font-serif text-amber-800 font-semibold tracking-wider mt-1.5">
-                {showId && "Peringatan 20 Tahun Gedung"}
-                {showId && showZh && " • "}
-                {showZh && "成立廿週年堂慶紀念 (2006 — 2026)"}
+            <div className="mb-3">
+              <span className="inline-block text-xs font-serif tracking-[0.25em] text-[#9e7631] uppercase mb-1 font-semibold">
+                Dua Dasawarsa Menyalakan Pelita Kebajikan
               </span>
-            </h1>
+              <h1 className="text-4xl sm:text-6xl font-chinese font-bold text-[#7c1818] tracking-wide leading-tight">
+                {cms.hero.mainTitleZh || "廣航佛堂"}
+                <span className="block text-2xl sm:text-3xl font-serif text-[#211c19] font-normal tracking-wide mt-2">
+                  {showId && (cms.hero.mainTitleId || "Peringatan 20 Tahun Peresmian Gedung")}
+                  {showId && showZh && " • "}
+                  {showZh && (
+                    <span className="font-chinese">
+                      {cms.hero.themeZh || "成立廿週年堂慶紀念"}
+                    </span>
+                  )}
+                </span>
+              </h1>
+            </div>
 
-            <div className="my-5">
+            {/* Poetic Inscription */}
+            <div className="my-4 pl-4 border-l-2 border-[#dfba6d]">
               {showId && (
-                <p className="font-serif text-xl sm:text-2xl text-stone-900 italic leading-relaxed">
-                  &ldquo;Mengarungi samudra kebajikan selama dua dasawarsa, merajut persaudaraan se-dharma, menyalakan pelita suci Shizun dan Shimu.&rdquo;
+                <p className="font-serif text-lg sm:text-xl text-stone-800 italic leading-relaxed">
+                  &ldquo;{cms.hero.quoteId}&rdquo;
                 </p>
               )}
               {showZh && (
-                <p className="font-chinese text-base sm:text-lg text-amber-900 mt-2 tracking-wide leading-relaxed font-medium">
-                  「廿載同舟揚慈航 • 萬里攜手化乾坤 • 照亮世間菩提心」
+                <p className="font-chinese text-sm sm:text-base text-stone-600 mt-1.5 tracking-wider leading-relaxed">
+                  {cms.hero.quoteZh}
                 </p>
               )}
             </div>
 
-            <div className="text-sm sm:text-base text-stone-700 leading-relaxed max-w-xl mb-8 space-y-2 font-serif">
+            <div className="text-sm sm:text-base text-stone-700 leading-relaxed max-w-xl mb-6 font-serif">
               {showId && (
                 <p>
-                  Dua puluh tahun yang lalu, pada tanggal 12 November 2006, berkat karunia tak terhingga dari Tian En Shi De dan cucuran keringat para pendahulu, gedung Kuang Hang Fo Thang resmi berdiri kokoh di Palmerah. Hari ini, kami mengundang Anda untuk bersama menundukkan kepala dalam syukur dan memperbaharui ikrar kebajikan.
+                  Pada tanggal 12 November 2006, berkat karunia tak terhingga dari Tian En Shi De serta ketulusan hati para pendahulu, gedung Kuang Hang Fo Thang resmi berdiri kokoh di Palmerah. Hari ini, kami mengundang Anda untuk bersama menundukkan kepala dalam syukur dan memperbaharui ikrar kebajikan.
                 </p>
               )}
               {showZh && (
-                <p className="font-chinese text-sm text-stone-600 leading-relaxed font-normal">
+                <p className="font-chinese text-sm text-stone-600 leading-relaxed mt-1">
                   廿年前（2006年11月12日），在天恩師德庇佑與前賢們無私奉獻下，廣航佛堂正式落成安座。廿載韶華，慧光普照。今日誠摯恭請十方善信大德共聚一堂，追思感恩，同沾法喜。
                 </p>
               )}
             </div>
 
-            {/* Inset Honored Guest Inscription Scroll (貴賓敬邀函) - Fully Bilingual */}
-            <div className="xuan-paper-card p-6 sm:p-7 rounded-2xl border border-amber-300/80 shadow-[0_12px_36px_rgba(180,140,70,0.12)] relative overflow-hidden">
-              <div className="corner-ornament-tl" />
-              <div className="corner-ornament-tr" />
-              <div className="corner-ornament-bl" />
-              <div className="corner-ornament-br" />
-
-              <div className="flex items-center justify-between mb-2">
-                <span className="text-xs uppercase tracking-widest text-amber-900 font-semibold font-serif pl-2">
+            {/* Inset Guest Honor Card */}
+            <div className="bg-[#ffffff] p-5 sm:p-6 rounded-xl border border-[#dfba6d]/35 shadow-sm relative">
+              <div className="flex items-center justify-between mb-2 pb-2 border-b border-stone-100">
+                <span className="text-[11px] font-serif font-semibold tracking-widest text-[#9e7631] uppercase">
                   {showId && "SURAT PENGHORMATAN TAMU UNDANGAN"}
                   {showId && showZh && " • "}
-                  {showZh && "貴賓敬邀函"}
+                  {showZh && <span className="font-chinese">貴賓敬邀函</span>}
                 </span>
-                <span className="chinese-seal-red text-xs px-2 py-0.5">
+                <span className="chinese-seal-red text-[11px] px-2 py-0.5">
                   同沾法喜
                 </span>
               </div>
 
-              <div className="text-xs sm:text-sm text-stone-600 font-serif flex items-center gap-2 pl-2">
-                {showId && <span>Kepada Yth. Bapak / Ibu / Saudara/i</span>}
-                {showZh && <span className="font-chinese text-stone-700 font-medium">恭請 尊鑒：</span>}
+              <div className="text-xs text-stone-600 font-serif">
+                {showId && <span>Kepada Yth. Bapak / Ibu / Saudara/i:</span>}
+                {showZh && <span className="font-chinese text-stone-700 ml-1">恭請 尊鑒：</span>}
               </div>
 
-              <div className="text-2xl sm:text-3xl font-serif font-bold text-red-950 tracking-wide my-2 pl-2">
+              <div className="text-xl sm:text-2xl font-serif font-bold text-[#7c1818] tracking-wide my-1.5">
                 {guestName || "Saudara Se-Dharma & Umat Terkasih"}
               </div>
 
-              <div className="text-xs sm:text-sm text-stone-700 leading-relaxed font-serif mt-2 space-y-1 pl-2">
+              <div className="text-xs sm:text-sm text-stone-600 font-serif leading-relaxed">
                 {showId && (
                   <p>
                     Merupakan berkah dan kehormatan yang mendalam bagi segenap pengurus dan panitia untuk menyambut kehadiran Anda dalam Malam Puncak Peringatan 20 Tahun Kuang Hang Fo Thang.
                   </p>
                 )}
                 {showZh && (
-                  <p className="font-chinese text-xs sm:text-sm text-stone-600">
+                  <p className="font-chinese text-xs text-stone-500 mt-1">
                     廣航佛堂全體同修謹此誠摯奉邀，祈盼撥冗光臨，共沐法雨天恩。
                   </p>
                 )}
               </div>
 
-              <div className="mt-4 pt-3 border-t border-amber-200/80 flex flex-wrap items-center justify-between text-xs sm:text-sm text-stone-700 gap-3 font-serif px-2">
-                <div className="flex items-center gap-2 text-amber-950 font-medium">
-                  <Calendar className="w-4 h-4 text-amber-700 shrink-0" />
-                  <span>
-                    {showId && "Sabtu, 14 Nov 2026 • 19.00 WIB"}
-                    {showId && showZh && " "}
-                    {showZh && <span className="font-chinese">（2026年11月14日）</span>}
-                  </span>
+              <div className="mt-4 pt-3 border-t border-stone-100 flex flex-wrap items-center justify-between text-xs text-stone-600 font-serif gap-2">
+                <div className="flex items-center gap-1.5 text-[#7c1818] font-medium">
+                  <Calendar className="w-3.5 h-3.5" />
+                  <span>{cms.event.dateTextId} • {cms.event.timeTextId}</span>
                 </div>
-                <div className="flex items-center gap-2 text-stone-600">
-                  <MapPin className="w-4 h-4 text-red-800 shrink-0" />
-                  <span>
-                    Palmerah Utara III No. 186A
-                    {showZh && <span className="font-chinese"> • 巴美拉</span>}
-                  </span>
+                <div className="flex items-center gap-1.5">
+                  <MapPin className="w-3.5 h-3.5 text-stone-500" />
+                  <span>{cms.event.address}</span>
                 </div>
               </div>
+            </div>
+
+            {/* Quick Action Navigation Buttons */}
+            <div className="flex flex-wrap items-center gap-3 mt-6">
+              <a
+                href="#rsvp"
+                className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-[#7c1818] hover:bg-[#681313] text-[#fbf5e8] font-serif font-medium text-xs sm:text-sm shadow-xs transition cursor-pointer"
+              >
+                <span>Konfirmasi Kehadiran (RSVP)</span>
+                {showZh && <span className="font-chinese opacity-80 text-xs">回函</span>}
+              </a>
+              <a
+                href="#sejarah"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white hover:bg-stone-50 text-stone-800 font-serif font-medium text-xs sm:text-sm border border-stone-200 transition cursor-pointer"
+              >
+                <span>Napak Tilas 20 Tahun</span>
+                <ArrowDown className="w-3.5 h-3.5 text-stone-500" />
+              </a>
             </div>
 
           </div>
 
-          {/* Right Column: Hero Archival Photo in Museum Frame */}
+          {/* Right Column: Hero Archival Photo in Museum Passe-Partout */}
           <div className="lg:col-span-5 flex flex-col items-center">
             
-            <div className="relative w-full rounded-2xl overflow-hidden bg-stone-900 shadow-2xl border-4 border-[#faf7f2] ring-1 ring-amber-400/40 group">
-              <div className="relative aspect-[4/5] sm:aspect-[3/4] w-full">
+            <div className="relative w-full rounded-2xl overflow-hidden bg-white p-3 shadow-md border border-[#dfba6d]/30 group">
+              <div className="relative aspect-[4/5] sm:aspect-[3/4] w-full rounded-xl overflow-hidden bg-stone-900">
                 <Image
-                  src="/images/guang-hang-15.jpg"
+                  src={heroImg}
                   alt="Altar Agung Kuang Hang Fo Thang"
                   fill
                   priority
-                  className="object-cover group-hover:scale-105 transition-transform duration-700"
+                  className="object-cover group-hover:scale-103 transition-transform duration-700"
+                  unoptimized={heroImg.startsWith("http")}
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-stone-950/80 via-transparent to-black/20" />
-
-                {/* Archival Badge */}
-                <div className="absolute top-4 left-4">
-                  <div className="px-3 py-1 rounded bg-black/60 backdrop-blur-md border border-amber-400/30 text-amber-200 text-xs font-chinese tracking-widest">
+                
+                {/* Clean Archival Badge */}
+                <div className="absolute top-3 left-3">
+                  <span className="px-2.5 py-1 rounded bg-[#211c19]/80 backdrop-blur-sm border border-white/20 text-[#fbf5e8] text-[11px] font-chinese tracking-widest">
                     廣航聖壇 • 2006安座
-                  </div>
+                  </span>
                 </div>
+              </div>
 
-                {/* Museum Photo Caption Plate - Bilingual */}
-                <div className="absolute bottom-4 inset-x-4 p-4 rounded-xl bg-[#1c1815]/95 border border-amber-500/40 backdrop-blur-md text-stone-200">
-                  <div className="flex items-center justify-between mb-1">
-                    <span className="text-xs text-amber-300 font-serif uppercase tracking-wider font-semibold">
-                      {showId && "Altar Agung Kuang Hang"}
-                      {showId && showZh && " • "}
-                      {showZh && "廣航聖壇大殿"}
-                    </span>
-                    <span className="text-xs text-stone-300">12 Nov 2006</span>
-                  </div>
-                  {showId && (
-                    <p className="text-xs sm:text-sm font-serif font-light text-stone-200 leading-snug">
-                      Pusat spiritual pembinaan kebajikan dan persaudaraan se-dharma di Palmerah Utara.
-                    </p>
-                  )}
-                  {showZh && (
-                    <p className="text-xs font-chinese text-stone-300 mt-1">
-                      立足巴美拉，開拓萬家光明，度化十方有緣善信回歸覺路。
-                    </p>
-                  )}
+              {/* Museum Photo Caption Plate */}
+              <div className="p-3 text-stone-800">
+                <div className="flex items-center justify-between text-xs font-serif mb-1">
+                  <span className="font-semibold text-[#7c1818]">
+                    {showId && "Altar Agung Kuang Hang Fo Thang"}
+                    {showId && showZh && " • "}
+                    {showZh && <span className="font-chinese font-normal">廣航聖壇大殿</span>}
+                  </span>
+                  <span className="text-stone-500 text-[11px]">12 Nov 2006</span>
                 </div>
+                {showId && (
+                  <p className="text-xs text-stone-600 font-serif leading-snug">
+                    Pusat spiritual pembinaan kebajikan dan persaudaraan se-dharma di Palmerah Utara.
+                  </p>
+                )}
+                {showZh && (
+                  <p className="font-chinese text-[11px] text-stone-500 mt-0.5">
+                    立足巴美拉，開拓萬家光明，度化十方有緣善信回歸覺路。
+                  </p>
+                )}
               </div>
             </div>
 
-            {/* Traditional Auspicious Scroll Ribbon */}
-            <div className="w-full mt-4 flex items-center justify-center gap-3 text-xs text-stone-600 font-serif">
-              <span className="text-amber-700">❖</span>
-              <span>廣結善緣 • 航向光明 • 二十載同舟共濟</span>
-              <span className="text-amber-700">❖</span>
+            {/* Commemorative Ribbon */}
+            <div className="w-full mt-3 text-center text-[11px] text-stone-500 font-serif tracking-wider">
+              廣結善緣 • 航向光明 • 廿載同舟共濟
             </div>
 
           </div>
 
         </div>
 
-        {/* Antique Celestial Solar Countdown - Fully Bilingual */}
-        <div className="relative p-6 sm:p-8 rounded-2xl bg-gradient-to-b from-[#250d0d] via-[#1a0707] to-[#140505] text-stone-100 border border-amber-500/30 shadow-2xl overflow-hidden">
-          
-          <div className="absolute -top-12 -right-12 w-48 h-48 rounded-full bg-amber-500/10 filter blur-2xl pointer-events-none" />
-          
-          <div className="flex flex-col md:flex-row items-center justify-between gap-6 relative z-10">
+        {/* Clean Typographic Countdown Card */}
+        <div className="bg-[#ffffff] p-6 sm:p-8 rounded-2xl border border-[#dfba6d]/30 shadow-sm relative">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
             
             <div className="text-center md:text-left">
-              <div className="flex items-center gap-2 text-xs uppercase tracking-widest text-amber-300 font-semibold mb-2">
-                <Clock className="w-4 h-4 text-amber-400" />
+              <div className="flex items-center justify-center md:justify-start gap-2 text-xs font-serif font-semibold uppercase tracking-wider text-[#9e7631] mb-1.5">
+                <Clock className="w-3.5 h-3.5 text-[#9e7631]" />
                 <span>
-                  {showId && "Menghitung Hari Menuju Malam Peringatan"}
+                  {showId && "Hitung Mundur Menuju Malam Syukur"}
                   {showId && showZh && " • "}
-                  {showZh && "倒計時迎接感恩之夜"}
+                  {showZh && <span className="font-chinese font-normal">倒計時迎接感恩之夜</span>}
                 </span>
               </div>
-              <h2 className="text-xl sm:text-3xl font-serif font-bold text-amber-100">
-                Sabtu, 14 November 2026 • 19.00 WIB
+              <h2 className="text-xl sm:text-2xl font-serif font-bold text-[#7c1818]">
+                {cms.event.dateTextId} • {cms.event.timeTextId}
               </h2>
-              <div className="text-xs sm:text-sm text-stone-300 mt-2 font-serif space-y-1">
-                {showId && (
-                  <p>Waktu bersama untuk bersyukur, mengenang jejak perintis, dan mempererat tali dharma.</p>
-                )}
-                {showZh && (
-                  <p className="font-chinese text-xs sm:text-sm text-stone-300">
-                    同修相聚感恩回首，共沐法喜，再啟新程。
-                  </p>
-                )}
-              </div>
+              <p className="text-xs sm:text-sm text-stone-600 font-serif mt-1">
+                {showId && "Waktu bersama untuk bersyukur, mengenang jejak perintis, dan mempererat tali dharma."}
+                {showZh && <span className="block font-chinese text-xs text-stone-500">同修相聚感恩回首，共沐法喜，再啟新程。</span>}
+              </p>
             </div>
 
-            {/* Countdown Dials with Bilingual Labels: Hari/天, Jam/時, Menit/分, Detik/秒 */}
+            {/* Countdown Blocks */}
             <div className="grid grid-cols-4 gap-2.5 sm:gap-4 shrink-0">
               {[
                 { labelId: "Hari", labelZh: "天", val: timeLeft.days },
@@ -277,26 +290,22 @@ export default function HeroSection({ guestName }: HeroSectionProps) {
               ].map((item) => (
                 <div
                   key={item.labelId}
-                  className="relative flex flex-col items-center justify-center w-16 sm:w-20 h-20 sm:h-24 rounded-xl bg-gradient-to-b from-[#351212] via-[#240a0a] to-[#160505] border border-amber-400/40 shadow-[0_4px_15px_rgba(0,0,0,0.5)] overflow-hidden text-center group"
+                  className="flex flex-col items-center justify-center w-16 sm:w-20 h-18 sm:h-20 rounded-xl bg-[#faf8f5] border border-[#dfba6d]/30 text-center"
                 >
-                  {/* Top Brass Filigree Bar */}
-                  <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-amber-600 via-amber-300 to-amber-600 opacity-90" />
-                  
-                  <span className="text-2xl sm:text-3xl font-serif font-bold text-amber-200 tracking-tight drop-shadow-[0_2px_4px_rgba(0,0,0,0.8)] pt-1">
+                  <span className="text-2xl sm:text-3xl font-serif font-bold text-[#7c1818] leading-none">
                     {String(item.val).padStart(2, "0")}
                   </span>
                   
-                  <div className="flex items-center justify-center gap-1 text-xs text-stone-200 font-medium mt-1">
+                  <div className="text-[11px] text-stone-600 font-serif font-medium mt-1">
                     {showId && <span>{item.labelId}</span>}
-                    {showId && showZh && <span className="text-amber-400">/</span>}
-                    {showZh && <span className="font-chinese text-amber-300">{item.labelZh}</span>}
+                    {showId && showZh && <span className="text-stone-400">/</span>}
+                    {showZh && <span className="font-chinese text-stone-500">{item.labelZh}</span>}
                   </div>
                 </div>
               ))}
             </div>
 
           </div>
-
         </div>
 
       </div>

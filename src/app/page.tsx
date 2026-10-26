@@ -3,6 +3,7 @@
 import React, { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { LanguageProvider } from "@/context/LanguageContext";
+import { CmsProvider } from "@/context/CmsContext";
 import HeroCover from "@/components/HeroCover";
 import Navbar from "@/components/Navbar";
 import HeroSection from "@/components/HeroSection";
@@ -15,7 +16,6 @@ import DonationSection from "@/components/DonationSection";
 import LocationMap from "@/components/LocationMap";
 import Footer from "@/components/Footer";
 import AudioPlayer from "@/components/AudioPlayer";
-import AmbientLanternCanvas from "@/components/AmbientLanternCanvas";
 
 function InvitationContent() {
   const searchParams = useSearchParams();
@@ -74,9 +74,6 @@ function InvitationContent() {
       {/* Floating Audio Controller */}
       <AudioPlayer autoPlayTrigger={hasStartedAudio} />
 
-      {/* Ambient Floating Lantern Dust */}
-      {isOpened && <AmbientLanternCanvas />}
-
       {/* Main Invitation Layout - Always rendered for accessibility & SEO */}
       <div className="transition-opacity duration-700">
         <Navbar />
@@ -107,7 +104,9 @@ export default function Page() {
       }
     >
       <LanguageProvider>
-        <InvitationContent />
+        <CmsProvider>
+          <InvitationContent />
+        </CmsProvider>
       </LanguageProvider>
     </Suspense>
   );

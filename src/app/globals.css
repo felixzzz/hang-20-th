@@ -4,13 +4,14 @@
 
 @layer base {
   :root {
-    --color-primary: #831f1f;
-    --color-gold: #c8932c;
-    --color-gold-light: #f3d489;
-    --color-bg: #fdfdfd;
+    --color-primary: #7c1818;
+    --color-primary-dark: #631111;
+    --color-gold: #b38638;
+    --color-gold-light: #dfba6d;
+    --color-bg: #faf8f5;
     --color-surface: #ffffff;
-    --color-text: #1a1614;
-    --color-muted: #5e544b;
+    --color-text: #211c19;
+    --color-muted: #6b635b;
   }
 
   html {
@@ -23,130 +24,76 @@
     background-color: var(--color-bg);
     color: var(--color-text);
     overflow-x: hidden;
-    /* Subtle Xuan rice paper texture */
-    background-image: radial-gradient(rgba(200, 147, 44, 0.04) 1px, transparent 0);
-    background-size: 24px 24px;
   }
 
   ::selection {
-    background-color: #f5dc99;
-    color: #6e1c1c;
+    background-color: #f7e6c4;
+    color: #681313;
   }
 }
 
-/* Traditional Oriental Text and Border Utilities */
+/* Traditional Oriental Text */
 .writing-vertical-rl {
   writing-mode: vertical-rl;
   text-orientation: mixed;
 }
 
-/* Authentic Cinnabar Seal Stamp (朱文/白文印章) */
+/* Authentic Restrained Cinnabar Seal Stamp (朱文印章) */
 .chinese-seal-red {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  border: 1.5px solid #9e2222;
+  border: 1px solid #9e2222;
   color: #9e2222;
-  background-color: rgba(158, 34, 34, 0.06);
+  background-color: rgba(158, 34, 34, 0.05);
   font-family: var(--font-noto-serif-sc), serif;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  border-radius: 4px;
-  box-shadow: inset 0 0 0 1px rgba(158, 34, 34, 0.2);
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  border-radius: 3px;
+  line-height: 1.2;
 }
 
+/* Solid Cinnabar Seal (白文印章) */
 .chinese-seal-filled {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background-color: #831f1f;
-  color: #f7e3af;
+  background-color: #7c1818;
+  color: #fbf5e8;
   font-family: var(--font-noto-serif-sc), serif;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  border-radius: 4px;
-  border: 1px solid #c8932c;
-  box-shadow: inset 0 0 4px rgba(200, 147, 44, 0.3), 0 2px 6px rgba(0, 0, 0, 0.25);
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  border-radius: 3px;
+  border: 1px solid #dfba6d;
+  line-height: 1.2;
 }
 
-/* Traditional Imperial Corner Bracket Ornament (祥雲回紋角飾) */
-.corner-ornament-tl {
-  position: absolute;
-  top: 12px;
-  left: 12px;
-  width: 16px;
-  height: 16px;
-  border-top: 1.5px solid #c8932c;
-  border-left: 1.5px solid #c8932c;
-  pointer-events: none;
-}
-.corner-ornament-tr {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  width: 16px;
-  height: 16px;
-  border-top: 1.5px solid #c8932c;
-  border-right: 1.5px solid #c8932c;
-  pointer-events: none;
-}
-.corner-ornament-bl {
-  position: absolute;
-  bottom: 12px;
-  left: 12px;
-  width: 16px;
-  height: 16px;
-  border-bottom: 1.5px solid #c8932c;
-  border-left: 1.5px solid #c8932c;
-  pointer-events: none;
-}
-.corner-ornament-br {
-  position: absolute;
-  bottom: 12px;
-  right: 12px;
-  width: 16px;
-  height: 16px;
-  border-bottom: 1.5px solid #c8932c;
-  border-right: 1.5px solid #c8932c;
-  pointer-events: none;
+/* Archival Monograph Card */
+.archival-card {
+  background-color: #ffffff;
+  border: 1px solid rgba(179, 134, 56, 0.22);
+  box-shadow: 0 4px 20px -2px rgba(33, 29, 26, 0.05);
 }
 
-/* Gold Hairline Dual Border for Commemorative Plates */
-.border-gold-double {
-  border: 3px double rgba(200, 147, 44, 0.45);
-}
-
-/* Authentic Parchment / Rice Paper Card */
-.xuan-paper-card {
-  background-color: #faf7f2;
-  background-image: 
-    radial-gradient(#e2d5c3 0.75px, transparent 0.75px),
-    radial-gradient(#eedfce 0.75px, #faf7f2 0.75px);
-  background-size: 28px 28px;
-  background-position: 0 0, 14px 14px;
-}
-
-/* Hanging Sandalwood / Paper Prayer Slip Styling (祈願箋 / 祈願牌) */
+/* Prayer Slip Styling (祈願箋 / 祈願木牌) */
 .prayer-slip-card {
   background: #ffffff;
-  border: 1px solid rgba(200, 147, 44, 0.25);
-  box-shadow: 0 2px 8px rgba(30, 26, 23, 0.04);
-  position: relative;
+  border: 1px solid rgba(179, 134, 56, 0.2);
+  box-shadow: 0 2px 10px rgba(33, 29, 26, 0.04);
+  transition: all 0.25s ease-out;
+}
+.prayer-slip-card:hover {
+  border-color: rgba(179, 134, 56, 0.4);
+  box-shadow: 0 6px 16px rgba(33, 29, 26, 0.08);
 }
 
-/* Elegant glass effect */
-.glass-panel {
-  background: rgba(250, 247, 242, 0.88);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(200, 147, 44, 0.25);
+/* Hide scrollbar for clean horizontal ribbon */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
 }
-
-.glass-panel-dark {
-  background: rgba(28, 22, 20, 0.92);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(200, 147, 44, 0.3);
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
 /* Custom scrollbar */
@@ -154,12 +101,12 @@
   width: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #f4eee4;
+  background: #f3efe6;
 }
 ::-webkit-scrollbar-thumb {
-  background: #c8932c;
+  background: #b38638;
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #831f1f;
+  background: #7c1818;
 }

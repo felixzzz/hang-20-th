@@ -18,7 +18,6 @@ export default function AudioPlayer({ autoPlayTrigger }: AudioPlayerProps) {
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [isReady, setIsReady] = useState<boolean>(false);
   const playerRef = useRef<any>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     // Load YouTube Iframe API
@@ -116,32 +115,32 @@ export default function AudioPlayer({ autoPlayTrigger }: AudioPlayerProps) {
       </div>
 
       {/* Floating Audio Controller */}
-      <div className="fixed bottom-6 right-6 z-50 flex items-center gap-2">
+      <div className="fixed bottom-6 right-6 z-40 flex items-center gap-2">
         <button
           onClick={togglePlay}
           aria-label={isPlaying ? "Matikan Musik" : "Putar Musik"}
-          className={`group flex items-center gap-2.5 px-3 py-2.5 rounded-full shadow-xl border backdrop-blur-md transition-all duration-300 cursor-pointer ${
+          className={`group flex items-center gap-2 px-3 py-2 rounded-full shadow-md border backdrop-blur-md transition-all duration-300 cursor-pointer ${
             isPlaying
-              ? "bg-[#831f1f]/95 text-amber-200 border-amber-400/60 shadow-red-950/30"
-              : "bg-[#faf7f2]/95 text-stone-800 border-stone-300 hover:border-amber-600"
+              ? "bg-[#7c1818]/95 text-[#fbf5e8] border-[#dfba6d]/50"
+              : "bg-white/90 text-stone-700 border-stone-200 hover:border-[#dfba6d]"
           }`}
         >
           <div
-            className={`w-7 h-7 rounded-full flex items-center justify-center transition-transform duration-700 ${
-              isPlaying ? "animate-spin-slow bg-amber-500 text-red-950" : "bg-stone-200 text-stone-600"
+            className={`w-6 h-6 rounded-full flex items-center justify-center transition-transform duration-700 ${
+              isPlaying ? "animate-spin-slow bg-[#dfba6d] text-[#7c1818]" : "bg-stone-100 text-stone-600"
             }`}
           >
-            <Music2 className="w-3.5 h-3.5" />
+            <Music2 className="w-3 h-3" />
           </div>
 
-          <span className="text-xs font-serif font-medium tracking-wide pr-1 hidden sm:inline">
-            {isPlaying ? "Musik Khidmat • 梵音法樂" : "Putar Musik • 播放樂曲"}
+          <span className="text-[11px] font-serif font-medium tracking-wide pr-1 hidden sm:inline">
+            {isPlaying ? "Musik Khidmat • 梵音" : "Putar Musik • 樂曲"}
           </span>
 
           {isPlaying ? (
-            <Volume2 className="w-4 h-4 text-amber-300 animate-pulse" />
+            <Volume2 className="w-3.5 h-3.5 text-[#dfba6d]" />
           ) : (
-            <VolumeX className="w-4 h-4 text-stone-400 group-hover:text-stone-700" />
+            <VolumeX className="w-3.5 h-3.5 text-stone-400 group-hover:text-stone-700" />
           )}
         </button>
       </div>

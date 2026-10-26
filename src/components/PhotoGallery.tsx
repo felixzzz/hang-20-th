@@ -2,19 +2,25 @@
 
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
-import { galleryItems, GalleryItem } from "@/data/gallery";
+import { galleryItems } from "@/data/gallery";
+import { GalleryPhotoItem } from "@/types/cms";
 import { X, ChevronLeft, ChevronRight, Maximize2 } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
+import { useCms } from "@/context/CmsContext";
 
 export default function PhotoGallery() {
   const { showId, showZh } = useLanguage();
+  const { cms } = useCms();
+  const allGalleryItems: GalleryPhotoItem[] =
+    cms.gallery && cms.gallery.length > 0 ? cms.gallery : (galleryItems as GalleryPhotoItem[]);
+
   const [filter, setFilter] = useState<"all" | "sejarah" | "kegiatan" | "kebersamaan">("all");
-  const [selectedPhoto, setSelectedPhoto] = useState<GalleryItem | null>(null);
+  const [selectedPhoto, setSelectedPhoto] = useState<GalleryPhotoItem | null>(null);
 
   const filteredItems =
     filter === "all"
-      ? galleryItems
-      : galleryItems.filter((item) => item.category === filter);
+      ? allGalleryItems
+      : allGalleryItems.filter((item) => item.category === filter);
 
   const handleNext = () => {
     if (!selectedPhoto) return;
@@ -45,200 +51,155 @@ export default function PhotoGallery() {
     <section id="galeri" className="py-16 sm:py-24 px-4 sm:px-6 relative">
       <div className="max-w-6xl mx-auto">
         
-        {/* Section Header - Bilingual */}
+        {/* Section Header */}
         <div className="flex flex-col items-center text-center mb-10">
-          <h2 className="text-3xl sm:text-5xl font-chinese font-bold text-red-950 mb-2">
+          <span className="text-xs font-serif tracking-[0.25em] text-[#9e7631] uppercase mb-1 font-semibold">
+            Dokumentasi Foto Dua Dasawarsa
+          </span>
+          <h2 className="text-3xl sm:text-5xl font-chinese font-bold text-[#7c1818] mb-2">
             歲月長廊 • 影像典藏
           </h2>
-          <div className="text-sm sm:text-base font-serif font-semibold text-amber-900 mb-2">
-            {showId && "Dokumentasi Foto Dua Dasawarsa"}
-            {showId && showZh && " • "}
-            {showZh && "廿載影像珍藏"}
+          <div className="text-sm font-serif text-stone-600 max-w-lg">
+            {showId && (
+              <p>
+                Setiap bingkai foto menyimpan jejak dedikasi, senyuman umat, dan limpahan berkah Tian En Shi De yang abadi.
+              </p>
+            )}
+            {showZh && (
+              <p className="font-chinese text-xs sm:text-sm text-stone-500 mt-1">
+                每一張泛黃相片，皆銘刻著道親之赤誠奉獻與天恩師德之浩瀚加被。
+              </p>
+            )}
           </div>
-          {showId && (
-            <p className="text-sm sm:text-base font-serif text-stone-700 max-w-lg">
-              Setiap bingkai foto menyimpan jejak dedikasi, senyuman umat, dan limpahan berkah Tian En Shi De yang abadi.
-            </p>
-          )}
-          {showZh && (
-            <p className="font-chinese text-xs sm:text-sm text-stone-600 max-w-lg mt-1">
-              每一張泛黃相片，皆銘刻著道親之赤誠奉獻與天恩師德之浩瀚加被。
-            </p>
-          )}
         </div>
 
-        {/* Exhibition Room Filter Tabs - Bilingual */}
+        {/* Filter Tabs */}
         <div className="flex flex-wrap items-center justify-center gap-2 mb-10">
           {[
-            { key: "all", labelId: "Semua Foto", labelZh: "全部相片", count: 15 },
-            { key: "sejarah", labelId: "Sejarah", labelZh: "開荒建堂", count: null },
-            { key: "kegiatan", labelId: "Pembinaan", labelZh: "道務班程", count: null },
-            { key: "kebersamaan", labelId: "Kebersamaan", labelZh: "同修法喜", count: null },
+            { id: "all", labelId: "Semua", labelZh: "全部" },
+            { id: "sejarah", labelId: "Sejarah & Pembangunan", labelZh: "創堂歷史" },
+            { id: "kegiatan", labelId: "Kegiatan Pembinaan", labelZh: "道育共修" },
+            { id: "kebersamaan", labelId: "Kebersamaan Umat", labelZh: "道親情誼" },
           ].map((tab) => (
             <button
-              key={tab.key}
-              onClick={() => setFilter(tab.key as any)}
-              className={`px-4 py-2 rounded-full text-xs sm:text-sm font-serif transition-all cursor-pointer flex items-center gap-1.5 ${
-                filter === tab.key
-                  ? "bg-[#831f1f] text-amber-200 shadow-sm border border-amber-400/40"
-                  : "bg-white text-stone-700 hover:text-red-900 border border-stone-200"
+              key={tab.id}
+              onClick={() => setFilter(tab.id as any)}
+              className={`px-4 py-2 rounded-full text-xs font-serif font-medium transition-all cursor-pointer ${
+                filter === tab.id
+                  ? "bg-[#7c1818] text-[#fbf5e8] shadow-xs border border-[#dfba6d]/40"
+                  : "bg-white text-stone-700 hover:bg-stone-50 border border-stone-200"
               }`}
             >
-              {showId && <span>{tab.labelId}</span>}
-              {showId && showZh && <span>•</span>}
-              {showZh && <span className="font-chinese text-xs opacity-90">{tab.labelZh}</span>}
-              {tab.count !== null && (
-                <span className="text-xs opacity-75">({tab.count})</span>
-              )}
+              <span>{showId ? tab.labelId : tab.labelZh}</span>
+              {showId && showZh && <span className="opacity-80 font-chinese ml-1.5">{tab.labelZh}</span>}
             </button>
           ))}
         </div>
 
-        {/* Gallery Grid - Editorial Retrospective Framing with Bilingual Captions */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
+        {/* Photo Grid */}
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
           {filteredItems.map((item) => (
             <div
               key={item.id}
               onClick={() => setSelectedPhoto(item)}
-              className="group relative rounded-xl overflow-hidden bg-stone-900 shadow-sm hover:shadow-2xl transition-all duration-300 cursor-pointer border-4 border-[#faf7f2] ring-1 ring-amber-600/20"
+              className="group relative aspect-[4/3] rounded-xl overflow-hidden bg-stone-100 border border-stone-200 shadow-2xs hover:shadow-md transition-all duration-300 cursor-pointer"
             >
-              <div className="relative aspect-[4/3] w-full overflow-hidden">
-                <Image
-                  src={item.src}
-                  alt={item.title}
-                  fill
-                  sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                  className="object-cover group-hover:scale-105 transition-transform duration-500"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-stone-950/85 via-stone-950/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4 text-white">
-                  <span className="text-xs uppercase tracking-wider text-amber-300 font-serif">
-                    {item.category === "sejarah"
-                      ? "Arsip Sejarah • 歷史建堂"
-                      : item.category === "kegiatan"
-                      ? "Kegiatan Dharma • 道務修持"
-                      : "Keluarga Besar • 同修一家"}
-                  </span>
-                  {showZh && (
-                    <div className="text-sm sm:text-base font-chinese font-bold text-amber-200 mt-0.5">
-                      {item.chineseTitle}
-                    </div>
-                  )}
-                  {showId && (
-                    <p className="text-xs sm:text-sm font-serif text-stone-200 leading-snug">
-                      {item.title}
-                    </p>
-                  )}
-                  <div className="mt-1.5 inline-flex items-center gap-1.5 text-xs text-amber-300 font-serif">
-                    <Maximize2 className="w-3.5 h-3.5" />
-                    <span>
-                      {showId && "Perbesar Foto"}
-                      {showId && showZh && " • "}
-                      {showZh && "檢視全圖"}
-                    </span>
-                  </div>
-                </div>
-              </div>
+              <Image
+                src={item.src}
+                alt={item.title}
+                fill
+                className="object-cover group-hover:scale-105 transition-transform duration-500"
+                sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
+                unoptimized={item.src.startsWith("http")}
+              />
 
-              {/* Minimalist Sub-Caption bar - Bilingual */}
-              <div className="p-3 bg-[#faf7f2] border-t border-amber-900/10">
-                {showZh && (
-                  <div className="text-xs sm:text-sm font-chinese font-bold text-stone-900 truncate">
-                    {item.chineseTitle}
-                  </div>
-                )}
-                {showId && (
-                  <div className="text-xs font-serif text-stone-700 truncate mt-0.5">
-                    {item.title}
-                  </div>
-                )}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-3 text-[#fbf5e8]">
+                <div className="flex items-center justify-between mb-1">
+                  <span className="text-[10px] uppercase tracking-wider font-serif text-[#dfba6d]">
+                    {item.category}
+                  </span>
+                  <Maximize2 className="w-3.5 h-3.5 text-[#dfba6d]" />
+                </div>
+                <h4 className="text-xs font-serif font-medium leading-snug line-clamp-1">
+                  {showId && item.title}
+                  {showZh && <span className="block font-chinese text-[11px] font-normal">{item.chineseTitle}</span>}
+                </h4>
               </div>
             </div>
           ))}
         </div>
 
-      </div>
-
-      {/* Lightbox Modal - Bilingual */}
-      {selectedPhoto && (
-        <div
-          role="dialog"
-          aria-modal="true"
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/90 p-4 backdrop-blur-md animate-fade-in"
-          onClick={() => setSelectedPhoto(null)}
-        >
+        {/* Lightbox Modal */}
+        {selectedPhoto && (
           <div
-            className="relative max-w-4xl w-full bg-[#1c1815] rounded-2xl overflow-hidden border border-amber-500/40 shadow-2xl"
-            onClick={(e) => e.stopPropagation()}
+            className="fixed inset-0 z-50 bg-black/90 backdrop-blur-sm flex items-center justify-center p-4"
+            onClick={() => setSelectedPhoto(null)}
           >
-            {/* Close button */}
-            <button
-              onClick={() => setSelectedPhoto(null)}
-              className="absolute top-4 right-4 z-20 p-2 rounded-full bg-black/60 text-stone-300 hover:text-white transition-colors cursor-pointer"
-              aria-label="Tutup • 關閉"
+            <div
+              className="relative max-w-4xl w-full bg-[#1c1815] rounded-2xl overflow-hidden border border-[#dfba6d]/30"
+              onClick={(e) => e.stopPropagation()}
             >
-              <X className="w-5 h-5" />
-            </button>
-
-            {/* Main Picture */}
-            <div className="relative aspect-[16/10] sm:aspect-[16/9] w-full bg-stone-950">
-              <Image
-                src={selectedPhoto.src}
-                alt={selectedPhoto.title}
-                fill
-                priority
-                className="object-contain"
-              />
-            </div>
-
-            {/* Lightbox Footer & Nav - Bilingual */}
-            <div className="p-4 sm:p-6 bg-[#181412] text-stone-200 border-t border-amber-500/20 flex flex-col sm:flex-row items-center justify-between gap-4">
-              <div>
-                <span className="text-xs uppercase tracking-wider text-amber-300 font-serif font-semibold">
-                  Foto Dokumentasi 20 Tahun Kuang Hang • 廣航廿載攝影典藏
-                </span>
-                {showZh && (
-                  <div className="text-base sm:text-lg font-chinese font-bold text-amber-200 mt-0.5">
-                    {selectedPhoto.chineseTitle}
-                  </div>
-                )}
-                {showId && (
-                  <h4 className="text-xs sm:text-sm font-serif text-stone-300">
-                    {selectedPhoto.title}
-                  </h4>
-                )}
+              {/* Top Bar */}
+              <div className="flex items-center justify-between p-4 border-b border-white/10 text-[#fbf5e8]">
+                <div>
+                  <h3 className="font-serif font-bold text-sm sm:text-base">
+                    {showId && selectedPhoto.title}
+                    {showId && showZh && selectedPhoto.chineseTitle && " • "}
+                    {showZh && <span className="font-chinese text-amber-300">{selectedPhoto.chineseTitle}</span>}
+                  </h3>
+                  <span className="text-[11px] font-serif text-[#dfba6d] uppercase tracking-widest">
+                    廣航佛堂典藏紀錄 • {selectedPhoto.category}
+                  </span>
+                </div>
+                <button
+                  onClick={() => setSelectedPhoto(null)}
+                  className="p-1.5 rounded-full bg-white/10 hover:bg-white/20 text-white transition-colors cursor-pointer"
+                  aria-label="Tutup Tampilan Foto"
+                >
+                  <X className="w-5 h-5" />
+                </button>
               </div>
 
-              <div className="flex items-center gap-2">
+              {/* Photo Display */}
+              <div className="relative aspect-[16/10] sm:aspect-[16/9] w-full bg-black">
+                <Image
+                  src={selectedPhoto.src}
+                  alt={selectedPhoto.title}
+                  fill
+                  className="object-contain"
+                  sizes="100vw"
+                  priority
+                  unoptimized={selectedPhoto.src.startsWith("http")}
+                />
+              </div>
+
+              {/* Controls */}
+              <div className="flex items-center justify-between p-3 bg-[#161311] border-t border-white/10 text-stone-300">
                 <button
                   onClick={handlePrev}
-                  className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-stone-300 border border-white/10 text-xs font-serif transition-colors cursor-pointer"
-                  aria-label="Foto Sebelumnya"
+                  className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-xs font-serif transition-colors cursor-pointer"
                 >
                   <ChevronLeft className="w-4 h-4" />
-                  <span>
-                    {showId && "Sebelumnya"}
-                    {showId && showZh && " • "}
-                    {showZh && "上一張"}
-                  </span>
+                  <span>Foto Sebelumnya</span>
                 </button>
+
+                <span className="text-xs font-serif text-stone-400">
+                  {filteredItems.findIndex((p) => p.id === selectedPhoto.id) + 1} / {filteredItems.length}
+                </span>
+
                 <button
                   onClick={handleNext}
-                  className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-stone-300 border border-white/10 text-xs font-serif transition-colors cursor-pointer"
-                  aria-label="Foto Selanjutnya"
+                  className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-xs font-serif transition-colors cursor-pointer"
                 >
-                  <span>
-                    {showId && "Selanjutnya"}
-                    {showId && showZh && " • "}
-                    {showZh && "下一張"}
-                  </span>
+                  <span>Foto Selanjutnya</span>
                   <ChevronRight className="w-4 h-4" />
                 </button>
               </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
 
+      </div>
     </section>
   );
 }
