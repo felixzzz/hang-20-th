@@ -51,6 +51,20 @@ export async function POST(request: Request) {
     // Prepend to top of list
     cachedWishes = [newWish, ...cachedWishes];
 
+    // Forward to Google Sheets Webhook if configured
+    const webhookUrl = process.env.GOOGLE_SHEET_WEBHOOK_URL;
+    if (webhookUrl) {
+      try {
+        await fetch(webhookUrl, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(newWish),
+        });
+      } catch (sheetError) {
+        console.error("Gagal mengirim ke Google Sheets:", sheetError);
+      }
+    }
+
     return NextResponse.json({
       success: true,
       message: "Konfirmasi kehadiran dan doa restu berhasil dikirimkan.",

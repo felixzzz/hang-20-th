@@ -24,14 +24,6 @@ export default function EventDetails() {
     setTimeout(() => setCopied(false), 2500);
   };
 
-  const scheduleItems = [
-    { time: "18.30 - 19.00 WIB", label: "Penyambutan Umat & Registrasi Tamu", desc: "Ramah tamah hangat & pengisian buku tamu kenangan" },
-    { time: "19.00 - 19.30 WIB", label: "Kebaktian Syukur & Pembukaan Resmi", desc: "Doa syukur atas Tian En Shi De & sambutan panitia" },
-    { time: "19.30 - 20.15 WIB", label: "Refleksi Kilas Balik 20 Tahun", desc: "Napak tilas perintisan wadah & wejangan welas asih pendahulu" },
-    { time: "20.15 - 20.45 WIB", label: "Persembahan Pujian & Pemotongan Kue Syukur", desc: "Momen puncak perayaan 20 tahun Kuang Hang" },
-    { time: "20.45 - Selesai", label: "Jamuan Kasih & Foto Bersama", desc: "Santap malam bersama dalam jalinan jodoh kebajikan" },
-  ];
-
   return (
     <section id="acara" className="py-16 sm:py-20 px-4 sm:px-6 relative">
       <div className="max-w-4xl mx-auto">
@@ -142,42 +134,6 @@ export default function EventDetails() {
                 </>
               )}
             </button>
-          </div>
-        </div>
-
-        {/* Detailed Timeline Schedule */}
-        <div className="rounded-3xl bg-white border border-fothang-gold-200 p-6 sm:p-8 shadow-sm">
-          <h3 className="text-xl font-serif font-bold text-fothang-red-950 mb-6 flex items-center gap-2">
-            <Clock className="w-5 h-5 text-fothang-gold-600" />
-            <span>Susunan Acara (Rundown)</span>
-          </h3>
-
-          <div className="space-y-4">
-            {scheduleItems.map((item, index) => (
-              <div
-                key={index}
-                className="flex flex-col sm:flex-row sm:items-center justify-between p-3.5 sm:p-4 rounded-2xl bg-fothang-ivory/50 border border-stone-200/60 hover:border-fothang-gold-300 transition-colors"
-              >
-                <div className="flex items-start sm:items-center gap-3">
-                  <span className="w-7 h-7 rounded-full bg-fothang-red-100 text-fothang-red-800 text-xs font-bold flex items-center justify-center shrink-0">
-                    {index + 1}
-                  </span>
-                  <div>
-                    <h4 className="text-sm font-semibold text-stone-900">
-                      {item.label}
-                    </h4>
-                    <p className="text-xs text-stone-500 mt-0.5">
-                      {item.desc}
-                    </p>
-                  </div>
-                </div>
-                <div className="mt-2 sm:mt-0 text-left sm:text-right">
-                  <span className="inline-block px-3 py-1 rounded-full bg-fothang-gold-100/80 text-fothang-gold-800 text-xs font-semibold">
-                    {item.time}
-                  </span>
-                </div>
-              </div>
-            ))}
           </div>
         </div>
       </div>

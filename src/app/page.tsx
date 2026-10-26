@@ -10,6 +10,7 @@ import EventDetails from "@/components/EventDetails";
 import HistoryTimeline from "@/components/HistoryTimeline";
 import PhotoGallery from "@/components/PhotoGallery";
 import RsvpSection from "@/components/RsvpSection";
+import DonationSection from "@/components/DonationSection";
 import LocationMap from "@/components/LocationMap";
 import ShareGenerator from "@/components/ShareGenerator";
 import Footer from "@/components/Footer";
@@ -58,6 +59,7 @@ function InvitationContent() {
         <HistoryTimeline />
         <PhotoGallery />
         <RsvpSection initialGuestName={guestName === "Bapak / Ibu / Saudara/i" ? "" : guestName} />
+        <DonationSection />
         <LocationMap />
         <ShareGenerator />
         <Footer onReopenEnvelope={handleReopen} />

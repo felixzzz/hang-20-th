@@ -32,16 +32,54 @@ Web undangan resmi peringatan 20 tahun peresmian gedung Kuang Hang Fo Thang (12 
    - Pilihan jumlah orang yang hadir.
    - Kolom doa restu dan harapan untuk Kuang Hang Fo Thang.
    - Efek selebrasi konfeti saat submit.
-   - Terintegrasi dengan API route `/api/rsvp` + fallback lokal yang otomatis tersimpan.
+   - Terintegrasi dengan endpoint `/api/rsvp` yang otomatis meneruskan data ke **Google Sheets** panitia via Webhook Apps Script (`GOOGLE_SHEET_WEBHOOK_URL`).
+   - Panduan lengkap & kode Apps Script siap pakai tersedia di file [`google-sheets-script.js`](./google-sheets-script.js).
    - Live summary statistik: Jumlah tanggapan, keluarga hadir, dan estimasi total umat.
 
-7. **Petunjuk Denah & Navigasi Lokasi:**
+7. **Tali Kasih & Dana Paramita (随喜功德):**
+   - Bagian khusus tanda kasih / dana kebajikan dengan desain sakral dan bersahaja.
+   - Nomor rekening dapat diubah kapan saja hanya dengan mengedit file [`src/data/donation.ts`](./src/data/donation.ts).
+
+8. **Petunjuk Denah & Navigasi Lokasi:**
    - Terhubung langsung ke titik Google Maps resmi Kuang Hang Fo Thang & Waze.
    - Salin alamat cepat 1-klik.
    - Petunjuk akses KRL (Stasiun Palmerah) dan kendaraan pribadi.
 
-8. **Alat Bantu Panitia (WhatsApp Link Generator):**
+9. **Alat Bantu Panitia (WhatsApp Link Generator):**
    - Panitia cukup mengetik nama tamu untuk langsung membuat URL personal `?to=...` dan menyalin pesan WhatsApp resmi yang sopan.
+
+---
+
+## 📊 Cara Menghubungkan RSVP ke Google Sheets
+
+1. Buat Google Sheet baru di Google Drive Anda.
+2. Buka menu **Extensions (Ekstensi)** > **Apps Script**.
+3. Buka file [`google-sheets-script.js`](./google-sheets-script.js) di repositori ini, salin seluruh kodenya, dan paste ke editor Apps Script.
+4. Klik **Deploy (Terapkan)** > **New deployment (Penerapan baru)** > pilih **Web app**.
+5. Atur **Who has access** ke **Anyone (Siapa saja)**.
+6. Salin Web App URL (berakhiran `/exec`).
+7. Masukkan URL tersebut ke:
+   - Lokal: tambahkan di `.env.local`:
+     ```env
+     GOOGLE_SHEET_WEBHOOK_URL=https://script.google.com/macros/s/.../exec
+     ```
+   - Di Vercel: masukkan ke **Project Settings > Environment Variables > GOOGLE_SHEET_WEBHOOK_URL**.
+
+---
+
+## 💳 Cara Memperbarui Nomor Rekening (Jika Sudah Ada)
+
+Buka file [`src/data/donation.ts`](./src/data/donation.ts):
+```typescript
+export const donationConfig: DonationAccount = {
+  bankName: "BCA",
+  accountNumber: "1234567890",
+  accountHolder: "Kuang Hang Fo Thang",
+  isReady: true, // Ubah ke true jika sudah aktif
+  notes: "Mohon cantumkan keterangan: 20th Kuang Hang",
+};
+```
+Nomor rekening otomatis akan tampil lengkap dengan tombol salin 1-klik!
 
 ---
 

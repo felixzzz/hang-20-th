@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Calendar, HeartHandshake, History, Image as ImageIcon, MapPin, Sparkles, Menu, X } from "lucide-react";
+import { Calendar, HeartHandshake, History, Image as ImageIcon, MapPin, Sparkles, Gift, Menu, X } from "lucide-react";
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -20,6 +20,7 @@ export default function Navbar() {
     { name: "Acara", href: "#acara", icon: Calendar },
     { name: "Sejarah", href: "#sejarah", icon: History },
     { name: "Galeri", href: "#galeri", icon: ImageIcon },
+    { name: "Tali Kasih", href: "#tali-kasih", icon: Gift },
     { name: "Lokasi", href: "#lokasi", icon: MapPin },
     { name: "RSVP & Doa", href: "#rsvp", icon: HeartHandshake, primary: true },
   ];
