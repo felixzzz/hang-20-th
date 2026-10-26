@@ -45,8 +45,8 @@ function InvitationContent() {
   };
 
   const handleReopen = () => {
+    window.scrollTo(0, 0);
     setIsOpened(false);
-    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   return (

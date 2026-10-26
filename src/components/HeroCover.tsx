@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 
 interface HeroCoverProps {
@@ -11,6 +11,13 @@ interface HeroCoverProps {
 
 export default function HeroCover({ guestName, isOpen, onOpen }: HeroCoverProps) {
   const [isOpening, setIsOpening] = useState(false);
+
+  // Reset opening animation state whenever the envelope is closed / reopened
+  useEffect(() => {
+    if (!isOpen) {
+      setIsOpening(false);
+    }
+  }, [isOpen]);
 
   if (isOpen) return null;
 

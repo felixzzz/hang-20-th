@@ -2,8 +2,7 @@
 
 import React from "react";
 import Image from "next/image";
-import Link from "next/link";
-import { Heart, Instagram, MailOpen, ArrowUp, ShieldCheck } from "lucide-react";
+import { Heart, Instagram, MailOpen, ArrowUp } from "lucide-react";
 
 interface FooterProps {
   onReopenEnvelope: () => void;
@@ -85,21 +84,13 @@ export default function Footer({ onReopenEnvelope }: FooterProps) {
           雅加達西區巴美拉北三路186A號
         </p>
 
-        {/* Colophon & Panitia Portal Link */}
-        <div className="pt-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between text-[11px] text-stone-400 font-serif gap-3">
+        {/* Colophon */}
+        <div className="pt-6 border-t border-white/10 flex items-center justify-center text-[11px] text-stone-400 font-serif">
           <div className="flex items-center gap-1.5">
             <span>Dipersembahkan dengan ketulusan oleh</span>
             <Heart className="w-3 h-3 text-red-500 fill-red-500" />
             <span className="text-stone-300">Keluarga Besar Kuang Hang (廣航佛堂闔體)</span>
           </div>
-
-          <Link
-            href="/panitia"
-            className="inline-flex items-center gap-1 text-stone-400 hover:text-amber-300 transition-colors"
-          >
-            <ShieldCheck className="w-3.5 h-3.5" />
-            <span>Portal Panitia • 籌備處登入</span>
-          </Link>
         </div>
 
       </div>

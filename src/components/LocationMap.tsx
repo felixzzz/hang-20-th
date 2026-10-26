@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Navigation, ExternalLink, Check, Car, Train, Building } from "lucide-react";
+import { Navigation, ExternalLink, Check, Building } from "lucide-react";
 
 export default function LocationMap() {
   const [copied, setCopied] = useState(false);
@@ -61,7 +61,7 @@ export default function LocationMap() {
 
           {/* Address Information & Controls - Bilingual */}
           <div className="p-6 sm:p-8">
-            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-6 border-b border-amber-900/15">
+            <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
               <div>
                 <div className="flex items-center gap-2 text-xs font-serif font-bold uppercase text-amber-800 tracking-wider mb-1">
                   <Building className="w-4 h-4 text-red-800" />
@@ -104,43 +104,6 @@ export default function LocationMap() {
                     <span>Salin Alamat • 複製地址</span>
                   )}
                 </button>
-              </div>
-            </div>
-
-            {/* Transport Hints - Bilingual */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-6">
-              <div className="flex items-start gap-3 p-3.5 rounded-xl bg-white/60 border border-amber-900/10">
-                <div className="w-8 h-8 rounded-lg bg-amber-500/10 flex items-center justify-center shrink-0 text-amber-800">
-                  <Train className="w-4 h-4" />
-                </div>
-                <div>
-                  <h4 className="text-xs font-serif font-bold text-stone-900 mb-0.5">
-                    Transportasi Kereta (KRL) • 火車捷運
-                  </h4>
-                  <p className="text-[11px] text-stone-600 font-serif leading-relaxed">
-                    Turun di Stasiun Palmerah. Lokasi hanya berjarak sekitar 800 meter (±3 menit dengan ojek online).
-                  </p>
-                  <p className="text-[10px] font-chinese text-stone-500 mt-0.5">
-                    搭乘電車至 Palmerah 站下車，距離佛堂約800米（步行或車行3分鐘即達）。
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-3 p-3.5 rounded-xl bg-white/60 border border-amber-900/10">
-                <div className="w-8 h-8 rounded-lg bg-amber-500/10 flex items-center justify-center shrink-0 text-amber-800">
-                  <Car className="w-4 h-4" />
-                </div>
-                <div>
-                  <h4 className="text-xs font-serif font-bold text-stone-900 mb-0.5">
-                    Kendaraan Pribadi & Parkir • 自駕與停車
-                  </h4>
-                  <p className="text-[11px] text-stone-600 font-serif leading-relaxed">
-                    Petugas panitia dan keamanan setempat siap mengarahkan ke area parkir yang tertib dan nyaman.
-                  </p>
-                  <p className="text-[10px] font-chinese text-stone-500 mt-0.5">
-                    現場備有專責人員與引導人員協助停車指引，安心便捷。
-                  </p>
-                </div>
               </div>
             </div>
 

@@ -11,7 +11,7 @@ interface RsvpSectionProps {
 
 export default function RsvpSection({ initialGuestName = "" }: RsvpSectionProps) {
   const [name, setName] = useState(initialGuestName);
-  const [status, setStatus] = useState<"hadir" | "tidak_hadir" | "ragu">("hadir");
+  const [status, setStatus] = useState<"hadir" | "tidak_hadir">("hadir");
   const [guests, setGuests] = useState("1");
   const [message, setMessage] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -269,11 +269,11 @@ export default function RsvpSection({ initialGuestName = "" }: RsvpSectionProps)
                 <label className="block text-xs font-serif font-bold uppercase tracking-wider text-stone-800 mb-2">
                   Konfirmasi Kehadiran • 出席意願 <span className="text-red-700">*</span>
                 </label>
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   <button
                     type="button"
                     onClick={() => setStatus("hadir")}
-                    className={`flex flex-col items-center justify-center p-3 rounded-xl border text-xs font-serif font-semibold transition-all cursor-pointer ${
+                    className={`flex flex-col items-center justify-center p-3.5 rounded-xl border text-xs font-serif font-semibold transition-all cursor-pointer ${
                       status === "hadir"
                         ? "bg-[#831f1f] text-amber-200 border-amber-500 shadow-sm"
                         : "bg-white text-stone-700 border-stone-200 hover:bg-stone-50"
@@ -281,38 +281,22 @@ export default function RsvpSection({ initialGuestName = "" }: RsvpSectionProps)
                   >
                     <div className="flex items-center gap-1.5">
                       <CheckCircle2 className="w-3.5 h-3.5 text-amber-300" />
-                      <span>Hadir Bersyukur</span>
+                      <span>Iya, Saya Akan Hadir</span>
                     </div>
-                    <span className="font-chinese text-[11px] opacity-90 mt-0.5">準時出席</span>
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => setStatus("ragu")}
-                    className={`flex flex-col items-center justify-center p-3 rounded-xl border text-xs font-serif font-semibold transition-all cursor-pointer ${
-                      status === "ragu"
-                        ? "bg-amber-700 text-white border-amber-800 shadow-sm"
-                        : "bg-white text-stone-700 border-stone-200 hover:bg-stone-50"
-                    }`}
-                  >
-                    <div className="flex items-center gap-1.5">
-                      <Sparkles className="w-3.5 h-3.5" />
-                      <span>Masih Menyesuaikan</span>
-                    </div>
-                    <span className="font-chinese text-[11px] opacity-90 mt-0.5">待定調整</span>
+                    <span className="font-chinese text-[11px] opacity-90 mt-0.5">準時出席 • 共襄盛舉</span>
                   </button>
 
                   <button
                     type="button"
                     onClick={() => setStatus("tidak_hadir")}
-                    className={`flex flex-col items-center justify-center p-3 rounded-xl border text-xs font-serif font-semibold transition-all cursor-pointer ${
+                    className={`flex flex-col items-center justify-center p-3.5 rounded-xl border text-xs font-serif font-semibold transition-all cursor-pointer ${
                       status === "tidak_hadir"
                         ? "bg-stone-800 text-stone-200 border-stone-900 shadow-sm"
                         : "bg-white text-stone-700 border-stone-200 hover:bg-stone-50"
                     }`}
                   >
-                    <span>Belum Dapat Hadir</span>
-                    <span className="font-chinese text-[11px] opacity-90 mt-0.5">祈願祝福</span>
+                    <span>Maaf, Belum Dapat Hadir</span>
+                    <span className="font-chinese text-[11px] opacity-90 mt-0.5">不克出席 • 祈願祝福</span>
                   </button>
                 </div>
               </div>
