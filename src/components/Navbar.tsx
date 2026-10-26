@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
-import { Sparkles, Calendar, History, Image as ImageIcon, Gift, MapPin, HeartHandshake, Menu, X } from "lucide-react";
+import { HeartHandshake, Menu, X } from "lucide-react";
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -17,26 +17,26 @@ export default function Navbar() {
   }, []);
 
   const navLinks = [
-    { name: "Wejangan", href: "#wejangan" },
-    { name: "Acara & Waktu", href: "#acara" },
-    { name: "Napak Tilas", href: "#sejarah" },
-    { name: "Galeri Kenangan", href: "#galeri" },
-    { name: "Tali Kasih", href: "#tali-kasih" },
-    { name: "Lokasi", href: "#lokasi" },
-    { name: "RSVP & Doa", href: "#rsvp", isAction: true },
+    { name: "Wejangan", zh: "聖訓", href: "#wejangan" },
+    { name: "Acara", zh: "慶典", href: "#acara" },
+    { name: "Napak Tilas", zh: "史話", href: "#sejarah" },
+    { name: "Galeri", zh: "影像", href: "#galeri" },
+    { name: "Tali Kasih", zh: "隨喜", href: "#tali-kasih" },
+    { name: "Lokasi", zh: "座標", href: "#lokasi" },
+    { name: "RSVP & Doa", zh: "回函賜帖", href: "#rsvp", isAction: true },
   ];
 
   return (
     <header className="sticky top-0 z-40 w-full transition-all duration-300 px-3 sm:px-6 pt-3 pb-2">
       <div
-        className={`max-w-6xl mx-auto rounded-full px-5 py-2.5 flex items-center justify-between transition-all duration-300 ${
+        className={`max-w-6xl mx-auto rounded-full px-4 sm:px-6 py-2.5 flex items-center justify-between transition-all duration-300 ${
           scrolled
             ? "bg-[#faf7f2]/95 shadow-[0_10px_30px_rgba(30,26,23,0.08)] border border-amber-600/30 backdrop-blur-md"
             : "bg-[#faf7f2]/80 border border-amber-800/15 backdrop-blur-sm"
         }`}
       >
         {/* Brand with Guang Ji Logo */}
-        <a href="#top" className="flex items-center gap-2.5 group cursor-pointer">
+        <a href="#top" className="flex items-center gap-2.5 group cursor-pointer shrink-0">
           <div className="relative w-9 h-9 shrink-0 group-hover:scale-105 transition-transform">
             <Image
               src="/images/logo-guang-ji.png"
@@ -57,7 +57,7 @@ export default function Navbar() {
           </div>
         </a>
 
-        {/* Desktop Nav - Editorial Typography */}
+        {/* Desktop Nav - Bilingual Editorial Typography */}
         <nav className="hidden md:flex items-center gap-1 lg:gap-2">
           {navLinks.map((link) => {
             if (link.isAction) {
@@ -69,6 +69,9 @@ export default function Navbar() {
                 >
                   <HeartHandshake className="w-3.5 h-3.5 text-amber-300" />
                   <span>{link.name}</span>
+                  <span className="font-chinese text-[10px] opacity-80 border-l border-amber-300/30 pl-1.5 ml-0.5">
+                    {link.zh}
+                  </span>
                 </a>
               );
             }
@@ -77,9 +80,12 @@ export default function Navbar() {
               <a
                 key={link.name}
                 href={link.href}
-                className="px-3 py-1.5 rounded-full text-xs font-serif font-medium text-stone-700 hover:text-red-900 hover:bg-amber-500/10 transition-colors cursor-pointer"
+                className="px-2.5 lg:px-3 py-1 rounded-full text-xs font-serif font-medium text-stone-700 hover:text-red-900 hover:bg-amber-500/10 transition-colors cursor-pointer flex items-center gap-1"
               >
-                {link.name}
+                <span>{link.name}</span>
+                <span className="font-chinese text-[11px] text-stone-600 font-normal">
+                  {link.zh}
+                </span>
               </a>
             );
           })}
@@ -91,7 +97,7 @@ export default function Navbar() {
             href="#rsvp"
             className="px-3 py-1 rounded-full bg-[#831f1f] text-amber-200 text-xs font-serif font-semibold border border-amber-400/40"
           >
-            RSVP
+            RSVP • 賜復
           </a>
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
@@ -112,13 +118,14 @@ export default function Navbar() {
                 key={link.name}
                 href={link.href}
                 onClick={() => setMobileMenuOpen(false)}
-                className={`px-4 py-2.5 rounded-xl text-xs font-serif font-medium transition-colors ${
+                className={`px-4 py-2.5 rounded-xl text-xs font-serif font-medium transition-colors flex items-center justify-between ${
                   link.isAction
-                    ? "bg-[#831f1f] text-amber-200 font-bold mt-1 text-center"
+                    ? "bg-[#831f1f] text-amber-200 font-bold mt-1 text-center justify-center gap-2"
                     : "text-stone-800 hover:bg-amber-500/10"
                 }`}
               >
-                {link.name}
+                <span>{link.name}</span>
+                <span className="font-chinese text-xs opacity-80">{link.zh}</span>
               </a>
             ))}
           </div>

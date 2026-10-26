@@ -135,7 +135,7 @@ export default function AudioPlayer({ autoPlayTrigger }: AudioPlayerProps) {
           </div>
 
           <span className="text-xs font-serif font-medium tracking-wide pr-1 hidden sm:inline">
-            {isPlaying ? "Musik Khidmat" : "Putar Musik"}
+            {isPlaying ? "Musik Khidmat • 梵音法樂" : "Putar Musik • 播放樂曲"}
           </span>
 
           {isPlaying ? (

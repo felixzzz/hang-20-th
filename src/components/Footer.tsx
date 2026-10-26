@@ -38,11 +38,16 @@ export default function Footer({ onReopenEnvelope }: FooterProps) {
 
         <div className="w-20 h-px mx-auto bg-gradient-to-r from-transparent via-amber-500 to-transparent mb-6" />
 
-        <p className="font-serif text-sm sm:text-base text-stone-300 italic max-w-lg mx-auto mb-6 leading-relaxed">
-          &ldquo;Tiada kata yang mampu melukiskan rasa syukur atas Tian En Shi De serta ketulusan seluruh umat yang telah menyatukan hati dalam mengarungi samudra kebajikan selama dua dasawarsa.&rdquo;
-        </p>
+        <div className="max-w-lg mx-auto mb-6 space-y-2">
+          <p className="font-serif text-sm sm:text-base text-stone-300 italic leading-relaxed">
+            &ldquo;Tiada kata yang mampu melukiskan rasa syukur atas Tian En Shi De serta ketulusan seluruh umat yang telah menyatukan hati dalam mengarungi samudra kebajikan selama dua dasawarsa.&rdquo;
+          </p>
+          <p className="font-chinese text-xs sm:text-sm text-amber-300/90 leading-relaxed font-normal">
+            「叩謝天恩師德浩瀚加被，感恩前賢大德至誠護持。廿載同舟普化，萬里慈航不捨眾生。」
+          </p>
+        </div>
 
-        {/* Action Controls */}
+        {/* Action Controls - Bilingual */}
         <div className="flex flex-wrap items-center justify-center gap-3 mb-8">
           <a
             href="https://www.instagram.com/guanghangfotang"
@@ -59,7 +64,7 @@ export default function Footer({ onReopenEnvelope }: FooterProps) {
             className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-serif text-amber-300 transition cursor-pointer"
           >
             <MailOpen className="w-3.5 h-3.5" />
-            <span>Buka Sampul Undangan</span>
+            <span>Buka Sampul Undangan • 重啟禮函</span>
           </button>
 
           <button
@@ -68,13 +73,16 @@ export default function Footer({ onReopenEnvelope }: FooterProps) {
             aria-label="Kembali ke atas"
           >
             <ArrowUp className="w-3.5 h-3.5" />
-            <span>Ke Atas</span>
+            <span>Ke Atas • 頂部</span>
           </button>
         </div>
 
         {/* Address and Sanctuary Notation */}
-        <p className="text-xs text-stone-400 font-serif max-w-sm mx-auto leading-relaxed mb-6">
+        <p className="text-xs text-stone-400 font-serif max-w-sm mx-auto leading-relaxed mb-1">
           Kuang Hang Fo Thang • Jl. Palmerah Utara III No. 186A, Palmerah, Jakarta Barat 11480
+        </p>
+        <p className="text-[11px] font-chinese text-stone-500 mb-6">
+          雅加達西區巴美拉北三路186A號
         </p>
 
         {/* Colophon & Panitia Portal Link */}
@@ -82,7 +90,7 @@ export default function Footer({ onReopenEnvelope }: FooterProps) {
           <div className="flex items-center gap-1.5">
             <span>Dipersembahkan dengan ketulusan oleh</span>
             <Heart className="w-3 h-3 text-red-500 fill-red-500" />
-            <span className="text-stone-300">Keluarga Besar Kuang Hang</span>
+            <span className="text-stone-300">Keluarga Besar Kuang Hang (廣航佛堂闔體)</span>
           </div>
 
           <Link
@@ -90,7 +98,7 @@ export default function Footer({ onReopenEnvelope }: FooterProps) {
             className="inline-flex items-center gap-1 text-stone-400 hover:text-amber-300 transition-colors"
           >
             <ShieldCheck className="w-3.5 h-3.5" />
-            <span>Portal Khusus Panitia</span>
+            <span>Portal Panitia • 籌備處登入</span>
           </Link>
         </div>
 

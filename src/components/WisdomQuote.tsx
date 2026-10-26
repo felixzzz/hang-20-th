@@ -47,10 +47,10 @@ export default function WisdomQuote() {
               </div>
 
               <h2 className="text-2xl sm:text-3xl font-serif font-bold text-red-950">
-                Untaian Wejangan Kebijaksanaan
+                Untaian Wejangan Kebijaksanaan • 茂田師兄聖訓
               </h2>
               <p className="text-xs text-amber-800 font-serif tracking-widest mt-1 uppercase">
-                Suluh Jiwa Perjalanan 20 Tahun Kuang Hang Fo Thang
+                Suluh Jiwa Perjalanan 20 Tahun Kuang Hang Fo Thang • 廿載慧命指路明燈
               </p>
             </div>
 
