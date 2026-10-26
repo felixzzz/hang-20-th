@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { Heart, Instagram, MailOpen, ArrowUp, ShieldCheck } from "lucide-react";
 
@@ -17,9 +18,15 @@ export default function Footer({ onReopenEnvelope }: FooterProps) {
     <footer className="mt-20 bg-gradient-to-b from-[#250d0d] via-[#1a0707] to-[#110404] text-stone-200 border-t border-amber-500/30 pt-16 pb-24 px-4 sm:px-6 relative text-center">
       <div className="max-w-3xl mx-auto">
         
-        {/* Sacred Character Seal Emblem */}
-        <div className="w-12 h-12 rounded-xl bg-[#831f1f] border-2 border-amber-400 text-amber-200 font-chinese font-bold text-2xl flex items-center justify-center mx-auto mb-4 shadow-xl">
-          廣
+        {/* Guang Ji Sacred Emblem */}
+        <div className="relative w-16 h-16 mx-auto mb-4 group-hover:scale-105 transition-transform drop-shadow-[0_8px_20px_rgba(212,155,40,0.35)]">
+          <Image
+            src="/images/logo-guang-ji.png"
+            alt="Logo Guang Ji"
+            fill
+            sizes="64px"
+            className="object-contain rounded-full"
+          />
         </div>
 
         <h3 className="text-3xl sm:text-4xl font-chinese font-bold text-amber-200 tracking-widest mb-1">

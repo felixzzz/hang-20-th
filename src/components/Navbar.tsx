@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import Image from "next/image";
 import { Sparkles, Calendar, History, Image as ImageIcon, Gift, MapPin, HeartHandshake, Menu, X } from "lucide-react";
 
 export default function Navbar() {
@@ -34,17 +35,24 @@ export default function Navbar() {
             : "bg-[#faf7f2]/80 border border-amber-800/15 backdrop-blur-sm"
         }`}
       >
-        {/* Brand with Cinnabar Seal Emblem */}
+        {/* Brand with Guang Ji Logo */}
         <a href="#top" className="flex items-center gap-2.5 group cursor-pointer">
-          <div className="w-8 h-8 rounded bg-[#831f1f] border border-amber-400 text-amber-200 font-chinese font-bold flex items-center justify-center text-sm shadow-sm group-hover:scale-105 transition-transform">
-            廣航
+          <div className="relative w-9 h-9 shrink-0 group-hover:scale-105 transition-transform">
+            <Image
+              src="/images/logo-guang-ji.png"
+              alt="Logo Guang Ji"
+              fill
+              sizes="36px"
+              priority
+              className="object-contain rounded-full shadow-sm"
+            />
           </div>
           <div className="flex flex-col text-left">
-            <span className="font-serif font-bold text-sm tracking-wider text-red-950 leading-tight">
+            <span className="font-serif font-bold text-sm sm:text-base tracking-wider text-red-950 leading-tight">
               Kuang Hang Fo Thang
             </span>
             <span className="text-[10px] text-amber-800 tracking-widest font-chinese">
-              成立廿週年堂慶 • 2006-2026
+              廣航佛堂 • 成立廿週年堂慶
             </span>
           </div>
         </a>

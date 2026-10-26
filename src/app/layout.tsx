@@ -63,7 +63,8 @@ export const metadata: Metadata = {
     type: "website",
   },
   icons: {
-    icon: "/favicon.ico",
+    icon: "/images/logo-guang-ji.png",
+    apple: "/images/logo-guang-ji.png",
   },
 };
 
