@@ -2,7 +2,8 @@
 
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
-import { Calendar, Clock, MapPin, Sparkles, HeartHandshake } from "lucide-react";
+import Link from "next/link";
+import { Calendar, Clock, MapPin, Sparkles, HeartHandshake, Building2, Flame } from "lucide-react";
 
 interface HeroSectionProps {
   guestName: string;
@@ -43,55 +44,79 @@ export default function HeroSection({ guestName }: HeroSectionProps) {
   }, [targetDate]);
 
   return (
-    <section id="top" className="relative pt-6 pb-16 sm:py-20 overflow-hidden">
-      {/* Background Decor */}
-      <div className="absolute top-0 inset-x-0 h-96 bg-gradient-to-b from-fothang-cream/70 via-fothang-ivory/50 to-transparent pointer-events-none" />
+    <section id="top" className="relative pt-6 pb-20 sm:py-24 overflow-hidden">
+      {/* Massive Layered Watermark Typography behind Hero */}
+      <div className="absolute top-12 inset-x-0 flex justify-center pointer-events-none select-none overflow-hidden opacity-[0.04]">
+        <span className="text-[14rem] sm:text-[22rem] font-chinese font-black text-fothang-red-950 leading-none tracking-tighter">
+          廿載
+        </span>
+      </div>
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 relative text-center">
-        {/* Sacred Badge */}
-        <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white border border-fothang-gold-300 shadow-sm mb-6">
-          <Sparkles className="w-4 h-4 text-fothang-gold-600" />
+        {/* Floating Comparison Banner Switcher */}
+        <div className="inline-flex items-center gap-1.5 p-1 rounded-full bg-white/80 border border-fothang-gold-300 shadow-md backdrop-blur-md mb-8">
+          <span className="px-3 py-1 rounded-full bg-fothang-red-800 text-fothang-gold-200 text-xs font-semibold">
+            Undangan Resmi
+          </span>
+          <Link
+            href="/3d"
+            className="flex items-center gap-1.5 px-3 py-1 rounded-full text-stone-700 hover:text-fothang-red-800 hover:bg-stone-100 text-xs font-medium transition cursor-pointer"
+          >
+            <Building2 className="w-3.5 h-3.5 text-fothang-gold-600" />
+            <span>Lihat Gedung 3D</span>
+            <span className="px-1.5 py-0.2 rounded bg-amber-100 text-amber-800 text-[9px] font-bold uppercase">
+              Baru
+            </span>
+          </Link>
+        </div>
+
+        {/* Sacred Header Motif */}
+        <div className="flex items-center justify-center gap-2 mb-3">
+          <div className="w-8 h-px bg-fothang-gold-400" />
           <span className="text-xs uppercase tracking-widest text-fothang-red-900 font-semibold">
             Peringatan 20 Tahun Gedung Kuang Hang Fo Thang
           </span>
-          <span className="text-xs font-chinese text-fothang-gold-700">廿載同舟</span>
+          <div className="w-8 h-px bg-fothang-gold-400" />
         </div>
 
-        {/* Chinese Main Typography */}
-        <h1 className="text-4xl sm:text-6xl font-chinese font-bold text-fothang-red-950 tracking-wider mb-2">
+        {/* Majestic Chinese Typography */}
+        <h1 className="text-4xl sm:text-7xl font-chinese font-bold text-fothang-red-950 tracking-wider mb-2 drop-shadow-sm">
           廣航佛堂
         </h1>
-        <p className="text-lg sm:text-2xl font-chinese text-fothang-gold-700 font-medium tracking-widest mb-4">
-          二十週年堂慶紀念
+        <p className="text-base sm:text-2xl font-chinese text-fothang-gold-700 font-semibold tracking-widest mb-6">
+          二十週年堂慶紀念 (2006 - 2026)
         </p>
 
-        {/* Subtitle / Theme */}
-        <div className="max-w-2xl mx-auto mb-8">
+        {/* Theme Slogan */}
+        <div className="max-w-2xl mx-auto mb-10">
           <div className="w-24 h-0.5 mx-auto bg-gradient-to-r from-transparent via-fothang-gold-500 to-transparent mb-4" />
-          <p className="font-serif text-xl sm:text-2xl text-stone-800 italic leading-relaxed">
-            &ldquo;Mengundang Semua Saudara Se-Dharma yang Turut Mewarnai Perjalanan Kuang Hang Selama 20 Tahun&rdquo;
+          <p className="font-serif text-xl sm:text-3xl text-stone-900 font-normal italic leading-relaxed">
+            &ldquo;Mengarungi Samudra Kebajikan Selama 20 Tahun Bersama Saudara Se-Dharma&rdquo;
           </p>
-          <p className="text-xs sm:text-sm text-stone-600 tracking-wide mt-2">
-            Mengenang Jejak Ketulusan Para Pendahulu • Menyalakan Pelita Kebijaksanaan Lintas Generasi
+          <p className="text-xs sm:text-sm text-stone-600 tracking-wider mt-3">
+            Mengenang Jejak Ketulusan Para Pendahulu • Menyalakan Pelita Kebijaksanaan Shizun & Shimu
           </p>
         </div>
 
-        {/* Personalized Welcome Card */}
-        <div className="max-w-xl mx-auto mb-10 p-5 sm:p-6 rounded-2xl bg-white/90 border border-fothang-gold-300 shadow-xl shadow-fothang-gold-500/5 backdrop-blur-sm">
-          <p className="text-xs font-medium uppercase tracking-widest text-fothang-red-800 mb-1">
+        {/* Guest Recipient Silk Card */}
+        <div className="max-w-xl mx-auto mb-12 p-6 rounded-3xl bg-gradient-to-b from-white/95 to-fothang-ivory/95 border-2 border-fothang-gold-300 shadow-xl shadow-fothang-gold-500/10 backdrop-blur-sm relative">
+          <div className="absolute top-2 right-4 text-[10px] font-chinese text-fothang-gold-600 font-bold">
+            同沾法喜
+          </div>
+          <p className="text-xs font-semibold uppercase tracking-widest text-fothang-red-800 mb-1">
             Kepada Yth. Bapak / Ibu / Saudara/i
           </p>
           <div className="text-2xl sm:text-3xl font-serif font-bold text-fothang-dark tracking-wide my-1">
             {guestName || "Umat Kuang Hang Fo Thang"}
           </div>
           <p className="text-xs text-stone-600 leading-relaxed max-w-md mx-auto mt-2">
-            Dengan penuh rasa syukur dan sukacita atas Tian En Shi De (天恩師德), kami mengundang Bapak/Ibu/Saudara/i untuk hadir dalam doa bersama dan ramah tamah memperingati 20 tahun Kuang Hang Fo Thang.
+            Dengan penuh rasa syukur atas Tian En Shi De (天恩師德), kami mengundang Bapak/Ibu/Saudara/i untuk hadir bersama dalam doa syukur dan ramah tamah memperingati dua dasawarsa peresmian gedung Kuang Hang Fo Thang.
           </p>
         </div>
 
-        {/* Hero Image Showcase */}
+        {/* Hero Archival Photo Spotlight */}
         <div className="relative max-w-3xl mx-auto rounded-3xl overflow-hidden border-2 border-fothang-gold-300 shadow-2xl mb-12 group">
-          <div className="relative aspect-[16/9] w-full">
+          <div className="relative aspect-[16/9] w-full bg-stone-900">
             <Image
               src="/images/guang-hang-15.jpg"
               alt="Altar Agung Kuang Hang Fo Thang"
@@ -99,29 +124,33 @@ export default function HeroSection({ guestName }: HeroSectionProps) {
               priority
               className="object-cover group-hover:scale-105 transition-transform duration-700"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-            <div className="absolute bottom-4 inset-x-4 text-left text-white p-3 sm:p-4">
-              <span className="inline-block px-2.5 py-1 rounded bg-fothang-gold-500 text-fothang-red-950 text-[11px] font-bold tracking-wider uppercase mb-1">
-                Gedung Kuang Hang Fo Thang
+            <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/25 to-transparent" />
+            <div className="absolute bottom-5 inset-x-5 text-left text-white p-4">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-fothang-gold-500 text-fothang-red-950 text-xs font-bold tracking-wider uppercase mb-2">
+                <Flame className="w-3.5 h-3.5" />
+                <span>Gedung Kuang Hang Fo Thang</span>
               </span>
-              <p className="text-sm sm:text-base font-serif font-semibold drop-shadow">
-                Diresmikan 12 November 2006 • Menjadi Pelabuhan Suci Kebijaksanaan Umat
+              <h3 className="text-lg sm:text-xl font-serif font-bold drop-shadow">
+                Diresmikan 12 November 2006 di Palmerah Utara III No. 186A
+              </h3>
+              <p className="text-xs text-stone-300 mt-1">
+                Menjadi mercusuar kebajikan dan pelabuhan suci bagi seluruh umat lintas generasi.
               </p>
             </div>
           </div>
         </div>
 
-        {/* Countdown Timer */}
-        <div className="max-w-2xl mx-auto p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-[#3d1212] to-[#260a0a] text-white border border-fothang-gold-400/40 shadow-xl shadow-fothang-red-950/20 mb-10">
+        {/* Countdown Pelita Timer */}
+        <div className="max-w-2xl mx-auto p-6 sm:p-8 rounded-3xl bg-gradient-to-br from-[#380e0e] to-[#200606] text-white border-2 border-fothang-gold-400/40 shadow-2xl mb-10 relative overflow-hidden">
           <div className="flex items-center justify-center gap-2 mb-4">
             <Clock className="w-4 h-4 text-fothang-gold-400" />
             <h2 className="text-xs sm:text-sm font-semibold tracking-widest uppercase text-fothang-gold-300">
-              Hitung Mundur Menuju Hari Bahagia
+              Hitung Mundur Menuju Malam Syukur
             </h2>
           </div>
 
-          <div className="grid grid-cols-4 gap-2 sm:gap-4 max-w-md mx-auto">
-            <div className="bg-white/10 rounded-2xl p-2.5 sm:p-3.5 border border-fothang-gold-400/20 backdrop-blur-sm">
+          <div className="grid grid-cols-4 gap-2.5 sm:gap-4 max-w-md mx-auto">
+            <div className="bg-white/10 rounded-2xl p-3 border border-fothang-gold-400/30 backdrop-blur-sm">
               <span className="block text-2xl sm:text-4xl font-serif font-bold text-fothang-gold-300">
                 {timeLeft.days}
               </span>
@@ -129,7 +158,7 @@ export default function HeroSection({ guestName }: HeroSectionProps) {
                 Hari
               </span>
             </div>
-            <div className="bg-white/10 rounded-2xl p-2.5 sm:p-3.5 border border-fothang-gold-400/20 backdrop-blur-sm">
+            <div className="bg-white/10 rounded-2xl p-3 border border-fothang-gold-400/30 backdrop-blur-sm">
               <span className="block text-2xl sm:text-4xl font-serif font-bold text-fothang-gold-300">
                 {timeLeft.hours}
               </span>
@@ -137,7 +166,7 @@ export default function HeroSection({ guestName }: HeroSectionProps) {
                 Jam
               </span>
             </div>
-            <div className="bg-white/10 rounded-2xl p-2.5 sm:p-3.5 border border-fothang-gold-400/20 backdrop-blur-sm">
+            <div className="bg-white/10 rounded-2xl p-3 border border-fothang-gold-400/30 backdrop-blur-sm">
               <span className="block text-2xl sm:text-4xl font-serif font-bold text-fothang-gold-300">
                 {timeLeft.minutes}
               </span>
@@ -145,7 +174,7 @@ export default function HeroSection({ guestName }: HeroSectionProps) {
                 Menit
               </span>
             </div>
-            <div className="bg-white/10 rounded-2xl p-2.5 sm:p-3.5 border border-fothang-gold-400/20 backdrop-blur-sm">
+            <div className="bg-white/10 rounded-2xl p-3 border border-fothang-gold-400/30 backdrop-blur-sm">
               <span className="block text-2xl sm:text-4xl font-serif font-bold text-fothang-gold-300">
                 {timeLeft.seconds}
               </span>
@@ -156,26 +185,26 @@ export default function HeroSection({ guestName }: HeroSectionProps) {
           </div>
 
           <p className="text-xs text-stone-300 mt-4 font-light">
-            Sabtu, 14 November 2026 • Pukul 19.00 WIB
+            Sabtu, 14 November 2026 • Pukul 19.00 WIB s/d Selesai
           </p>
         </div>
 
-        {/* Action Button */}
+        {/* Actions */}
         <div className="flex flex-wrap items-center justify-center gap-3">
           <a
             href="#rsvp"
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-fothang-red-800 to-fothang-red-700 text-fothang-gold-200 font-semibold text-sm shadow-md hover:shadow-lg hover:brightness-110 active:scale-95 transition-all cursor-pointer"
+            className="inline-flex items-center gap-2 px-7 py-3.5 rounded-full bg-gradient-to-r from-fothang-red-800 to-fothang-red-700 text-fothang-gold-200 font-semibold text-sm shadow-xl hover:shadow-2xl hover:brightness-110 active:scale-95 transition-all cursor-pointer"
           >
             <HeartHandshake className="w-4 h-4 text-fothang-gold-300" />
             <span>Konfirmasi Kehadiran (RSVP)</span>
           </a>
-          <a
-            href="#acara"
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white text-stone-700 border border-stone-300 hover:border-fothang-gold-400 font-medium text-sm shadow-sm hover:bg-stone-50 transition-all cursor-pointer"
+          <Link
+            href="/3d"
+            className="inline-flex items-center gap-2 px-6 py-3.5 rounded-full bg-white text-stone-800 border-2 border-fothang-gold-400 hover:bg-stone-50 font-semibold text-sm shadow-md transition-all cursor-pointer"
           >
-            <Calendar className="w-4 h-4 text-fothang-gold-600" />
-            <span>Detail Rangkaian Acara</span>
-          </a>
+            <Building2 className="w-4 h-4 text-fothang-gold-600" />
+            <span>Eksplorasi Gedung 3D</span>
+          </Link>
         </div>
       </div>
     </section>

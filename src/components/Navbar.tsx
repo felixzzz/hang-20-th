@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Calendar, HeartHandshake, History, Image as ImageIcon, MapPin, Sparkles, Gift, Menu, X } from "lucide-react";
+import Link from "next/link";
+import { Calendar, HeartHandshake, History, Image as ImageIcon, MapPin, Sparkles, Gift, Building2, Menu, X } from "lucide-react";
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -77,10 +78,24 @@ export default function Navbar() {
               </a>
             );
           })}
+          <Link
+            href="/3d"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold text-fothang-red-900 bg-fothang-gold-100 hover:bg-fothang-gold-200 border border-fothang-gold-300 transition-all cursor-pointer shadow-sm hover:scale-105"
+          >
+            <Building2 className="w-3.5 h-3.5 text-fothang-gold-700" />
+            <span>Gedung 3D</span>
+          </Link>
         </nav>
 
         {/* Mobile Menu Trigger */}
         <div className="md:hidden flex items-center gap-2">
+          <Link
+            href="/3d"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold text-fothang-red-900 bg-fothang-gold-100 hover:bg-fothang-gold-200 border border-fothang-gold-300 transition-colors cursor-pointer"
+          >
+            <Building2 className="w-3.5 h-3.5 text-fothang-gold-700" />
+            <span>Gedung 3D</span>
+          </Link>
           <a
             href="#rsvp"
             className="px-3 py-1 rounded-full bg-fothang-red-800 text-fothang-gold-200 text-xs font-medium"
@@ -118,6 +133,14 @@ export default function Navbar() {
               </a>
             );
           })}
+          <Link
+            href="/3d"
+            onClick={() => setMobileMenuOpen(false)}
+            className="flex items-center gap-2.5 px-3.5 py-2.5 rounded-xl text-xs font-bold bg-fothang-gold-100 text-fothang-red-950 border border-fothang-gold-300"
+          >
+            <Building2 className="w-4 h-4 text-fothang-gold-700" />
+            <span>Jelajah Gedung 3D (Halaman Pembanding)</span>
+          </Link>
         </div>
       )}
     </header>

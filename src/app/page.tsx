@@ -15,6 +15,7 @@ import LocationMap from "@/components/LocationMap";
 import ShareGenerator from "@/components/ShareGenerator";
 import Footer from "@/components/Footer";
 import AudioPlayer from "@/components/AudioPlayer";
+import AmbientLanternCanvas from "@/components/AmbientLanternCanvas";
 
 function InvitationContent() {
   const searchParams = useSearchParams();
@@ -49,6 +50,9 @@ function InvitationContent() {
 
       {/* Floating Audio Controller */}
       <AudioPlayer autoPlayTrigger={hasStartedAudio} />
+
+      {/* Ambient Floating Lantern Dust */}
+      {isOpened && <AmbientLanternCanvas />}
 
       {/* Main Invitation Layout */}
       <div className={isOpened ? "opacity-100 transition-opacity duration-1000" : "opacity-0"}>
