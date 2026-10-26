@@ -7,15 +7,8 @@ import {
   Moon,
   RotateCcw,
   Sparkles,
-  Info,
   X,
-  MapPin,
-  Calendar,
-  HeartHandshake,
-  ArrowRight,
-  Maximize2,
 } from "lucide-react";
-import Link from "next/link";
 import Image from "next/image";
 
 interface Hotspot {
@@ -81,29 +74,33 @@ export default function Building3DScene() {
   const [isNight, setIsNight] = useState(true);
   const [selectedHotspot, setSelectedHotspot] = useState<Hotspot | null>(null);
   const [autoRotate, setAutoRotate] = useState(true);
-  const [loaded, setLoaded] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
 
-  // References to dynamic Three.js objects
-  const sceneRef = useRef<THREE.Scene | null>(null);
-  const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
-  const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
-  const lightsRef = useRef<{
+  // Mutable refs to prevent unnecessary React re-renders
+  const autoRotateRef = useRef(true);
+  const isNightRef = useRef(true);
+  const sceneElementsRef = useRef<{
+    scene: THREE.Scene;
     ambient: THREE.AmbientLight;
     dirLight: THREE.DirectionalLight;
     lanternLights: THREE.PointLight[];
+    glassMaterial: THREE.MeshStandardMaterial;
   } | null>(null);
+
+  useEffect(() => {
+    autoRotateRef.current = autoRotate;
+  }, [autoRotate]);
 
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
 
-    // Scene
+    // 1. Scene
     const scene = new THREE.Scene();
-    sceneRef.current = scene;
-    scene.background = new THREE.Color(isNight ? 0x140606 : 0xf4eee4);
-    scene.fog = new THREE.FogExp2(isNight ? 0x140606 : 0xf4eee4, 0.025);
+    scene.background = new THREE.Color(0x140606);
+    scene.fog = new THREE.FogExp2(0x140606, 0.025);
 
-    // Camera
+    // 2. Camera
     const camera = new THREE.PerspectiveCamera(
       45,
       container.clientWidth / container.clientHeight,
@@ -111,25 +108,20 @@ export default function Building3DScene() {
       100
     );
     camera.position.set(14, 10, 16);
-    cameraRef.current = camera;
 
-    // Renderer
-    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    // 3. Renderer
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true, powerPreference: "high-performance" });
     renderer.setSize(container.clientWidth, container.clientHeight);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-    rendererRef.current = renderer;
     container.appendChild(renderer.domElement);
 
-    // Lighting
-    const ambient = new THREE.AmbientLight(0xffffff, isNight ? 0.4 : 1.2);
+    // 4. Lighting
+    const ambient = new THREE.AmbientLight(0xffffff, 0.4);
     scene.add(ambient);
 
-    const dirLight = new THREE.DirectionalLight(
-      isNight ? 0xffe8c2 : 0xfffaed,
-      isNight ? 0.8 : 1.8
-    );
+    const dirLight = new THREE.DirectionalLight(0xffe8c2, 0.8);
     dirLight.position.set(15, 25, 15);
     dirLight.castShadow = true;
     dirLight.shadow.mapSize.width = 1024;
@@ -137,7 +129,6 @@ export default function Building3DScene() {
     scene.add(dirLight);
 
     const lanternLights: THREE.PointLight[] = [];
-    lightsRef.current = { ambient, dirLight, lanternLights };
 
     // Building Materials
     const wallMaterial = new THREE.MeshStandardMaterial({
@@ -157,22 +148,26 @@ export default function Building3DScene() {
       color: 0x9e2222,
       roughness: 0.3,
     });
-    const darkWoodMaterial = new THREE.MeshStandardMaterial({
-      color: 0x3d2314,
-      roughness: 0.7,
-    });
     const glassMaterial = new THREE.MeshStandardMaterial({
-      color: isNight ? 0xfde68a : 0xcbe4f9,
+      color: 0xfde68a,
       roughness: 0.1,
       metalness: 0.1,
-      emissive: isNight ? 0xf59e0b : 0x000000,
-      emissiveIntensity: isNight ? 0.6 : 0,
+      emissive: 0xf59e0b,
+      emissiveIntensity: 0.6,
     });
+
+    sceneElementsRef.current = {
+      scene,
+      ambient,
+      dirLight,
+      lanternLights,
+      glassMaterial,
+    };
 
     const buildingGroup = new THREE.Group();
     scene.add(buildingGroup);
 
-    // 1. Plinth / Foundation Ground
+    // 5. Plinth / Foundation
     const plinthGeo = new THREE.BoxGeometry(16, 0.6, 14);
     const plinthMat = new THREE.MeshStandardMaterial({ color: 0xdfd6cb });
     const plinth = new THREE.Mesh(plinthGeo, plinthMat);
@@ -180,7 +175,7 @@ export default function Building3DScene() {
     plinth.receiveShadow = true;
     buildingGroup.add(plinth);
 
-    // Steps leading up
+    // Steps
     for (let s = 0; s < 3; s++) {
       const step = new THREE.Mesh(
         new THREE.BoxGeometry(6 - s * 0.4, 0.2, 1.2),
@@ -191,7 +186,7 @@ export default function Building3DScene() {
       buildingGroup.add(step);
     }
 
-    // 2. Lantai 1 (Ground Floor - 8 x 2.6 x 8)
+    // Lantai 1 (Ground Floor)
     const floor1 = new THREE.Mesh(new THREE.BoxGeometry(8, 2.6, 8), wallMaterial);
     floor1.position.y = 0.6 + 1.3;
     floor1.castShadow = true;
@@ -221,7 +216,7 @@ export default function Building3DScene() {
     cornice1.castShadow = true;
     buildingGroup.add(cornice1);
 
-    // 3. Lantai 2 (Middle Floor - 7.6 x 2.6 x 7.6)
+    // Lantai 2 (Middle Floor)
     const floor2 = new THREE.Mesh(new THREE.BoxGeometry(7.6, 2.6, 7.6), wallMaterial);
     floor2.position.y = 3.5 + 1.3;
     floor2.castShadow = true;
@@ -231,11 +226,7 @@ export default function Building3DScene() {
     // Balcony Railing
     const balustrade = new THREE.Mesh(
       new THREE.BoxGeometry(8.2, 0.8, 8.2),
-      new THREE.MeshStandardMaterial({
-        color: 0x831f1f,
-        wireframe: false,
-        roughness: 0.5,
-      })
+      new THREE.MeshStandardMaterial({ color: 0x831f1f, roughness: 0.5 })
     );
     balustrade.position.y = 3.9;
     buildingGroup.add(balustrade);
@@ -247,7 +238,7 @@ export default function Building3DScene() {
       buildingGroup.add(win);
     });
 
-    // Intermediate Roof Eaves between floor 2 & 3
+    // Intermediate Roof Eaves
     const midRoof = new THREE.Mesh(
       new THREE.ConeGeometry(6.5, 0.9, 4),
       roofMaterial
@@ -258,20 +249,21 @@ export default function Building3DScene() {
     midRoof.castShadow = true;
     buildingGroup.add(midRoof);
 
-    // 4. Lantai 3 (Altar Suci Fo Thang Agung - 7 x 2.6 x 7)
+    // Lantai 3 (Altar Suci Fo Thang Agung)
     const floor3 = new THREE.Mesh(new THREE.BoxGeometry(7, 2.6, 7), wallMaterial);
     floor3.position.y = 6.6 + 1.3;
     floor3.castShadow = true;
+    floor3.receiveShadow = true;
     buildingGroup.add(floor3);
 
-    // Altar Windows / Golden Lattice
+    // Altar Windows
     [-1.8, 0, 1.8].forEach((x) => {
       const w = new THREE.Mesh(new THREE.PlaneGeometry(1.2, 1.6), glassMaterial);
       w.position.set(x, 7.8, 3.52);
       buildingGroup.add(w);
     });
 
-    // Signboard "廣航佛堂" in Gold & Red
+    // Signboard "廣航佛堂"
     const signBoard = new THREE.Mesh(
       new THREE.BoxGeometry(3, 0.8, 0.15),
       redAccentMaterial
@@ -286,7 +278,7 @@ export default function Building3DScene() {
     signTrim.position.set(0, 8.6, 3.58);
     buildingGroup.add(signTrim);
 
-    // 5. Grand Swept Eave Temple Roof (庑殿顶 / Xie-Shan)
+    // Grand Swept Eave Temple Roof (庑殿顶 / Xie-Shan)
     const mainRoof = new THREE.Mesh(
       new THREE.ConeGeometry(7.2, 2.2, 4),
       roofMaterial
@@ -297,7 +289,7 @@ export default function Building3DScene() {
     mainRoof.castShadow = true;
     buildingGroup.add(mainRoof);
 
-    // Golden Roof Ridge Ornament (宝顶)
+    // Golden Roof Ridge Ornament
     const finial = new THREE.Mesh(
       new THREE.CylinderGeometry(0.1, 0.4, 1.2, 16),
       goldMaterial
@@ -312,7 +304,7 @@ export default function Building3DScene() {
     finialSphere.position.y = 12.4;
     buildingGroup.add(finialSphere);
 
-    // 6. Traditional Lanterns hanging with flickering point lights
+    // Traditional Lanterns
     const lanternPositions = [
       new THREE.Vector3(-3.2, 3.2, 4.2),
       new THREE.Vector3(3.2, 3.2, 4.2),
@@ -335,14 +327,13 @@ export default function Building3DScene() {
       lanternMesh.position.copy(pos);
       buildingGroup.add(lanternMesh);
 
-      // Light source
-      const pl = new THREE.PointLight(0xff9900, isNight ? 1.4 : 0.4, 6);
+      const pl = new THREE.PointLight(0xff9900, 1.4, 6);
       pl.position.copy(pos);
       scene.add(pl);
       lanternLights.push(pl);
     });
 
-    // 7. Golden Dust Particles (Lingering Qi / Auspicious Aura)
+    // Golden Dust Particles
     const particleCount = 200;
     const particleGeo = new THREE.BufferGeometry();
     const positions = new Float32Array(particleCount * 3);
@@ -362,7 +353,7 @@ export default function Building3DScene() {
     const particles = new THREE.Points(particleGeo, particleMat);
     scene.add(particles);
 
-    // Orbit controls logic (Mouse & Touch)
+    // Orbit Controls (Mouse & Touch)
     let isDragging = false;
     let prevMouse = { x: 0, y: 0 };
     let cameraAngle = { theta: 0.8, phi: 0.4, radius: 24 };
@@ -382,6 +373,7 @@ export default function Building3DScene() {
 
     const onPointerDown = (e: MouseEvent | TouchEvent) => {
       isDragging = true;
+      autoRotateRef.current = false;
       setAutoRotate(false);
       const clientX = "touches" in e ? e.touches[0].clientX : e.clientX;
       const clientY = "touches" in e ? e.touches[0].clientY : e.clientY;
@@ -440,18 +432,15 @@ export default function Building3DScene() {
       const delta = clock.getDelta();
       const time = clock.getElapsedTime();
 
-      // Gentle auto rotate
-      if (autoRotate && !isDragging) {
+      if (autoRotateRef.current && !isDragging) {
         cameraAngle.theta += 0.003;
         updateCameraPosition();
       }
 
-      // Gentle lantern light flicker
       lanternLights.forEach((light, i) => {
-        light.intensity = 1.2 + Math.sin(time * 6 + i) * 0.25;
+        light.intensity = (isNightRef.current ? 1.2 : 0.4) + Math.sin(time * 6 + i) * 0.2;
       });
 
-      // Floating particles upward drift
       const posArray = particleGeo.attributes.position.array as Float32Array;
       for (let i = 1; i < posArray.length; i += 3) {
         posArray[i] += delta * 0.4;
@@ -463,7 +452,7 @@ export default function Building3DScene() {
     };
 
     animate();
-    setLoaded(true);
+    setIsLoaded(true);
 
     return () => {
       cancelAnimationFrame(animId);
@@ -480,27 +469,60 @@ export default function Building3DScene() {
       }
       renderer.dispose();
     };
-  }, [autoRotate, isNight]);
+  }, []); // Run ONCE on mount
 
-  // Lighting toggle
+  // Smooth lighting toggle without rebuilding scene
   const toggleLighting = () => {
-    setIsNight((prev) => !prev);
+    const nextNight = !isNight;
+    setIsNight(nextNight);
+    isNightRef.current = nextNight;
+
+    if (!sceneElementsRef.current) return;
+    const { scene, ambient, dirLight, glassMaterial } = sceneElementsRef.current;
+
+    const targetBg = nextNight ? 0x140606 : 0xf4eee4;
+    scene.background = new THREE.Color(targetBg);
+    if (scene.fog) {
+      (scene.fog as THREE.FogExp2).color = new THREE.Color(targetBg);
+    }
+
+    ambient.intensity = nextNight ? 0.4 : 1.2;
+    dirLight.intensity = nextNight ? 0.8 : 1.8;
+    dirLight.color = new THREE.Color(nextNight ? 0xffe8c2 : 0xfffaed);
+
+    glassMaterial.emissive = new THREE.Color(nextNight ? 0xf59e0b : 0x000000);
+    glassMaterial.emissiveIntensity = nextNight ? 0.6 : 0;
   };
 
   const focusHotspot = (h: Hotspot) => {
     setSelectedHotspot(h);
+    autoRotateRef.current = false;
     setAutoRotate(false);
   };
 
   return (
     <div className="relative w-full h-full min-h-[500px] overflow-hidden select-none">
       {/* 3D Canvas Mount Point */}
-      <div ref={containerRef} className="w-full h-full absolute inset-0 cursor-grab active:cursor-grabbing" />
+      <div
+        ref={containerRef}
+        className={`w-full h-full absolute inset-0 cursor-grab active:cursor-grabbing transition-opacity duration-700 ${
+          isLoaded ? "opacity-100" : "opacity-0"
+        }`}
+      />
+
+      {!isLoaded && (
+        <div className="absolute inset-0 flex items-center justify-center bg-[#140606] text-fothang-gold-300 font-serif">
+          <div className="flex flex-col items-center gap-3">
+            <div className="w-8 h-8 rounded-full border-2 border-fothang-gold-400 border-t-transparent animate-spin" />
+            <span className="text-xs tracking-widest font-chinese">Memuat Gedung 3D...</span>
+          </div>
+        </div>
+      )}
 
       {/* Top Floating Controls */}
       <div className="absolute top-4 inset-x-4 sm:inset-x-8 flex items-center justify-between pointer-events-none z-20">
         <div className="flex items-center gap-2 pointer-events-auto">
-          <div className="px-3.5 py-1.5 rounded-full bg-black/60 backdrop-blur-md border border-fothang-gold-400/30 text-white text-xs font-serif flex items-center gap-2">
+          <div className="px-3.5 py-1.5 rounded-full bg-black/60 backdrop-blur-md border border-fothang-gold-400/30 text-white text-xs font-serif flex items-center gap-2 shadow-lg">
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-ping" />
             <span className="text-fothang-gold-300 font-bold">Gedung 3D</span>
             <span className="text-stone-300 hidden sm:inline">• Kuang Hang Fo Thang</span>
@@ -519,7 +541,11 @@ export default function Building3DScene() {
 
           {/* Auto rotate toggle */}
           <button
-            onClick={() => setAutoRotate(!autoRotate)}
+            onClick={() => {
+              const next = !autoRotate;
+              setAutoRotate(next);
+              autoRotateRef.current = next;
+            }}
             className={`p-2.5 rounded-full backdrop-blur-md border transition cursor-pointer shadow-lg ${
               autoRotate
                 ? "bg-fothang-red-900/80 border-fothang-gold-400 text-fothang-gold-200"

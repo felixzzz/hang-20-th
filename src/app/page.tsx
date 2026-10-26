@@ -25,6 +25,17 @@ function InvitationContent() {
   const [isOpened, setIsOpened] = useState(false);
   const [hasStartedAudio, setHasStartedAudio] = useState(false);
 
+  useEffect(() => {
+    if (!isOpened) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isOpened]);
+
   const handleOpenInvitation = () => {
     setIsOpened(true);
     setHasStartedAudio(true);
@@ -55,7 +66,13 @@ function InvitationContent() {
       {isOpened && <AmbientLanternCanvas />}
 
       {/* Main Invitation Layout */}
-      <div className={isOpened ? "opacity-100 transition-opacity duration-1000" : "opacity-0"}>
+      <div
+        className={
+          isOpened
+            ? "opacity-100 transition-opacity duration-1000"
+            : "opacity-0 pointer-events-none select-none max-h-screen overflow-hidden"
+        }
+      >
         <Navbar />
         <HeroSection guestName={guestName} />
         <WisdomQuote />
