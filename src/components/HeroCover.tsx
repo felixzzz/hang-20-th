@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
+import { useLanguage } from "@/context/LanguageContext";
 
 interface HeroCoverProps {
   guestName: string;
@@ -10,6 +11,7 @@ interface HeroCoverProps {
 }
 
 export default function HeroCover({ guestName, isOpen, onOpen }: HeroCoverProps) {
+  const { showId, showZh } = useLanguage();
   const [isOpening, setIsOpening] = useState(false);
 
   // Reset opening animation state whenever the envelope is closed / reopened
@@ -88,19 +90,25 @@ export default function HeroCover({ guestName, isOpen, onOpen }: HeroCoverProps)
 
           {/* Bilingual Invitation Subtitle */}
           <div className="my-2">
-            <p className="font-serif text-lg sm:text-xl text-stone-100 tracking-wide font-normal italic">
-              Undangan Resmi Peringatan 20 Tahun Gedung
-            </p>
-            <p className="text-xs font-chinese text-amber-300/90 tracking-widest mt-0.5">
-              佛堂落成二十週年 • 官方敬邀函
-            </p>
+            {showId && (
+              <p className="font-serif text-lg sm:text-xl text-stone-100 tracking-wide font-normal italic">
+                Undangan Resmi Peringatan 20 Tahun Gedung
+              </p>
+            )}
+            {showZh && (
+              <p className="text-xs font-chinese text-amber-300/90 tracking-widest mt-0.5">
+                佛堂落成二十週年 • 官方敬邀函
+              </p>
+            )}
           </div>
 
           <p className="text-[11px] sm:text-xs text-stone-300/80 font-serif tracking-wider max-w-sm mb-2">
-            Mengarungi Samudra Kebajikan • Menyalakan Pelita Kebijaksanaan
-            <span className="block font-chinese text-stone-400 text-[11px] mt-0.5">
-              同舟共濟度眾生 • 薪火相傳護慧命
-            </span>
+            {showId && <span>Mengarungi Samudra Kebajikan • Menyalakan Pelita Kebijaksanaan</span>}
+            {showZh && (
+              <span className="block font-chinese text-stone-400 text-[11px] mt-0.5">
+                同舟共濟度眾生 • 薪火相傳護慧命
+              </span>
+            )}
           </p>
 
           {/* Inset Gold-Leaf Rice Paper Sash (金箔腰封) for Guest Name */}
@@ -110,35 +118,43 @@ export default function HeroCover({ guestName, isOpen, onOpen }: HeroCoverProps)
             <div className="absolute -right-1 top-1/2 -translate-y-1/2 w-2 h-7 bg-amber-600 rounded-l" />
 
             <div className="flex items-center justify-center gap-2 text-[10px] uppercase tracking-widest text-amber-800 font-semibold mb-1">
-              <span>Yth. Tamu Undangan Terkasih</span>
-              <span className="font-chinese text-red-800 font-bold">恭請 貴賓尊鑒</span>
+              {showId && <span>Yth. Tamu Undangan Terkasih</span>}
+              {showZh && <span className="font-chinese text-red-800 font-bold">恭請 貴賓尊鑒</span>}
             </div>
 
             <div className="text-xl sm:text-2xl font-serif font-bold text-red-950 tracking-wide truncate max-w-full px-2">
               {guestName || "Saudara Se-Dharma & Umat Terkasih"}
             </div>
 
-            <p className="text-[11px] text-stone-600 mt-1 italic font-serif">
-              Dengan penuh hormat mengundang kehadiran Anda dalam doa syukur bersama.
-              <span className="block font-chinese text-[10px] text-stone-500 not-italic mt-0.5">
-                謹代表廣航佛堂全體道親，誠摯敬邀閣下撥冗蒞臨，同沾法喜。
-              </span>
-            </p>
+            <div className="text-[11px] text-stone-600 mt-1 italic font-serif">
+              {showId && (
+                <p>Dengan penuh hormat mengundang kehadiran Anda dalam doa syukur bersama.</p>
+              )}
+              {showZh && (
+                <p className="font-chinese text-[10px] text-stone-500 not-italic mt-0.5">
+                  謹代表廣航佛堂全體道親，誠摯敬邀閣下撥冗蒞臨，同沾法喜。
+                </p>
+              )}
+            </div>
           </div>
 
           {/* Key Event Details Snippet - Bilingual */}
           <div className="text-xs text-stone-300/90 font-light tracking-wide space-y-1 mb-6">
             <div className="font-serif text-amber-200 font-medium">
-              Sabtu, 14 November 2026 • 19.00 WIB
-              <span className="block font-chinese text-amber-400 text-[11px]">
-                2026年11月14日（星期六）晚間七時正
-              </span>
+              {showId && <span>Sabtu, 14 November 2026 • 19.00 WIB</span>}
+              {showZh && (
+                <span className="block font-chinese text-amber-400 text-[11px]">
+                  2026年11月14日（星期六）晚間七時正
+                </span>
+              )}
             </div>
             <div className="text-[11px] text-stone-400">
-              Kuang Hang Fo Thang, Palmerah Utara III No. 186A, Jakarta Barat
-              <span className="block font-chinese text-stone-500 text-[10px]">
-                雅加達西區巴美拉北三路186A號
-              </span>
+              {showId && <span>Kuang Hang Fo Thang, Palmerah Utara III No. 186A, Jakarta Barat</span>}
+              {showZh && (
+                <span className="block font-chinese text-stone-500 text-[10px]">
+                  雅加達西區巴美拉北三路186A號
+                </span>
+              )}
             </div>
           </div>
 
@@ -167,7 +183,9 @@ export default function HeroCover({ guestName, isOpen, onOpen }: HeroCoverProps)
             </button>
 
             <span className="text-[11px] text-amber-300/90 font-serif tracking-widest mt-3 animate-pulse">
-              Ketuk Segel Emas untuk Membuka • 敬請啟封
+              {showId && "Ketuk Segel Emas untuk Membuka"}
+              {showId && showZh && " • "}
+              {showZh && "敬請啟封"}
             </span>
           </div>
 

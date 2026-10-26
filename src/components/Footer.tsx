@@ -3,12 +3,15 @@
 import React from "react";
 import Image from "next/image";
 import { Heart, Instagram, MailOpen, ArrowUp } from "lucide-react";
+import { useLanguage } from "@/context/LanguageContext";
 
 interface FooterProps {
   onReopenEnvelope: () => void;
 }
 
 export default function Footer({ onReopenEnvelope }: FooterProps) {
+  const { showId, showZh } = useLanguage();
+
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
@@ -38,12 +41,16 @@ export default function Footer({ onReopenEnvelope }: FooterProps) {
         <div className="w-20 h-px mx-auto bg-gradient-to-r from-transparent via-amber-500 to-transparent mb-6" />
 
         <div className="max-w-lg mx-auto mb-6 space-y-2">
-          <p className="font-serif text-sm sm:text-base text-stone-300 italic leading-relaxed">
-            &ldquo;Tiada kata yang mampu melukiskan rasa syukur atas Tian En Shi De serta ketulusan seluruh umat yang telah menyatukan hati dalam mengarungi samudra kebajikan selama dua dasawarsa.&rdquo;
-          </p>
-          <p className="font-chinese text-xs sm:text-sm text-amber-300/90 leading-relaxed font-normal">
-            「叩謝天恩師德浩瀚加被，感恩前賢大德至誠護持。廿載同舟普化，萬里慈航不捨眾生。」
-          </p>
+          {showId && (
+            <p className="font-serif text-sm sm:text-base text-stone-300 italic leading-relaxed">
+              &ldquo;Tiada kata yang mampu melukiskan rasa syukur atas Tian En Shi De serta ketulusan seluruh umat yang telah menyatukan hati dalam mengarungi samudra kebajikan selama dua dasawarsa.&rdquo;
+            </p>
+          )}
+          {showZh && (
+            <p className="font-chinese text-xs sm:text-sm text-amber-300/90 leading-relaxed font-normal">
+              「叩謝天恩師德浩瀚加被，感恩前賢大德至誠護持。廿載同舟普化，萬里慈航不捨眾生。」
+            </p>
+          )}
         </div>
 
         {/* Action Controls - Bilingual */}
@@ -63,7 +70,11 @@ export default function Footer({ onReopenEnvelope }: FooterProps) {
             className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-serif text-amber-300 transition cursor-pointer"
           >
             <MailOpen className="w-3.5 h-3.5" />
-            <span>Buka Sampul Undangan • 重啟禮函</span>
+            <span>
+              {showId && "Buka Sampul Undangan"}
+              {showId && showZh && " • "}
+              {showZh && "重啟禮函"}
+            </span>
           </button>
 
           <button
@@ -72,7 +83,11 @@ export default function Footer({ onReopenEnvelope }: FooterProps) {
             aria-label="Kembali ke atas"
           >
             <ArrowUp className="w-3.5 h-3.5" />
-            <span>Ke Atas • 頂部</span>
+            <span>
+              {showId && "Ke Atas"}
+              {showId && showZh && " • "}
+              {showZh && "頂部"}
+            </span>
           </button>
         </div>
 
@@ -87,9 +102,14 @@ export default function Footer({ onReopenEnvelope }: FooterProps) {
         {/* Colophon */}
         <div className="pt-6 border-t border-white/10 flex items-center justify-center text-[11px] text-stone-400 font-serif">
           <div className="flex items-center gap-1.5">
-            <span>Dipersembahkan dengan ketulusan oleh</span>
+            <span>
+              {showId ? "Dipersembahkan dengan ketulusan oleh" : "虔誠奉獻："}
+            </span>
             <Heart className="w-3 h-3 text-red-500 fill-red-500" />
-            <span className="text-stone-300">Keluarga Besar Kuang Hang (廣航佛堂闔體)</span>
+            <span className="text-stone-300">
+              {showId ? "Keluarga Besar Kuang Hang" : "廣航佛堂闔體"}
+              {showId && showZh && " (廣航佛堂闔體)"}
+            </span>
           </div>
         </div>
 

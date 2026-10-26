@@ -4,8 +4,10 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import { galleryItems, GalleryItem } from "@/data/gallery";
 import { X, ChevronLeft, ChevronRight, Maximize2 } from "lucide-react";
+import { useLanguage } from "@/context/LanguageContext";
 
 export default function PhotoGallery() {
+  const { showId, showZh } = useLanguage();
   const [filter, setFilter] = useState<"all" | "sejarah" | "kegiatan" | "kebersamaan">("all");
   const [selectedPhoto, setSelectedPhoto] = useState<GalleryItem | null>(null);
 
@@ -48,7 +50,9 @@ export default function PhotoGallery() {
           <div className="inline-flex items-center gap-2 mb-3">
             <span className="w-8 h-px bg-amber-600/60" />
             <span className="text-xs uppercase tracking-widest text-amber-800 font-semibold font-serif">
-              Dokumentasi Foto Dua Dasawarsa • 廿載影像珍藏
+              {showId && "Dokumentasi Foto Dua Dasawarsa"}
+              {showId && showZh && " • "}
+              {showZh && "廿載影像珍藏"}
             </span>
             <span className="w-8 h-px bg-amber-600/60" />
           </div>
@@ -56,12 +60,16 @@ export default function PhotoGallery() {
           <h2 className="text-3xl sm:text-5xl font-chinese font-bold text-red-950 mb-2">
             歲月長廊 • 影像典藏
           </h2>
-          <p className="text-sm font-serif text-stone-700 max-w-lg">
-            Setiap bingkai foto menyimpan jejak dedikasi, senyuman umat, dan limpahan berkah Tian En Shi De yang abadi.
-          </p>
-          <p className="text-xs font-chinese text-stone-500 max-w-lg mt-0.5">
-            每一張泛黃相片，皆銘刻著道親之赤誠奉獻與天恩師德之浩瀚加被。
-          </p>
+          {showId && (
+            <p className="text-sm font-serif text-stone-700 max-w-lg">
+              Setiap bingkai foto menyimpan jejak dedikasi, senyuman umat, dan limpahan berkah Tian En Shi De yang abadi.
+            </p>
+          )}
+          {showZh && (
+            <p className="text-xs font-chinese text-stone-500 max-w-lg mt-0.5">
+              每一張泛黃相片，皆銘刻著道親之赤誠奉獻與天恩師德之浩瀚加被。
+            </p>
+          )}
         </div>
 
         {/* Exhibition Room Filter Tabs - Bilingual */}
@@ -81,10 +89,9 @@ export default function PhotoGallery() {
                   : "bg-white text-stone-700 hover:text-red-900 border border-stone-200"
               }`}
             >
-              <span>{tab.labelId}</span>
-              <span className="font-chinese text-[11px] opacity-80">
-                • {tab.labelZh}
-              </span>
+              {showId && <span>{tab.labelId}</span>}
+              {showId && showZh && <span>•</span>}
+              {showZh && <span className="font-chinese text-[11px] opacity-90">{tab.labelZh}</span>}
               {tab.count !== null && (
                 <span className="text-[10px] opacity-75">({tab.count})</span>
               )}
@@ -116,27 +123,39 @@ export default function PhotoGallery() {
                       ? "Kegiatan Dharma • 道務修持"
                       : "Keluarga Besar • 同修一家"}
                   </span>
-                  <div className="text-sm font-chinese font-bold text-amber-200 mt-0.5">
-                    {item.chineseTitle}
-                  </div>
-                  <p className="text-xs font-serif text-stone-200 leading-snug">
-                    {item.title}
-                  </p>
+                  {showZh && (
+                    <div className="text-sm font-chinese font-bold text-amber-200 mt-0.5">
+                      {item.chineseTitle}
+                    </div>
+                  )}
+                  {showId && (
+                    <p className="text-xs font-serif text-stone-200 leading-snug">
+                      {item.title}
+                    </p>
+                  )}
                   <div className="mt-1.5 inline-flex items-center gap-1 text-[11px] text-amber-300 font-serif">
                     <Maximize2 className="w-3 h-3" />
-                    <span>Perbesar Foto • 檢視全圖</span>
+                    <span>
+                      {showId && "Perbesar Foto"}
+                      {showId && showZh && " • "}
+                      {showZh && "檢視全圖"}
+                    </span>
                   </div>
                 </div>
               </div>
 
               {/* Minimalist Sub-Caption bar - Bilingual */}
               <div className="p-3 bg-[#faf7f2] border-t border-amber-900/10">
-                <div className="text-xs font-chinese font-bold text-stone-900 truncate">
-                  {item.chineseTitle}
-                </div>
-                <div className="text-[11px] font-serif text-stone-600 truncate mt-0.5">
-                  {item.title}
-                </div>
+                {showZh && (
+                  <div className="text-xs font-chinese font-bold text-stone-900 truncate">
+                    {item.chineseTitle}
+                  </div>
+                )}
+                {showId && (
+                  <div className="text-[11px] font-serif text-stone-600 truncate mt-0.5">
+                    {item.title}
+                  </div>
+                )}
               </div>
             </div>
           ))}
@@ -182,12 +201,16 @@ export default function PhotoGallery() {
                 <span className="text-[10px] uppercase tracking-widest text-amber-400 font-serif font-semibold">
                   Foto Dokumentasi 20 Tahun Kuang Hang • 廣航廿載攝影典藏
                 </span>
-                <div className="text-base sm:text-lg font-chinese font-bold text-amber-200 mt-0.5">
-                  {selectedPhoto.chineseTitle}
-                </div>
-                <h4 className="text-xs sm:text-sm font-serif text-stone-300">
-                  {selectedPhoto.title}
-                </h4>
+                {showZh && (
+                  <div className="text-base sm:text-lg font-chinese font-bold text-amber-200 mt-0.5">
+                    {selectedPhoto.chineseTitle}
+                  </div>
+                )}
+                {showId && (
+                  <h4 className="text-xs sm:text-sm font-serif text-stone-300">
+                    {selectedPhoto.title}
+                  </h4>
+                )}
               </div>
 
               <div className="flex items-center gap-2">
@@ -197,14 +220,22 @@ export default function PhotoGallery() {
                   aria-label="Foto Sebelumnya"
                 >
                   <ChevronLeft className="w-4 h-4" />
-                  <span>Sebelumnya • 上一張</span>
+                  <span>
+                    {showId && "Sebelumnya"}
+                    {showId && showZh && " • "}
+                    {showZh && "上一張"}
+                  </span>
                 </button>
                 <button
                   onClick={handleNext}
                   className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-stone-300 border border-white/10 text-xs font-serif transition-colors cursor-pointer"
                   aria-label="Foto Selanjutnya"
                 >
-                  <span>Selanjutnya • 下一張</span>
+                  <span>
+                    {showId && "Selanjutnya"}
+                    {showId && showZh && " • "}
+                    {showZh && "下一張"}
+                  </span>
                   <ChevronRight className="w-4 h-4" />
                 </button>
               </div>

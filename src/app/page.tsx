@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
+import { LanguageProvider } from "@/context/LanguageContext";
 import HeroCover from "@/components/HeroCover";
 import Navbar from "@/components/Navbar";
 import HeroSection from "@/components/HeroSection";
@@ -38,7 +39,6 @@ function InvitationContent() {
   const handleOpenInvitation = () => {
     setIsOpened(true);
     setHasStartedAudio(true);
-    // Smooth scroll down to header
     setTimeout(() => {
       window.scrollTo({ top: 0, behavior: "smooth" });
     }, 100);
@@ -91,15 +91,17 @@ export default function Page() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen flex items-center justify-center bg-[#2a0e0e] text-fothang-gold-300 font-serif">
+        <div className="min-h-screen flex items-center justify-center bg-[#2a0e0e] text-amber-300 font-serif">
           <div className="flex flex-col items-center gap-3">
-            <div className="w-10 h-10 rounded-full border-2 border-fothang-gold-400 border-t-transparent animate-spin" />
+            <div className="w-10 h-10 rounded-full border-2 border-amber-400 border-t-transparent animate-spin" />
             <span className="text-sm tracking-widest font-chinese">廣航佛堂 • 廿週年堂慶</span>
           </div>
         </div>
       }
     >
-      <InvitationContent />
+      <LanguageProvider>
+        <InvitationContent />
+      </LanguageProvider>
     </Suspense>
   );
 }

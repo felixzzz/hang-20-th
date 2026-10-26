@@ -2,11 +2,13 @@
 
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
-import { HeartHandshake, Menu, X } from "lucide-react";
+import { HeartHandshake, Menu, X, Globe } from "lucide-react";
+import { useLanguage, LanguageMode } from "@/context/LanguageContext";
 
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const { lang, setLang } = useLanguage();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -57,15 +59,15 @@ export default function Navbar() {
           </div>
         </a>
 
-        {/* Desktop Nav - Bilingual Editorial Typography */}
-        <nav className="hidden md:flex items-center gap-1 lg:gap-2">
+        {/* Desktop Nav - Editorial Typography */}
+        <nav className="hidden lg:flex items-center gap-1 xl:gap-2">
           {navLinks.map((link) => {
             if (link.isAction) {
               return (
                 <a
                   key={link.name}
                   href={link.href}
-                  className="ml-2 inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-gradient-to-r from-[#831f1f] to-[#6e1818] text-amber-200 font-serif font-semibold text-xs shadow-sm hover:brightness-110 active:scale-95 transition-all border border-amber-500/40 cursor-pointer"
+                  className="ml-2 inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-gradient-to-r from-[#831f1f] to-[#6e1818] text-amber-200 font-serif font-semibold text-xs shadow-sm hover:brightness-110 active:scale-95 transition-all border border-amber-500/40 cursor-pointer"
                 >
                   <HeartHandshake className="w-3.5 h-3.5 text-amber-300" />
                   <span>{link.name}</span>
@@ -80,10 +82,10 @@ export default function Navbar() {
               <a
                 key={link.name}
                 href={link.href}
-                className="px-2.5 lg:px-3 py-1 rounded-full text-xs font-serif font-medium text-stone-700 hover:text-red-900 hover:bg-amber-500/10 transition-colors cursor-pointer flex items-center gap-1"
+                className="px-2.5 py-1 rounded-full text-xs font-serif font-medium text-stone-700 hover:text-red-900 hover:bg-amber-500/10 transition-colors cursor-pointer flex items-center gap-1"
               >
                 <span>{link.name}</span>
-                <span className="font-chinese text-[11px] text-stone-600 font-normal">
+                <span className="font-chinese text-[11px] text-stone-500 font-normal">
                   {link.zh}
                 </span>
               </a>
@@ -91,18 +93,56 @@ export default function Navbar() {
           })}
         </nav>
 
-        {/* Mobile Actions */}
-        <div className="md:hidden flex items-center gap-2">
+        {/* Right Section: Language Switcher & Mobile Trigger */}
+        <div className="flex items-center gap-2">
+          {/* Language Selector Pill */}
+          <div className="flex items-center rounded-full bg-stone-200/60 p-0.5 text-[10px] font-serif border border-amber-900/10">
+            <button
+              onClick={() => setLang("all")}
+              aria-label="Tampilan Dwibahasa"
+              className={`px-2 py-0.5 rounded-full transition-all cursor-pointer ${
+                lang === "all"
+                  ? "bg-[#831f1f] text-amber-200 font-bold shadow-xs"
+                  : "text-stone-600 hover:text-stone-950"
+              }`}
+            >
+              雙語
+            </button>
+            <button
+              onClick={() => setLang("id")}
+              aria-label="Tampilan Bahasa Indonesia"
+              className={`px-2 py-0.5 rounded-full transition-all cursor-pointer ${
+                lang === "id"
+                  ? "bg-[#831f1f] text-amber-200 font-bold shadow-xs"
+                  : "text-stone-600 hover:text-stone-950"
+              }`}
+            >
+              ID
+            </button>
+            <button
+              onClick={() => setLang("zh")}
+              aria-label="僅顯示中文"
+              className={`px-2 py-0.5 rounded-full transition-all cursor-pointer ${
+                lang === "zh"
+                  ? "bg-[#831f1f] text-amber-200 font-bold shadow-xs"
+                  : "text-stone-600 hover:text-stone-950"
+              }`}
+            >
+              中文
+            </button>
+          </div>
+
           <a
             href="#rsvp"
-            className="px-3 py-1 rounded-full bg-[#831f1f] text-amber-200 text-xs font-serif font-semibold border border-amber-400/40"
+            className="lg:hidden px-3 py-1 rounded-full bg-[#831f1f] text-amber-200 text-xs font-serif font-semibold border border-amber-400/40"
           >
-            RSVP • 賜復
+            RSVP
           </a>
+
           <button
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-label="Buka Menu"
-            className="p-1.5 rounded-lg text-stone-800 hover:bg-stone-200/60 cursor-pointer"
+            className="lg:hidden p-1.5 rounded-lg text-stone-800 hover:bg-stone-200/60 cursor-pointer"
           >
             {mobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
           </button>
@@ -111,7 +151,7 @@ export default function Navbar() {
 
       {/* Mobile Drawer */}
       {mobileMenuOpen && (
-        <div className="md:hidden mt-2 max-w-6xl mx-auto rounded-2xl bg-[#faf7f2] border border-amber-600/30 shadow-xl p-4 transition-all">
+        <div className="lg:hidden mt-2 max-w-6xl mx-auto rounded-2xl bg-[#faf7f2] border border-amber-600/30 shadow-xl p-4 transition-all">
           <div className="flex flex-col gap-1">
             {navLinks.map((link) => (
               <a

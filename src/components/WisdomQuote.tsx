@@ -2,8 +2,11 @@
 
 import React from "react";
 import { Flame } from "lucide-react";
+import { useLanguage } from "@/context/LanguageContext";
 
 export default function WisdomQuote() {
+  const { showId, showZh } = useLanguage();
+
   return (
     <section id="wejangan" className="py-16 sm:py-24 px-4 sm:px-6 relative overflow-hidden">
       
@@ -47,10 +50,14 @@ export default function WisdomQuote() {
               </div>
 
               <h2 className="text-2xl sm:text-3xl font-serif font-bold text-red-950">
-                Untaian Wejangan Kebijaksanaan • 茂田師兄聖訓
+                {showId && "Untaian Wejangan Kebijaksanaan"}
+                {showId && showZh && " • "}
+                {showZh && "茂田師兄聖訓"}
               </h2>
               <p className="text-xs text-amber-800 font-serif tracking-widest mt-1 uppercase">
-                Suluh Jiwa Perjalanan 20 Tahun Kuang Hang Fo Thang • 廿載慧命指路明燈
+                {showId && "Suluh Jiwa Perjalanan 20 Tahun Kuang Hang Fo Thang"}
+                {showId && showZh && " • "}
+                {showZh && "廿載慧命指路明燈"}
               </p>
             </div>
 
@@ -59,22 +66,29 @@ export default function WisdomQuote() {
               
               <div className="text-4xl text-amber-600/40 font-serif select-none -mb-3">“</div>
 
-              <blockquote className="font-serif text-xl sm:text-2xl text-stone-900 font-normal leading-relaxed italic px-2 sm:px-6">
-                Semoga di dalam hati setiap orang terdapat kekuatan ikrar, tekad yang bulat, semangat untuk mengorbankan kepentingan diri demi kepentingan yang lebih besar, serta memiliki sebuah tekad penuh welas asih untuk tidak meninggalkan semua makhluk.
-              </blockquote>
+              {showId && (
+                <blockquote className="font-serif text-xl sm:text-2xl text-stone-900 font-normal leading-relaxed italic px-2 sm:px-6">
+                  Semoga di dalam hati setiap orang terdapat kekuatan ikrar, tekad yang bulat, semangat untuk mengorbankan kepentingan diri demi kepentingan yang lebih besar, serta memiliki sebuah tekad penuh welas asih untuk tidak meninggalkan semua makhluk.
+                </blockquote>
+              )}
 
-              <div className="w-24 h-0.5 mx-auto bg-gradient-to-r from-transparent via-amber-600 to-transparent my-6" />
+              {showId && (
+                <>
+                  <div className="w-24 h-0.5 mx-auto bg-gradient-to-r from-transparent via-amber-600 to-transparent my-6" />
 
-              <p className="font-serif text-lg sm:text-xl text-red-900 font-medium italic">
-                Marilah kita bersama-sama menjaga dan mendukung kehidupan kebijaksanaan Shizun dan Shimu.
-              </p>
+                  <p className="font-serif text-lg sm:text-xl text-red-900 font-medium italic">
+                    Marilah kita bersama-sama menjaga dan mendukung kehidupan kebijaksanaan Shizun dan Shimu.
+                  </p>
+                </>
+              )}
+
+              {showZh && (
+                <div className={`${showId ? "mt-6 pt-6 border-t border-amber-900/10" : "my-4"} text-sm sm:text-base font-chinese text-stone-800 tracking-widest leading-loose font-normal`}>
+                  「願人人心中有大愿力 • 捨己為公 • 慈悲不捨眾生 • 共同護持師尊師母慧命」
+                </div>
+              )}
 
               <div className="text-4xl text-amber-600/40 font-serif select-none -mt-1">”</div>
-
-              {/* Chinese Calligraphy Scripture Parallel */}
-              <div className="mt-6 pt-6 border-t border-amber-900/10 text-xs sm:text-sm font-chinese text-stone-600 tracking-widest leading-loose">
-                願人人心中有大愿力 • 捨己為公 • 慈悲不捨眾生 • 共同護持師尊師母慧命
-              </div>
             </div>
 
             {/* Seal Marks at bottom of scroll */}
@@ -83,7 +97,9 @@ export default function WisdomQuote() {
                 佛光普照
               </span>
               <span className="font-serif italic text-stone-600">
-                Peringatan Dua Dasawarsa • 廣航同舟
+                {showId && "Peringatan Dua Dasawarsa"}
+                {showId && showZh && " • "}
+                {showZh && "廣航同舟"}
               </span>
               <span className="chinese-seal-red text-[10px] px-2 py-0.5">
                 永續長航

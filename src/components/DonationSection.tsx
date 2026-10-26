@@ -3,8 +3,10 @@
 import React, { useState } from "react";
 import { Copy, Check, Heart, Sparkles, CreditCard } from "lucide-react";
 import { donationConfig } from "@/data/donation";
+import { useLanguage } from "@/context/LanguageContext";
 
 export default function DonationSection() {
+  const { showId, showZh } = useLanguage();
   const [copied, setCopied] = useState(false);
 
   const handleCopy = () => {
@@ -23,7 +25,9 @@ export default function DonationSection() {
           <div className="inline-flex items-center gap-2 mb-3">
             <span className="w-8 h-px bg-amber-600/60" />
             <span className="text-xs uppercase tracking-widest text-amber-800 font-semibold font-serif">
-              Tali Kasih & Dana Kebajikan • 隨喜功德 · 廣種福田
+              {showId && "Tali Kasih & Dana Kebajikan"}
+              {showId && showZh && " • "}
+              {showZh && "隨喜功德 · 廣種福田"}
             </span>
             <span className="w-8 h-px bg-amber-600/60" />
           </div>
@@ -31,16 +35,25 @@ export default function DonationSection() {
           <h2 className="text-3xl sm:text-5xl font-chinese font-bold text-red-950 mb-2">
             隨喜功德 • 廣種福田
           </h2>
-          <p className="text-sm font-serif text-stone-700 max-w-lg mx-auto">
-            Doa restu serta kehadiran Bapak/Ibu/Saudara/i adalah karunia terindah bagi kami. Bagi yang hendak menyalurkan tali kasih sukarela demi kelancaran kegiatan wadah keTuhanan Kuang Hang:
-          </p>
-          <p className="text-xs font-chinese text-stone-500 max-w-lg mx-auto mt-0.5 leading-relaxed">
-            十方大德之道情法喜與蒞臨祈福，乃廣航最大恩典。若欲隨喜發心護持廣航道務聖業者，可隨喜行功：
-          </p>
+          {showId && (
+            <p className="text-sm font-serif text-stone-700 max-w-lg mx-auto">
+              Doa restu serta kehadiran Bapak/Ibu/Saudara/i adalah karunia terindah bagi kami. Bagi yang hendak menyalurkan tali kasih sukarela demi kelancaran kegiatan wadah keTuhanan Kuang Hang:
+            </p>
+          )}
+          {showZh && (
+            <p className="text-xs font-chinese text-stone-500 max-w-lg mx-auto mt-0.5 leading-relaxed">
+              十方大德之道情法喜與蒞臨祈福，乃廣航最大恩典。若欲隨喜發心護持廣航道務聖業者，可隨喜行功：
+            </p>
+          )}
         </div>
 
         {/* Ceremonial Engraved Plaque - Bilingual */}
         <div className="max-w-lg mx-auto rounded-2xl bg-gradient-to-b from-[#2a0e0e] via-[#1f0909] to-[#140505] text-stone-100 p-7 sm:p-9 border border-amber-500/40 shadow-2xl relative overflow-hidden">
+          {/* Traditional Corner Ornaments */}
+          <div className="corner-ornament-tl" />
+          <div className="corner-ornament-tr" />
+          <div className="corner-ornament-bl" />
+          <div className="corner-ornament-br" />
           
           <div className="absolute top-0 right-0 w-32 h-32 bg-amber-500/10 rounded-full filter blur-xl pointer-events-none" />
 
@@ -58,7 +71,9 @@ export default function DonationSection() {
           {donationConfig.isReady ? (
             <div className="space-y-4">
               <div className="text-xs text-stone-400 font-serif">
-                Nomor Rekening Resmi Panitia • 官方功德帳號
+                {showId && "Nomor Rekening Resmi Panitia"}
+                {showId && showZh && " • "}
+                {showZh && "官方功德帳號"}
               </div>
               <div className="text-2xl sm:text-3xl font-mono font-bold text-amber-200 tracking-wider">
                 {donationConfig.accountNumber}
@@ -75,12 +90,20 @@ export default function DonationSection() {
                   {copied ? (
                     <>
                       <Check className="w-3.5 h-3.5 text-emerald-950" />
-                      <span>Nomor Rekening Berhasil Disalin! • 帳號已複製</span>
+                      <span>
+                        {showId && "Nomor Rekening Berhasil Disalin!"}
+                        {showId && showZh && " • "}
+                        {showZh && "帳號已複製"}
+                      </span>
                     </>
                   ) : (
                     <>
                       <Copy className="w-3.5 h-3.5" />
-                      <span>Salin Nomor Rekening • 複製帳號</span>
+                      <span>
+                        {showId && "Salin Nomor Rekening"}
+                        {showId && showZh && " • "}
+                        {showZh && "複製帳號"}
+                      </span>
                     </>
                   )}
                 </button>
@@ -108,7 +131,11 @@ export default function DonationSection() {
 
           <div className="mt-6 pt-4 border-t border-white/10 text-[11px] text-stone-400 font-serif flex items-center justify-center gap-1.5">
             <Heart className="w-3 h-3 text-red-400 fill-red-400" />
-            <span>Terima kasih atas ketulusan hati dan kebajikan Anda • 感恩慈悲發心</span>
+            <span>
+              {showId && "Terima kasih atas ketulusan hati dan kebajikan Anda"}
+              {showId && showZh && " • "}
+              {showZh && "感恩慈悲發心"}
+            </span>
           </div>
 
         </div>

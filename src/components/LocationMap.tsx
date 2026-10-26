@@ -2,8 +2,10 @@
 
 import React, { useState } from "react";
 import { Navigation, ExternalLink, Check, Building } from "lucide-react";
+import { useLanguage } from "@/context/LanguageContext";
 
 export default function LocationMap() {
+  const { showId, showZh } = useLanguage();
   const [copied, setCopied] = useState(false);
 
   const fullAddress =
@@ -25,7 +27,9 @@ export default function LocationMap() {
           <div className="inline-flex items-center gap-2 mb-3">
             <span className="w-8 h-px bg-amber-600/60" />
             <span className="text-xs uppercase tracking-widest text-amber-800 font-semibold font-serif">
-              Petunjuk Lokasi & Arah Menuju Gedung • 道場座標與交通指引
+              {showId && "Petunjuk Lokasi & Arah Menuju Gedung"}
+              {showId && showZh && " • "}
+              {showZh && "道場座標與交通指引"}
             </span>
             <span className="w-8 h-px bg-amber-600/60" />
           </div>
@@ -33,12 +37,16 @@ export default function LocationMap() {
           <h2 className="text-3xl sm:text-5xl font-chinese font-bold text-red-950 mb-2">
             道場座標 • 交通導引
           </h2>
-          <p className="text-sm font-serif text-stone-700 max-w-lg">
-            Gedung Kuang Hang Fo Thang berlokasi strategis di Palmerah Utara, mudah dijangkau dari segala penjuru Jakarta.
-          </p>
-          <p className="text-xs font-chinese text-stone-500 max-w-lg mt-0.5">
-            廣航佛堂位處雅加達西區巴美拉核心樞紐，交通四通八達，便捷通暢。
-          </p>
+          {showId && (
+            <p className="text-sm font-serif text-stone-700 max-w-lg">
+              Gedung Kuang Hang Fo Thang berlokasi strategis di Palmerah Utara, mudah dijangkau dari segala penjuru Jakarta.
+            </p>
+          )}
+          {showZh && (
+            <p className="text-xs font-chinese text-stone-500 max-w-lg mt-0.5">
+              廣航佛堂位處雅加達西區巴美拉核心樞紐，交通四通八達，便捷通暢。
+            </p>
+          )}
         </div>
 
         {/* Map Framed Folio - Bilingual */}
@@ -65,17 +73,21 @@ export default function LocationMap() {
               <div>
                 <div className="flex items-center gap-2 text-xs font-serif font-bold uppercase text-amber-800 tracking-wider mb-1">
                   <Building className="w-4 h-4 text-red-800" />
-                  <span>Kuang Hang Fo Thang (廣航佛堂)</span>
+                  <span>Kuang Hang Fo Thang {showZh && "(廣航佛堂)"}</span>
                 </div>
                 <h3 className="text-xl font-serif font-bold text-stone-900">
                   Jl. Palmerah Utara III No. 186A
                 </h3>
-                <p className="text-xs sm:text-sm font-serif text-stone-600 mt-1 max-w-md">
-                  RT.002/RW.06, Palmerah, Kec. Palmerah, Kota Jakarta Barat, DKI Jakarta 11480
-                </p>
-                <p className="text-xs font-chinese text-stone-500 mt-0.5">
-                  印度尼西亞 雅加達西區 巴美拉北三路186A號
-                </p>
+                {showId && (
+                  <p className="text-xs sm:text-sm font-serif text-stone-600 mt-1 max-w-md">
+                    RT.002/RW.06, Palmerah, Kec. Palmerah, Kota Jakarta Barat, DKI Jakarta 11480
+                  </p>
+                )}
+                {showZh && (
+                  <p className="text-xs font-chinese text-stone-500 mt-0.5">
+                    印度尼西亞 雅加達西區 巴美拉北三路186A號
+                  </p>
+                )}
               </div>
 
               {/* Navigation Action Buttons */}
@@ -87,7 +99,11 @@ export default function LocationMap() {
                   className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#831f1f] hover:bg-[#6e1818] text-amber-200 font-serif font-semibold text-xs shadow-md transition-all cursor-pointer border border-amber-400/30"
                 >
                   <Navigation className="w-4 h-4 text-amber-300" />
-                  <span>Petunjuk Arah (Google Maps) • 導航</span>
+                  <span>
+                    {showId && "Petunjuk Arah (Google Maps)"}
+                    {showId && showZh && " • "}
+                    {showZh && "導航"}
+                  </span>
                   <ExternalLink className="w-3 h-3 opacity-60" />
                 </a>
 
@@ -98,10 +114,18 @@ export default function LocationMap() {
                   {copied ? (
                     <>
                       <Check className="w-4 h-4 text-emerald-600" />
-                      <span className="text-emerald-700 font-semibold">Alamat Tersalin! • 已複製</span>
+                      <span className="text-emerald-700 font-semibold">
+                        {showId && "Alamat Tersalin!"}
+                        {showId && showZh && " • "}
+                        {showZh && "已複製"}
+                      </span>
                     </>
                   ) : (
-                    <span>Salin Alamat • 複製地址</span>
+                    <span>
+                      {showId && "Salin Alamat"}
+                      {showId && showZh && " • "}
+                      {showZh && "複製地址"}
+                    </span>
                   )}
                 </button>
               </div>

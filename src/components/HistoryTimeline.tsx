@@ -4,8 +4,10 @@ import React, { useState } from "react";
 import Image from "next/image";
 import { historyMilestones, Milestone } from "@/data/history";
 import { MapPin, ChevronRight, ChevronLeft } from "lucide-react";
+import { useLanguage } from "@/context/LanguageContext";
 
 export default function HistoryTimeline() {
+  const { showId, showZh } = useLanguage();
   const [selectedIdx, setSelectedIdx] = useState(0);
   const current = historyMilestones[selectedIdx];
 
@@ -34,7 +36,9 @@ export default function HistoryTimeline() {
           <div className="inline-flex items-center gap-2 mb-3">
             <span className="w-8 h-px bg-amber-600/60" />
             <span className="text-xs uppercase tracking-widest text-amber-800 font-semibold font-serif">
-              Napak Tilas 20 Tahun Gedung Kuang Hang (1997 — 2026) • 廣航廿載光輝史話
+              {showId && "Napak Tilas 20 Tahun Gedung Kuang Hang (1997 — 2026)"}
+              {showId && showZh && " • "}
+              {showZh && "廣航廿載光輝史話"}
             </span>
             <span className="w-8 h-px bg-amber-600/60" />
           </div>
@@ -42,12 +46,16 @@ export default function HistoryTimeline() {
           <h2 className="text-3xl sm:text-5xl font-chinese font-bold text-red-950 mb-2">
             歲月印記 • 薪火相傳
           </h2>
-          <p className="text-sm font-serif text-stone-700 max-w-xl">
-            Mengenang jejak tetesan keringat, doa tulus, dan pengorbanan para perintis awal yang memungkinkan pelita Kuang Hang bersinar terang hari ini.
-          </p>
-          <p className="text-xs font-chinese text-stone-500 max-w-xl mt-1 leading-relaxed">
-            追思前賢開荒啟航之大願與辛勞，一磚一瓦凝聚願力，薪火相傳二十載，廣航慧燈恆久普照。
-          </p>
+          {showId && (
+            <p className="text-sm font-serif text-stone-700 max-w-xl">
+              Mengenang jejak tetesan keringat, doa tulus, dan pengorbanan para perintis awal yang memungkinkan pelita Kuang Hang bersinar terang hari ini.
+            </p>
+          )}
+          {showZh && (
+            <p className="text-xs font-chinese text-stone-500 max-w-xl mt-1 leading-relaxed">
+              追思前賢開荒啟航之大願與辛勞，一磚一瓦凝聚願力，薪火相傳二十載，廣航慧燈恆久普照。
+            </p>
+          )}
         </div>
 
         {/* Horizontal Timeline Ribbon with Years & Chinese Titles */}
@@ -66,7 +74,7 @@ export default function HistoryTimeline() {
                 {m.year}
               </span>
               <span className="text-[10px] font-chinese mt-1 opacity-90 truncate max-w-[100px]">
-                {m.chineseTitle.split("•")[0]?.trim() || m.title}
+                {showZh ? m.chineseTitle.split("•")[0]?.trim() : m.title}
               </span>
             </button>
           ))}
@@ -88,23 +96,28 @@ export default function HistoryTimeline() {
             {/* Archival Reference Tag */}
             <div className="absolute top-5 left-5 flex items-center gap-2">
               <span className="chinese-seal-filled text-xs px-2.5 py-0.5 shadow-md">
-                Tahun {current.year} • {current.year}年
+                Tahun {current.year}
+                {showZh && ` • ${current.year}年`}
               </span>
               <span className="px-2.5 py-0.5 rounded bg-black/60 backdrop-blur-sm border border-white/20 text-[10px] text-stone-300 font-serif">
-                Bab {selectedIdx + 1} / {historyMilestones.length} 篇章
+                Bab {selectedIdx + 1} / {historyMilestones.length}
               </span>
             </div>
 
             {/* Inset Photo Caption */}
             <div className="relative z-10 text-white">
-              <div className="text-xl sm:text-2xl font-chinese font-bold text-amber-300 mb-0.5 drop-shadow">
-                {current.chineseTitle}
-              </div>
-              <div className="text-sm font-serif font-semibold text-stone-200 mb-1">
-                {current.title}
-              </div>
+              {showZh && (
+                <div className="text-xl sm:text-2xl font-chinese font-bold text-amber-300 mb-0.5 drop-shadow">
+                  {current.chineseTitle}
+                </div>
+              )}
+              {showId && (
+                <div className="text-sm font-serif font-semibold text-stone-200 mb-1">
+                  {current.title}
+                </div>
+              )}
               <p className="text-xs text-amber-200/90 font-serif italic">
-                {current.highlight}
+                {showId ? current.highlight : current.chineseHighlight}
               </p>
             </div>
           </div>
@@ -115,7 +128,9 @@ export default function HistoryTimeline() {
             <div>
               <div className="flex items-center justify-between pb-3 border-b border-amber-900/15 mb-4">
                 <span className="text-xs uppercase tracking-widest text-amber-800 font-semibold font-serif">
-                  Kilas Balik Sejarah Perintisan • 歷程文獻
+                  {showId && "Kilas Balik Sejarah Perintisan"}
+                  {showId && showZh && " • "}
+                  {showZh && "歷程文獻"}
                 </span>
                 <span className="chinese-seal-red text-xs px-2 py-0.5">
                   文獻珍藏
@@ -124,45 +139,57 @@ export default function HistoryTimeline() {
 
               {/* Title Bilingual */}
               <div className="mb-3">
-                <h3 className="text-2xl sm:text-3xl font-serif font-bold text-red-950 leading-tight">
-                  {current.title}
-                </h3>
-                <h4 className="text-lg font-chinese text-amber-800 font-bold mt-0.5">
-                  {current.chineseTitle}
-                </h4>
+                {showId && (
+                  <h3 className="text-2xl sm:text-3xl font-serif font-bold text-red-950 leading-tight">
+                    {current.title}
+                  </h3>
+                )}
+                {showZh && (
+                  <h4 className="text-lg font-chinese text-amber-800 font-bold mt-0.5">
+                    {current.chineseTitle}
+                  </h4>
+                )}
               </div>
 
               {/* Location Bilingual */}
               {current.location && (
                 <div className="flex items-center gap-1.5 text-xs text-stone-500 font-serif mb-4">
                   <MapPin className="w-3.5 h-3.5 text-amber-700 shrink-0" />
-                  <span>{current.location}</span>
-                  {current.chineseLocation && (
+                  {showId && <span>{current.location}</span>}
+                  {showZh && current.chineseLocation && (
                     <span className="font-chinese text-stone-600 font-medium">
-                      ({current.chineseLocation})
+                      {showId ? `(${current.chineseLocation})` : current.chineseLocation}
                     </span>
                   )}
                 </div>
               )}
 
               {/* Indonesian Narrative */}
-              <p className="text-stone-800 text-xs sm:text-sm leading-relaxed mb-3 font-serif">
-                {current.description}
-              </p>
+              {showId && (
+                <p className="text-stone-800 text-xs sm:text-sm leading-relaxed mb-3 font-serif">
+                  {current.description}
+                </p>
+              )}
 
               {/* Chinese Narrative */}
-              <p className="text-stone-600 text-xs sm:text-sm font-chinese leading-relaxed mb-6 font-normal">
-                {current.chineseDescription}
-              </p>
+              {showZh && (
+                <p className="text-stone-600 text-xs sm:text-sm font-chinese leading-relaxed mb-6 font-normal">
+                  {current.chineseDescription}
+                </p>
+              )}
 
               {/* Archival Pull Quote Box - Bilingual */}
               <div className="p-4 rounded-xl bg-amber-500/10 border-l-2 border-amber-600 space-y-1">
-                <div className="text-xs text-stone-800 font-serif italic leading-relaxed">
-                  &ldquo;{current.highlight}&rdquo;
-                </div>
-                <div className="text-[11px] text-amber-950 font-chinese font-medium">
-                  「{current.chineseHighlight}」
-                </div>
+                {showId && (
+                  <div className="text-xs text-stone-800 font-serif italic leading-relaxed">
+                    &ldquo;{current.highlight}&rdquo;
+                  </div>
+                )}
+                {showZh && (
+                  <div className="text-[11px] text-amber-950 font-chinese font-medium">
+                    「{current.chineseHighlight}」
+                  </div>
+                )}
               </div>
             </div>
 
@@ -173,7 +200,11 @@ export default function HistoryTimeline() {
                 className="inline-flex items-center gap-1 text-xs font-serif font-medium text-stone-600 hover:text-red-900 transition-colors cursor-pointer"
               >
                 <ChevronLeft className="w-4 h-4" />
-                <span>Sebelumnya • 上一章</span>
+                <span>
+                  {showId && "Sebelumnya"}
+                  {showId && showZh && " • "}
+                  {showZh && "上一章"}
+                </span>
               </button>
 
               <div className="text-[11px] font-serif text-stone-500">
@@ -184,7 +215,11 @@ export default function HistoryTimeline() {
                 onClick={handleNext}
                 className="inline-flex items-center gap-1 text-xs font-serif font-medium text-stone-600 hover:text-red-900 transition-colors cursor-pointer"
               >
-                <span>Selanjutnya • 下一章</span>
+                <span>
+                  {showId && "Selanjutnya"}
+                  {showId && showZh && " • "}
+                  {showZh && "下一章"}
+                </span>
                 <ChevronRight className="w-4 h-4" />
               </button>
             </div>
