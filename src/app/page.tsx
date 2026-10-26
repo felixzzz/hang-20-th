@@ -64,14 +64,8 @@ function InvitationContent() {
       {/* Ambient Floating Lantern Dust */}
       {isOpened && <AmbientLanternCanvas />}
 
-      {/* Main Invitation Layout */}
-      <div
-        className={
-          isOpened
-            ? "opacity-100 transition-opacity duration-1000"
-            : "opacity-0 pointer-events-none select-none max-h-screen overflow-hidden"
-        }
-      >
+      {/* Main Invitation Layout - Always rendered for accessibility & SEO */}
+      <div className="transition-opacity duration-700">
         <Navbar />
         <HeroSection guestName={guestName} />
         <WisdomQuote />

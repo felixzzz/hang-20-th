@@ -31,27 +31,22 @@ export default function EventDetails() {
       <div className="max-w-3xl mx-auto">
         
         {/* Section Header */}
-        <div className="flex flex-col items-center text-center mb-12">
-          <div className="inline-flex items-center gap-2 mb-3">
-            <span className="w-8 h-px bg-amber-600/60" />
-            <span className="text-xs uppercase tracking-widest text-amber-800 font-semibold font-serif">
-              {showId && "Waktu & Tempat Pelaksanaan"}
-              {showId && showZh && " • "}
-              {showZh && "慶典時間與會場導引"}
-            </span>
-            <span className="w-8 h-px bg-amber-600/60" />
-          </div>
-
+        <div className="flex flex-col items-center text-center mb-10">
           <h2 className="text-3xl sm:text-5xl font-chinese font-bold text-red-950 mb-2">
             慶典日程 • 會場導引
           </h2>
+          <div className="text-sm sm:text-base font-serif font-semibold text-amber-900 mb-2">
+            {showId && "Waktu & Tempat Pelaksanaan"}
+            {showId && showZh && " • "}
+            {showZh && "慶典時間與會場導引"}
+          </div>
           {showId && (
-            <p className="text-sm font-serif text-stone-700 max-w-lg">
-              Detail Pelaksanaan Malam Syukur Peringatan 20 Tahun Gedung Kuang Hang Fo Thang
+            <p className="text-sm sm:text-base font-serif text-stone-700 max-w-lg text-pretty">
+              Detail Pelaksanaan Malam Syukur Peringatan 20 Tahun Gedung Kuang Hang Fo&nbsp;Thang
             </p>
           )}
           {showZh && (
-            <p className="font-chinese text-xs text-stone-500 mt-0.5">
+            <p className="font-chinese text-xs sm:text-sm text-stone-600 mt-1">
               廣航佛堂成立廿週年感恩大典會場導引
             </p>
           )}
@@ -68,16 +63,7 @@ export default function EventDetails() {
           <div className="absolute top-0 right-0 w-48 h-48 bg-amber-500/10 rounded-full filter blur-3xl pointer-events-none" />
 
           <div className="text-center mb-8 relative z-10">
-            <div className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-amber-500/15 border border-amber-400/30 text-amber-300 text-xs font-serif font-medium mb-4">
-              <Sparkles className="w-3.5 h-3.5" />
-              <span>
-                {showId && "Malam Puncak Peringatan"}
-                {showId && showZh && " • "}
-                {showZh && "堂慶感恩晚會"}
-              </span>
-            </div>
-
-            <div className="text-xs font-serif text-amber-400 tracking-widest uppercase mb-1">
+            <div className="text-xs sm:text-sm font-serif text-amber-300 tracking-widest uppercase mb-1">
               {showId && "Hari & Tanggal"}
               {showId && showZh && " • "}
               {showZh && "慶典日期"}
@@ -86,66 +72,67 @@ export default function EventDetails() {
               Sabtu, 14 November 2026
             </h3>
             {showZh && (
-              <p className="font-chinese text-base text-amber-300">
+              <p className="font-chinese text-base sm:text-lg text-amber-300">
                 2026年11月14日（星期六）
               </p>
             )}
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-6 border-t border-white/10 mb-8">
+          {/* Flat 3-column layout without nested card boxes */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-6 border-t border-white/15 mb-8">
             {/* Waktu */}
-            <div className="flex flex-col items-center text-center p-4 rounded-xl bg-white/5 border border-white/10">
-              <div className="w-10 h-10 rounded-lg bg-amber-500/15 border border-amber-400/30 flex items-center justify-center text-amber-300 mb-3">
+            <div className="flex flex-col items-center text-center p-2">
+              <div className="w-10 h-10 rounded-full bg-amber-500/20 border border-amber-400/40 flex items-center justify-center text-amber-300 mb-3">
                 <Clock className="w-5 h-5" />
               </div>
-              <span className="text-xs text-stone-400 font-serif block mb-0.5">
+              <span className="text-xs text-stone-300 font-serif block mb-1">
                 {showId && "Waktu Mulai"}
                 {showId && showZh && " • "}
                 {showZh && "時間"}
               </span>
-              <strong className="text-sm text-stone-100 font-serif block">
+              <strong className="text-sm sm:text-base text-stone-100 font-serif block">
                 19.00 WIB s/d Selesai
               </strong>
               {showZh && <span className="font-chinese text-xs text-amber-300 mt-0.5">晚間七時正</span>}
-              <p className="text-[11px] text-stone-400 mt-2 font-serif">
+              <p className="text-xs text-stone-300 mt-2 font-serif">
                 Registrasi dibuka 18.30 WIB (18:30 入席)
               </p>
             </div>
 
             {/* Tempat */}
-            <div className="flex flex-col items-center text-center p-4 rounded-xl bg-white/5 border border-white/10">
-              <div className="w-10 h-10 rounded-lg bg-amber-500/15 border border-amber-400/30 flex items-center justify-center text-amber-300 mb-3">
+            <div className="flex flex-col items-center text-center p-2 md:border-x md:border-white/10">
+              <div className="w-10 h-10 rounded-full bg-amber-500/20 border border-amber-400/40 flex items-center justify-center text-amber-300 mb-3">
                 <MapPin className="w-5 h-5" />
               </div>
-              <span className="text-xs text-stone-400 font-serif block mb-0.5">
+              <span className="text-xs text-stone-300 font-serif block mb-1">
                 {showId && "Lokasi Ibadah"}
                 {showId && showZh && " • "}
                 {showZh && "地點"}
               </span>
-              <strong className="text-sm text-stone-100 font-serif block">
+              <strong className="text-sm sm:text-base text-stone-100 font-serif block">
                 Kuang Hang Fo Thang
               </strong>
               <span className="font-chinese text-xs text-amber-300 mt-0.5">廣航佛堂</span>
-              <p className="text-[11px] text-stone-400 mt-2 font-serif">
+              <p className="text-xs text-stone-300 mt-2 font-serif">
                 Jl. Palmerah Utara III No. 186A, Palmerah, Jakarta Barat
               </p>
             </div>
 
             {/* Dress code */}
-            <div className="flex flex-col items-center text-center p-4 rounded-xl bg-white/5 border border-white/10">
-              <div className="w-10 h-10 rounded-lg bg-amber-500/15 border border-amber-400/30 flex items-center justify-center text-amber-300 mb-3">
+            <div className="flex flex-col items-center text-center p-2">
+              <div className="w-10 h-10 rounded-full bg-amber-500/20 border border-amber-400/40 flex items-center justify-center text-amber-300 mb-3">
                 <Shirt className="w-5 h-5" />
               </div>
-              <span className="text-xs text-stone-400 font-serif block mb-0.5">
+              <span className="text-xs text-stone-300 font-serif block mb-1">
                 {showId && "Tata Busana"}
                 {showId && showZh && " • "}
                 {showZh && "服裝儀容"}
               </span>
-              <strong className="text-sm text-stone-100 font-serif block">
+              <strong className="text-sm sm:text-base text-stone-100 font-serif block">
                 Busana Rapi & Sopan
               </strong>
               {showZh && <span className="font-chinese text-xs text-amber-300 mt-0.5">端莊得體</span>}
-              <p className="text-[11px] text-stone-400 mt-2 font-serif">
+              <p className="text-xs text-stone-300 mt-2 font-serif">
                 Batik / Kemeja Putih / Busana Wadah (白襯衫/蠟染)
               </p>
             </div>
@@ -157,9 +144,9 @@ export default function EventDetails() {
               href={googleCalendarUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 py-3 px-6 rounded-xl bg-gradient-to-r from-amber-600 to-amber-700 text-stone-950 font-serif font-bold text-xs shadow-md hover:brightness-110 active:scale-95 transition-all cursor-pointer"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 py-3 px-6 rounded-xl bg-[#831f1f] hover:bg-[#6e1818] border border-amber-400/50 text-amber-100 font-serif font-bold text-xs shadow-md active:scale-95 transition-all cursor-pointer"
             >
-              <CalendarPlus className="w-4 h-4" />
+              <CalendarPlus className="w-4 h-4 text-amber-300" />
               <span>
                 {showId && "Simpan ke Google Calendar"}
                 {showId && showZh && " • "}
@@ -194,7 +181,7 @@ export default function EventDetails() {
           </div>
 
           {/* Footer note */}
-          <div className="mt-6 pt-4 text-center text-[11px] text-stone-400 font-serif border-t border-white/10">
+          <div className="mt-6 pt-4 text-center text-xs text-stone-300 font-serif border-t border-white/10">
             * Mohon hadir tepat waktu demi kelancaran kekhidmatan upacara. • 為維護典禮莊嚴順暢，敬請準時入席。
           </div>
 

@@ -194,11 +194,8 @@ Terima kasih.`;
             <Lock className="w-7 h-7" />
           </div>
 
-          <span className="text-[10px] uppercase font-bold tracking-widest text-fothang-gold-400">
-            Area Khusus Panitia
-          </span>
-          <h1 className="text-2xl font-serif font-bold text-fothang-gold-200 mt-1 mb-2">
-            Kuang Hang Fo Thang
+          <h1 className="text-2xl font-serif font-bold text-fothang-gold-200 mt-2 mb-2">
+            Portal Panitia Kuang Hang Fo Thang
           </h1>
           <p className="text-xs text-stone-300 mb-6">
             Halaman ini khusus pengurus & panitia untuk mengelola undangan dan rekapitulasi data kehadiran umat.
@@ -214,7 +211,7 @@ Terima kasih.`;
                   setPinError(false);
                 }}
                 placeholder="Masukkan PIN Akses Panitia"
-                className="w-full px-4 py-3 rounded-xl bg-black/40 border border-fothang-gold-400/30 text-center text-white placeholder-stone-500 text-sm focus:border-fothang-gold-400 outline-none transition"
+                className="w-full px-4 py-3 rounded-xl bg-black/40 border border-fothang-gold-400/30 text-center text-white placeholder-stone-400 text-sm focus:border-fothang-gold-400 outline-none transition"
               />
               {pinError && (
                 <p className="text-xs text-red-400 mt-2 font-medium">

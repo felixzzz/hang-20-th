@@ -92,21 +92,21 @@ export default function Footer({ onReopenEnvelope }: FooterProps) {
         </div>
 
         {/* Address and Sanctuary Notation */}
-        <p className="text-xs text-stone-400 font-serif max-w-sm mx-auto leading-relaxed mb-1">
+        <p className="text-xs sm:text-sm text-stone-300 font-serif max-w-sm mx-auto leading-relaxed mb-1">
           Kuang Hang Fo Thang • Jl. Palmerah Utara III No. 186A, Palmerah, Jakarta Barat 11480
         </p>
-        <p className="text-[11px] font-chinese text-stone-500 mb-6">
+        <p className="text-xs font-chinese text-stone-300 mb-6">
           雅加達西區巴美拉北三路186A號
         </p>
 
         {/* Colophon */}
-        <div className="pt-6 border-t border-white/10 flex items-center justify-center text-[11px] text-stone-400 font-serif">
+        <div className="pt-6 border-t border-white/10 flex items-center justify-center text-xs text-stone-300 font-serif">
           <div className="flex items-center gap-1.5">
             <span>
               {showId ? "Dipersembahkan dengan ketulusan oleh" : "虔誠奉獻："}
             </span>
-            <Heart className="w-3 h-3 text-red-500 fill-red-500" />
-            <span className="text-stone-300">
+            <Heart className="w-3.5 h-3.5 text-red-500 fill-red-500" />
+            <span className="text-stone-200">
               {showId ? "Keluarga Besar Kuang Hang" : "廣航佛堂闔體"}
               {showId && showZh && " (廣航佛堂闔體)"}
             </span>

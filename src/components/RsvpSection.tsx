@@ -153,54 +153,49 @@ export default function RsvpSection({ initialGuestName = "" }: RsvpSectionProps)
       <div className="max-w-4xl mx-auto">
         
         {/* Section Header - Bilingual */}
-        <div className="flex flex-col items-center text-center mb-12">
-          <div className="inline-flex items-center gap-2 mb-3">
-            <span className="w-8 h-px bg-amber-600/60" />
-            <span className="text-xs uppercase tracking-widest text-amber-800 font-semibold font-serif">
-              {showId && "Konfirmasi Kehadiran & Doa Umat"}
-              {showId && showZh && " • "}
-              {showZh && "出席確認與祈福賜帖"}
-            </span>
-            <span className="w-8 h-px bg-amber-600/60" />
-          </div>
-
+        <div className="flex flex-col items-center text-center mb-10">
           <h2 className="text-3xl sm:text-5xl font-chinese font-bold text-red-950 mb-2">
             功德名冊 • 祈願雅集
           </h2>
+          <div className="text-sm sm:text-base font-serif font-semibold text-amber-900 mb-2">
+            {showId && "Konfirmasi Kehadiran & Doa Umat"}
+            {showId && showZh && " • "}
+            {showZh && "出席確認與祈福賜帖"}
+          </div>
           {showId && (
-            <p className="text-sm font-serif text-stone-700 max-w-lg">
+            <p className="text-sm sm:text-base font-serif text-stone-700 max-w-lg">
               Kehadiran serta doa tulus dari Bapak/Ibu/Saudara/i sekalian adalah suluh penerang yang menyempurnakan peringatan 20 tahun Kuang Hang.
             </p>
           )}
           {showZh && (
-            <p className="text-xs font-chinese text-stone-500 max-w-lg mt-0.5">
+            <p className="font-chinese text-xs sm:text-sm text-stone-600 max-w-lg mt-1">
               各位前賢道親之蒞臨與至誠祈願，乃成就廣航廿週年堂慶之無上殊勝善緣。
             </p>
           )}
         </div>
 
-        {/* Live Attendance Ledger Tally - Bilingual */}
-        <div className="grid grid-cols-3 gap-3 sm:gap-6 max-w-xl mx-auto mb-10 text-center">
-          <div className="p-4 rounded-xl bg-[#faf7f2] border border-amber-800/15 shadow-sm">
+        {/* Live Attendance Ledger Tally - Single Unified Parchment Strip */}
+        <div className="max-w-xl mx-auto mb-10 rounded-xl bg-[#faf7f2] border border-amber-800/20 shadow-sm p-4 grid grid-cols-3 divide-x divide-amber-900/15 text-center">
+          <div className="px-2">
             <span className="block text-2xl sm:text-3xl font-serif font-bold text-red-950">
               {summary.totalResponses}
             </span>
-            {showId && <span className="text-[10px] sm:text-xs text-stone-500 font-serif block">Konfirmasi Masuk</span>}
-            {showZh && <span className="text-[10px] text-amber-800 font-chinese font-medium">回函賜帖</span>}
+            {showId && <span className="text-xs text-stone-600 font-serif block">Konfirmasi Masuk</span>}
+            {showZh && <span className="text-xs text-amber-800 font-chinese font-medium">回函賜帖</span>}
           </div>
-          <div className="p-4 rounded-xl bg-[#faf7f2] border border-amber-800/15 shadow-sm">
+          <div className="px-2">
             <span className="block text-2xl sm:text-3xl font-serif font-bold text-emerald-800">
               {summary.attending}
             </span>
-            {showId && <span className="text-[10px] sm:text-xs text-stone-500 font-serif block">Keluarga Hadir</span>}
-            {showZh && <span className="text-[10px] text-emerald-700 font-chinese font-medium">出席道親</span>}
+            {showId && <span className="text-xs text-stone-600 font-serif block">Keluarga Hadir</span>}
+            {showZh && <span className="text-xs text-emerald-700 font-chinese font-medium">出席道親</span>}
           </div>
-          <div className="p-4 rounded-xl bg-[#faf7f2] border border-amber-800/15 shadow-sm">
+          <div className="px-2">
             <span className="block text-2xl sm:text-3xl font-serif font-bold text-amber-800">
               {summary.totalGuests}
             </span>
-            {showId && <span className="text-[10px] sm:text-xs text-stone-500 font-serif block">Estimasi Jiwa Umat</span>}
-            {showZh && <span className="text-[10px] text-amber-900 font-chinese font-medium">總人數</span>}
+            {showId && <span className="text-xs text-stone-600 font-serif block">Estimasi Jiwa Umat</span>}
+            {showZh && <span className="text-xs text-amber-900 font-chinese font-medium">總人數</span>}
           </div>
         </div>
 
@@ -232,7 +227,7 @@ export default function RsvpSection({ initialGuestName = "" }: RsvpSectionProps)
                 </p>
               )}
               {showZh && (
-                <p className="text-xs font-chinese text-stone-500 max-w-md mx-auto mb-6">
+                <p className="text-xs font-chinese text-stone-600 max-w-md mx-auto mb-6">
                   您的出席確認與祝願已妥善登記於籌備處功德名冊中，感恩天恩師德。
                 </p>
               )}
@@ -304,7 +299,7 @@ export default function RsvpSection({ initialGuestName = "" }: RsvpSectionProps)
                       <span>{showId ? "Iya, Saya Akan Hadir" : "準時出席"}</span>
                     </div>
                     {showZh && showId && (
-                      <span className="font-chinese text-[11px] opacity-90 mt-0.5">準時出席 • 共襄盛舉</span>
+                      <span className="font-chinese text-xs opacity-90 mt-0.5">準時出席 • 共襄盛舉</span>
                     )}
                   </button>
 
@@ -319,7 +314,7 @@ export default function RsvpSection({ initialGuestName = "" }: RsvpSectionProps)
                   >
                     <span>{showId ? "Maaf, Belum Dapat Hadir" : "不克出席"}</span>
                     {showZh && showId && (
-                      <span className="font-chinese text-[11px] opacity-90 mt-0.5">不克出席 • 祈願祝福</span>
+                      <span className="font-chinese text-xs opacity-90 mt-0.5">不克出席 • 祈願祝福</span>
                     )}
                   </button>
                 </div>
@@ -352,7 +347,15 @@ export default function RsvpSection({ initialGuestName = "" }: RsvpSectionProps)
                         }`}
                       >
                         <span>{item.num === "5" ? "5+ Org" : `${item.num} Org`}</span>
-                        {showZh && <span className="font-chinese text-[10px] font-normal opacity-90">{item.zh}</span>}
+                        {showZh && (
+                          <span
+                            className={`font-chinese text-xs font-normal ${
+                              guests === item.num ? "text-amber-100" : "text-stone-500"
+                            }`}
+                          >
+                            {item.zh}
+                          </span>
+                        )}
                       </button>
                     ))}
                   </div>
@@ -371,7 +374,7 @@ export default function RsvpSection({ initialGuestName = "" }: RsvpSectionProps)
                   value={message}
                   onChange={(e) => setMessage(e.target.value)}
                   placeholder="Tuliskan ucapan selamat 20 tahun, kenangan masa lampau, atau doa tulus bagi Kuang Hang Fo Thang... / 請留下對廣航佛堂廿週年之祝福與感言..."
-                  className="w-full px-4 py-3 rounded-xl border border-stone-300 focus:border-amber-600 focus:ring-1 focus:ring-amber-500 outline-none transition text-sm text-stone-900 bg-white font-serif leading-relaxed"
+                  className="w-full px-4 py-3 rounded-xl border border-stone-300 focus:border-amber-600 focus:ring-1 focus:ring-amber-500 outline-none transition text-sm text-stone-900 placeholder:text-stone-500 bg-white font-serif leading-relaxed"
                 />
               </div>
 
@@ -401,9 +404,9 @@ export default function RsvpSection({ initialGuestName = "" }: RsvpSectionProps)
         </div>
 
         {/* Wishes Corridor of Blessing Slips (祈願長廊) - Bilingual */}
-        <div className="bg-[#faf7f2] rounded-2xl border border-amber-700/20 p-6 sm:p-9 shadow-lg">
+        <div className="mt-14 pt-8 border-t border-amber-900/15">
           
-          <div className="flex items-center justify-between mb-6 pb-4 border-b border-amber-900/15">
+          <div className="flex items-center justify-between mb-6 pb-4 border-b border-amber-900/10">
             <div className="flex items-center gap-2.5">
               <div className="w-8 h-8 rounded-full bg-amber-600/15 text-amber-800 flex items-center justify-center">
                 <Flame className="w-4 h-4 text-amber-600 animate-pulse" />
@@ -412,7 +415,7 @@ export default function RsvpSection({ initialGuestName = "" }: RsvpSectionProps)
                 <h3 className="text-lg sm:text-xl font-serif font-bold text-stone-900">
                   Lautan Doa & Restu Saudara Se-Dharma ({wishes.length})
                 </h3>
-                <p className="text-[11px] text-stone-500 font-serif">
+                <p className="text-xs text-stone-600 font-serif">
                   Doa tulus yang terpahat abadi menyertai langkah 20 tahun Kuang Hang • 萬家同心祈願海
                 </p>
               </div>
@@ -422,11 +425,11 @@ export default function RsvpSection({ initialGuestName = "" }: RsvpSectionProps)
             </span>
           </div>
 
-          <div className="space-y-3.5 max-h-[500px] overflow-y-auto pr-1">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5 max-h-[500px] overflow-y-auto pr-1">
             {wishes.map((item) => (
               <div
                 key={item.id}
-                className="prayer-slip-card p-4 sm:p-5 rounded-xl border border-amber-800/10 transition-all hover:border-amber-600/30"
+                className="prayer-slip-card p-4 sm:p-5 rounded-xl border border-amber-800/15 transition-all hover:border-amber-600/40"
               >
                 <div className="flex items-start justify-between gap-2 mb-2">
                   <div className="flex items-center gap-2">
@@ -437,17 +440,17 @@ export default function RsvpSection({ initialGuestName = "" }: RsvpSectionProps)
                       <h4 className="text-xs sm:text-sm font-serif font-bold text-stone-900">
                         {item.name}
                       </h4>
-                      <span className="text-[10px] text-stone-400 font-serif">
+                      <span className="text-xs text-stone-600 font-serif">
                         {item.timestamp}
                       </span>
                     </div>
                   </div>
 
                   <span
-                    className={`px-2.5 py-0.5 rounded text-[10px] font-serif font-medium border flex items-center gap-1 ${
+                    className={`px-2.5 py-0.5 rounded text-xs font-serif font-medium border flex items-center gap-1 ${
                       item.status === "hadir"
                         ? "bg-emerald-50 text-emerald-800 border-emerald-200"
-                        : "bg-stone-100 text-stone-600 border-stone-200"
+                        : "bg-stone-100 text-stone-700 border-stone-200"
                     }`}
                   >
                     <span>
@@ -456,7 +459,7 @@ export default function RsvpSection({ initialGuestName = "" }: RsvpSectionProps)
                         : "Mendoakan"}
                     </span>
                     {showZh && (
-                      <span className="font-chinese text-[10px] opacity-80">
+                      <span className="font-chinese text-xs opacity-80">
                         • {item.status === "hadir" ? "出席" : "祈願"}
                       </span>
                     )}
@@ -464,7 +467,7 @@ export default function RsvpSection({ initialGuestName = "" }: RsvpSectionProps)
                 </div>
 
                 {item.message && (
-                  <p className="text-xs sm:text-sm font-serif italic text-stone-700 leading-relaxed pl-9">
+                  <p className="text-xs sm:text-sm font-serif italic text-stone-700 leading-relaxed pl-9 text-pretty">
                     &ldquo;{item.message}&rdquo;
                   </p>
                 )}

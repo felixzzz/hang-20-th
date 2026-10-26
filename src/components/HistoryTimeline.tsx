@@ -23,36 +23,31 @@ export default function HistoryTimeline() {
     <section id="sejarah" className="py-16 sm:py-24 px-4 sm:px-6 relative bg-[#f5efe4]/60">
       
       {/* Background Archival Seal */}
-      <div className="absolute right-4 top-12 select-none pointer-events-none opacity-[0.03]">
-        <span className="text-[14rem] sm:text-[20rem] font-chinese font-black text-stone-900 leading-none">
-          史
-        </span>
+      <div className="absolute right-4 top-12 select-none pointer-events-none opacity-[0.03]" aria-hidden="true">
+        <svg aria-hidden="true" role="presentation" className="w-56 h-56 sm:w-80 sm:h-80" viewBox="0 0 100 100">
+          <text x="50" y="80" textAnchor="middle" fontSize="85" fontFamily="serif" fontWeight="900" fill="#1c1917">史</text>
+        </svg>
       </div>
 
       <div className="max-w-6xl mx-auto relative z-10">
         
         {/* Section Header - Bilingual */}
-        <div className="flex flex-col items-center text-center mb-12">
-          <div className="inline-flex items-center gap-2 mb-3">
-            <span className="w-8 h-px bg-amber-600/60" />
-            <span className="text-xs uppercase tracking-widest text-amber-800 font-semibold font-serif">
-              {showId && "Napak Tilas 20 Tahun Gedung Kuang Hang (1997 — 2026)"}
-              {showId && showZh && " • "}
-              {showZh && "廣航廿載光輝史話"}
-            </span>
-            <span className="w-8 h-px bg-amber-600/60" />
-          </div>
-
+        <div className="flex flex-col items-center text-center mb-10">
           <h2 className="text-3xl sm:text-5xl font-chinese font-bold text-red-950 mb-2">
             歲月印記 • 薪火相傳
           </h2>
+          <div className="text-sm sm:text-base font-serif font-semibold text-amber-900 mb-2">
+            {showId && "Napak Tilas 20 Tahun Gedung Kuang Hang (1997 — 2026)"}
+            {showId && showZh && " • "}
+            {showZh && "廣航廿載光輝史話"}
+          </div>
           {showId && (
-            <p className="text-sm font-serif text-stone-700 max-w-xl">
+            <p className="text-sm sm:text-base font-serif text-stone-700 max-w-xl">
               Mengenang jejak tetesan keringat, doa tulus, dan pengorbanan para perintis awal yang memungkinkan pelita Kuang Hang bersinar terang hari ini.
             </p>
           )}
           {showZh && (
-            <p className="text-xs font-chinese text-stone-500 max-w-xl mt-1 leading-relaxed">
+            <p className="text-xs sm:text-sm font-chinese text-stone-600 max-w-xl mt-1 leading-relaxed">
               追思前賢開荒啟航之大願與辛勞，一磚一瓦凝聚願力，薪火相傳二十載，廣航慧燈恆久普照。
             </p>
           )}
@@ -73,7 +68,7 @@ export default function HistoryTimeline() {
               <span className="font-serif font-bold text-sm sm:text-base leading-none">
                 {m.year}
               </span>
-              <span className="text-[10px] font-chinese mt-1 opacity-90 truncate max-w-[100px]">
+              <span className="text-xs font-chinese mt-1 opacity-90 truncate max-w-[110px]">
                 {showZh ? m.chineseTitle.split("•")[0]?.trim() : m.title}
               </span>
             </button>
@@ -99,7 +94,7 @@ export default function HistoryTimeline() {
                 Tahun {current.year}
                 {showZh && ` • ${current.year}年`}
               </span>
-              <span className="px-2.5 py-0.5 rounded bg-black/60 backdrop-blur-sm border border-white/20 text-[10px] text-stone-300 font-serif">
+              <span className="px-2.5 py-0.5 rounded bg-black/60 backdrop-blur-sm border border-white/20 text-xs text-stone-200 font-serif">
                 Bab {selectedIdx + 1} / {historyMilestones.length}
               </span>
             </div>
@@ -153,7 +148,7 @@ export default function HistoryTimeline() {
 
               {/* Location Bilingual */}
               {current.location && (
-                <div className="flex items-center gap-1.5 text-xs text-stone-500 font-serif mb-4">
+                <div className="flex items-center gap-1.5 text-xs text-stone-600 font-serif mb-4">
                   <MapPin className="w-3.5 h-3.5 text-amber-700 shrink-0" />
                   {showId && <span>{current.location}</span>}
                   {showZh && current.chineseLocation && (
@@ -178,15 +173,15 @@ export default function HistoryTimeline() {
                 </p>
               )}
 
-              {/* Archival Pull Quote Box - Bilingual */}
-              <div className="p-4 rounded-xl bg-amber-500/10 border-l-2 border-amber-600 space-y-1">
+              {/* Archival Pull Quote - Typography lead */}
+              <div className="my-4 py-2 space-y-1">
                 {showId && (
-                  <div className="text-xs text-stone-800 font-serif italic leading-relaxed">
+                  <blockquote className="text-xs sm:text-sm text-stone-800 font-serif italic leading-relaxed">
                     &ldquo;{current.highlight}&rdquo;
-                  </div>
+                  </blockquote>
                 )}
                 {showZh && (
-                  <div className="text-[11px] text-amber-950 font-chinese font-medium">
+                  <div className="text-xs sm:text-sm text-amber-950 font-chinese font-medium">
                     「{current.chineseHighlight}」
                   </div>
                 )}
@@ -197,7 +192,7 @@ export default function HistoryTimeline() {
             <div className="mt-8 pt-4 border-t border-amber-900/10 flex items-center justify-between">
               <button
                 onClick={handlePrev}
-                className="inline-flex items-center gap-1 text-xs font-serif font-medium text-stone-600 hover:text-red-900 transition-colors cursor-pointer"
+                className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-serif font-medium text-stone-700 hover:text-red-900 transition-colors cursor-pointer"
               >
                 <ChevronLeft className="w-4 h-4" />
                 <span>
@@ -207,13 +202,13 @@ export default function HistoryTimeline() {
                 </span>
               </button>
 
-              <div className="text-[11px] font-serif text-stone-500">
+              <div className="text-xs font-serif text-stone-600">
                 {selectedIdx + 1} / {historyMilestones.length}
               </div>
 
               <button
                 onClick={handleNext}
-                className="inline-flex items-center gap-1 text-xs font-serif font-medium text-stone-600 hover:text-red-900 transition-colors cursor-pointer"
+                className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-serif font-medium text-stone-700 hover:text-red-900 transition-colors cursor-pointer"
               >
                 <span>
                   {showId && "Selanjutnya"}

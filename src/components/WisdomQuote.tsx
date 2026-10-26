@@ -83,7 +83,7 @@ export default function WisdomQuote() {
               )}
 
               {showZh && (
-                <div className={`${showId ? "mt-6 pt-6 border-t border-amber-900/10" : "my-4"} text-sm sm:text-base font-chinese text-stone-800 tracking-widest leading-loose font-normal`}>
+                <div className={`${showId ? "mt-6 pt-6 border-t border-amber-900/10" : "my-4"} text-sm sm:text-base font-chinese text-stone-800 tracking-wide leading-loose font-normal`}>
                   「願人人心中有大愿力 • 捨己為公 • 慈悲不捨眾生 • 共同護持師尊師母慧命」
                 </div>
               )}
@@ -92,16 +92,16 @@ export default function WisdomQuote() {
             </div>
 
             {/* Seal Marks at bottom of scroll */}
-            <div className="mt-8 flex items-center justify-center gap-4 text-[11px] font-chinese text-stone-500">
-              <span className="chinese-seal-filled text-[10px] px-2 py-0.5">
+            <div className="mt-8 flex items-center justify-center gap-4 text-xs font-chinese text-stone-600">
+              <span className="chinese-seal-filled text-xs px-2.5 py-0.5">
                 佛光普照
               </span>
-              <span className="font-serif italic text-stone-600">
+              <span className="font-serif italic text-stone-700">
                 {showId && "Peringatan Dua Dasawarsa"}
                 {showId && showZh && " • "}
                 {showZh && "廣航同舟"}
               </span>
-              <span className="chinese-seal-red text-[10px] px-2 py-0.5">
+              <span className="chinese-seal-red text-xs px-2.5 py-0.5">
                 永續長航
               </span>
             </div>

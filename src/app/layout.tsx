@@ -78,7 +78,7 @@ export default function RootLayout({
       lang="id"
       className={`${cormorant.variable} ${jakarta.variable} ${notoSerifSC.variable} scroll-smooth`}
     >
-      <body className="font-sans bg-fothang-ivory text-fothang-dark antialiased selection:bg-fothang-gold-200 selection:text-fothang-red-900">
+      <body className="font-sans bg-[#fdfdfd] text-fothang-dark antialiased selection:bg-fothang-gold-200 selection:text-fothang-red-900">
         {children}
       </body>
     </html>

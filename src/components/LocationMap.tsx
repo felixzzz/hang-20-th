@@ -23,27 +23,22 @@ export default function LocationMap() {
       <div className="max-w-5xl mx-auto">
         
         {/* Section Header - Bilingual */}
-        <div className="flex flex-col items-center text-center mb-12">
-          <div className="inline-flex items-center gap-2 mb-3">
-            <span className="w-8 h-px bg-amber-600/60" />
-            <span className="text-xs uppercase tracking-widest text-amber-800 font-semibold font-serif">
-              {showId && "Petunjuk Lokasi & Arah Menuju Gedung"}
-              {showId && showZh && " • "}
-              {showZh && "道場座標與交通指引"}
-            </span>
-            <span className="w-8 h-px bg-amber-600/60" />
-          </div>
-
+        <div className="flex flex-col items-center text-center mb-10">
           <h2 className="text-3xl sm:text-5xl font-chinese font-bold text-red-950 mb-2">
             道場座標 • 交通導引
           </h2>
+          <div className="text-sm sm:text-base font-serif font-semibold text-amber-900 mb-2">
+            {showId && "Petunjuk Lokasi & Arah Menuju Gedung"}
+            {showId && showZh && " • "}
+            {showZh && "道場座標與交通指引"}
+          </div>
           {showId && (
-            <p className="text-sm font-serif text-stone-700 max-w-lg">
+            <p className="text-sm sm:text-base font-serif text-stone-700 max-w-lg">
               Gedung Kuang Hang Fo Thang berlokasi strategis di Palmerah Utara, mudah dijangkau dari segala penjuru Jakarta.
             </p>
           )}
           {showZh && (
-            <p className="text-xs font-chinese text-stone-500 max-w-lg mt-0.5">
+            <p className="text-xs sm:text-sm font-chinese text-stone-600 max-w-lg mt-1">
               廣航佛堂位處雅加達西區巴美拉核心樞紐，交通四通八達，便捷通暢。
             </p>
           )}
@@ -84,7 +79,7 @@ export default function LocationMap() {
                   </p>
                 )}
                 {showZh && (
-                  <p className="text-xs font-chinese text-stone-500 mt-0.5">
+                  <p className="text-xs font-chinese text-stone-600 mt-0.5">
                     印度尼西亞 雅加達西區 巴美拉北三路186A號
                   </p>
                 )}

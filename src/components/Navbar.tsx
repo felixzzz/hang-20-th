@@ -53,7 +53,7 @@ export default function Navbar() {
             <span className="font-serif font-bold text-sm sm:text-base tracking-wider text-red-950 leading-tight">
               Kuang Hang Fo Thang
             </span>
-            <span className="text-[10px] text-amber-800 tracking-widest font-chinese">
+            <span className="text-xs text-amber-900 font-chinese">
               廣航佛堂 • 成立廿週年堂慶
             </span>
           </div>
@@ -71,7 +71,7 @@ export default function Navbar() {
                 >
                   <HeartHandshake className="w-3.5 h-3.5 text-amber-300" />
                   <span>{link.name}</span>
-                  <span className="font-chinese text-[10px] opacity-80 border-l border-amber-300/30 pl-1.5 ml-0.5">
+                  <span className="font-chinese text-xs opacity-90 border-l border-amber-300/30 pl-1.5 ml-0.5">
                     {link.zh}
                   </span>
                 </a>
@@ -82,10 +82,10 @@ export default function Navbar() {
               <a
                 key={link.name}
                 href={link.href}
-                className="px-2.5 py-1 rounded-full text-xs font-serif font-medium text-stone-700 hover:text-red-900 hover:bg-amber-500/10 transition-colors cursor-pointer flex items-center gap-1"
+                className="px-2.5 py-1 rounded-full text-xs sm:text-sm font-serif font-medium text-stone-800 hover:text-red-900 hover:bg-amber-500/10 transition-colors cursor-pointer flex items-center gap-1.5"
               >
                 <span>{link.name}</span>
-                <span className="font-chinese text-[11px] text-stone-500 font-normal">
+                <span className="font-chinese text-xs text-stone-600 font-normal">
                   {link.zh}
                 </span>
               </a>
@@ -96,14 +96,14 @@ export default function Navbar() {
         {/* Right Section: Language Switcher & Mobile Trigger */}
         <div className="flex items-center gap-2">
           {/* Language Selector Pill */}
-          <div className="flex items-center rounded-full bg-stone-200/60 p-0.5 text-[10px] font-serif border border-amber-900/10">
+          <div className="flex items-center rounded-full bg-stone-200/80 p-0.5 text-xs font-serif border border-amber-900/15">
             <button
               onClick={() => setLang("all")}
               aria-label="Tampilan Dwibahasa"
-              className={`px-2 py-0.5 rounded-full transition-all cursor-pointer ${
+              className={`px-2.5 py-0.5 rounded-full transition-all cursor-pointer ${
                 lang === "all"
                   ? "bg-[#831f1f] text-amber-200 font-bold shadow-xs"
-                  : "text-stone-600 hover:text-stone-950"
+                  : "text-stone-700 hover:text-stone-950"
               }`}
             >
               雙語
@@ -111,10 +111,10 @@ export default function Navbar() {
             <button
               onClick={() => setLang("id")}
               aria-label="Tampilan Bahasa Indonesia"
-              className={`px-2 py-0.5 rounded-full transition-all cursor-pointer ${
+              className={`px-2.5 py-0.5 rounded-full transition-all cursor-pointer ${
                 lang === "id"
                   ? "bg-[#831f1f] text-amber-200 font-bold shadow-xs"
-                  : "text-stone-600 hover:text-stone-950"
+                  : "text-stone-700 hover:text-stone-950"
               }`}
             >
               ID
@@ -122,10 +122,10 @@ export default function Navbar() {
             <button
               onClick={() => setLang("zh")}
               aria-label="僅顯示中文"
-              className={`px-2 py-0.5 rounded-full transition-all cursor-pointer ${
+              className={`px-2.5 py-0.5 rounded-full transition-all cursor-pointer ${
                 lang === "zh"
                   ? "bg-[#831f1f] text-amber-200 font-bold shadow-xs"
-                  : "text-stone-600 hover:text-stone-950"
+                  : "text-stone-700 hover:text-stone-950"
               }`}
             >
               中文

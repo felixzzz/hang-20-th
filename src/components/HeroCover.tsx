@@ -67,24 +67,18 @@ export default function HeroCover({ guestName, isOpen, onOpen }: HeroCoverProps)
 
         <div className="p-7 sm:p-11 text-center relative z-10 flex flex-col items-center">
           
-          {/* Imperial Seal Header */}
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-400/30 text-amber-300 text-[11px] font-chinese tracking-widest uppercase mb-4">
-            <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-ping" />
-            <span>天恩師德 • 萬里同舟</span>
-          </div>
-
           {/* Majestic Chinese Monograph Title */}
           <h1 className="text-4xl sm:text-5xl font-chinese font-bold tracking-widest text-amber-200 drop-shadow mb-1">
             廣航佛堂
           </h1>
-          <p className="text-xs sm:text-sm font-chinese text-amber-400/90 tracking-widest mb-4">
+          <p className="text-sm font-chinese text-amber-300 tracking-widest mb-4">
             成立二十週年堂慶紀念 (2006 — 2026)
           </p>
 
           {/* Fine Hairline Divider with Traditional Center Diamond */}
-          <div className="w-full flex items-center justify-center gap-3 my-1 opacity-60">
+          <div className="w-full flex items-center justify-center gap-3 my-2 opacity-70">
             <div className="h-px flex-1 bg-gradient-to-r from-transparent to-amber-400" />
-            <span className="text-amber-300 text-xs rotate-45">◆</span>
+            <span className="text-amber-300 text-sm rotate-45">◆</span>
             <div className="h-px flex-1 bg-gradient-to-l from-transparent to-amber-400" />
           </div>
 
@@ -96,42 +90,38 @@ export default function HeroCover({ guestName, isOpen, onOpen }: HeroCoverProps)
               </p>
             )}
             {showZh && (
-              <p className="text-xs font-chinese text-amber-300/90 tracking-widest mt-0.5">
+              <p className="text-sm font-chinese text-amber-300 tracking-widest mt-1">
                 佛堂落成二十週年 • 官方敬邀函
               </p>
             )}
           </div>
 
-          <p className="text-[11px] sm:text-xs text-stone-300/80 font-serif tracking-wider max-w-sm mb-2">
-            {showId && <span>Mengarungi Samudra Kebajikan • Menyalakan Pelita Kebijaksanaan</span>}
+          <div className="text-xs sm:text-sm text-stone-200 font-serif max-w-sm mb-3">
+            {showId && <p>Mengarungi Samudra Kebajikan • Menyalakan Pelita Kebijaksanaan</p>}
             {showZh && (
-              <span className="block font-chinese text-stone-400 text-[11px] mt-0.5">
+              <p className="font-chinese text-stone-300 text-xs mt-1">
                 同舟共濟度眾生 • 薪火相傳護慧命
-              </span>
+              </p>
             )}
-          </p>
+          </div>
 
-          {/* Inset Gold-Leaf Rice Paper Sash (金箔腰封) for Guest Name */}
-          <div className="w-full my-4 p-4 sm:p-5 rounded-xl bg-[#faf6ee] text-[#1c1815] shadow-lg border border-amber-300/80 relative text-center">
-            {/* Traditional Ribbon Accent on sides */}
-            <div className="absolute -left-1 top-1/2 -translate-y-1/2 w-2 h-7 bg-amber-600 rounded-r" />
-            <div className="absolute -right-1 top-1/2 -translate-y-1/2 w-2 h-7 bg-amber-600 rounded-l" />
-
-            <div className="flex items-center justify-center gap-2 text-[10px] uppercase tracking-widest text-amber-800 font-semibold mb-1">
+          {/* Inset Gold-Leaf Rice Paper Sash (金箔腰封) for Guest Name - Edge-to-edge ceremonial band */}
+          <div className="-mx-7 sm:-mx-11 w-[calc(100%+3.5rem)] sm:w-[calc(100%+5.5rem)] my-4 px-7 sm:px-11 py-4 bg-[#faf6ee] text-[#1c1815] border-y border-amber-400/60 relative text-center">
+            <div className="flex items-center justify-center gap-2 text-xs uppercase text-amber-900 font-semibold mb-1">
               {showId && <span>Yth. Tamu Undangan Terkasih</span>}
-              {showZh && <span className="font-chinese text-red-800 font-bold">恭請 貴賓尊鑒</span>}
+              {showZh && <span className="font-chinese text-red-900 font-bold">恭請 貴賓尊鑒</span>}
             </div>
 
             <div className="text-xl sm:text-2xl font-serif font-bold text-red-950 tracking-wide truncate max-w-full px-2">
               {guestName || "Saudara Se-Dharma & Umat Terkasih"}
             </div>
 
-            <div className="text-[11px] text-stone-600 mt-1 italic font-serif">
+            <div className="text-xs text-stone-700 mt-1 italic font-serif">
               {showId && (
                 <p>Dengan penuh hormat mengundang kehadiran Anda dalam doa syukur bersama.</p>
               )}
               {showZh && (
-                <p className="font-chinese text-[10px] text-stone-500 not-italic mt-0.5">
+                <p className="font-chinese text-xs text-stone-600 not-italic mt-0.5">
                   謹代表廣航佛堂全體道親，誠摯敬邀閣下撥冗蒞臨，同沾法喜。
                 </p>
               )}
@@ -139,19 +129,19 @@ export default function HeroCover({ guestName, isOpen, onOpen }: HeroCoverProps)
           </div>
 
           {/* Key Event Details Snippet - Bilingual */}
-          <div className="text-xs text-stone-300/90 font-light tracking-wide space-y-1 mb-6">
+          <div className="text-xs sm:text-sm text-stone-200 font-light space-y-1 mb-6">
             <div className="font-serif text-amber-200 font-medium">
               {showId && <span>Sabtu, 14 November 2026 • 19.00 WIB</span>}
               {showZh && (
-                <span className="block font-chinese text-amber-400 text-[11px]">
+                <span className="block font-chinese text-amber-300 text-xs">
                   2026年11月14日（星期六）晚間七時正
                 </span>
               )}
             </div>
-            <div className="text-[11px] text-stone-400">
+            <div className="text-xs text-stone-300">
               {showId && <span>Kuang Hang Fo Thang, Palmerah Utara III No. 186A, Jakarta Barat</span>}
               {showZh && (
-                <span className="block font-chinese text-stone-500 text-[10px]">
+                <span className="block font-chinese text-stone-300 text-xs">
                   雅加達西區巴美拉北三路186A號
                 </span>
               )}
@@ -165,7 +155,7 @@ export default function HeroCover({ guestName, isOpen, onOpen }: HeroCoverProps)
               className="group relative flex flex-col items-center justify-center cursor-pointer transition-all duration-300 active:scale-95 hover:scale-105"
               aria-label="Buka Segel Undangan • 啟封"
             >
-              {/* Pulsing Golden Aura behind Seal */}
+              {/* Golden Aura behind Seal */}
               <div className="absolute -inset-2 rounded-full bg-amber-500/25 filter blur-md group-hover:bg-amber-400/40 transition-colors" />
 
               {/* Embossed Wax Seal */}
@@ -173,16 +163,13 @@ export default function HeroCover({ guestName, isOpen, onOpen }: HeroCoverProps)
                 <span className="font-chinese font-bold text-lg leading-none tracking-widest text-amber-200 drop-shadow-md">
                   廣航
                 </span>
-                <span className="font-chinese text-[11px] leading-tight text-amber-300 mt-0.5 tracking-wider">
+                <span className="font-chinese text-xs leading-tight text-amber-300 mt-1 tracking-wider">
                   廿載
-                </span>
-                <span className="text-[8px] font-chinese uppercase tracking-wider text-amber-300/90 mt-1 border-t border-amber-400/40 pt-0.5 px-1.5">
-                  點擊啟封
                 </span>
               </div>
             </button>
 
-            <span className="text-[11px] text-amber-300/90 font-serif tracking-widest mt-3 animate-pulse">
+            <span className="text-xs text-amber-300 font-serif tracking-normal mt-3">
               {showId && "Ketuk Segel Emas untuk Membuka"}
               {showId && showZh && " • "}
               {showZh && "敬請啟封"}

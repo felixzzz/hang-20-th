@@ -22,26 +22,21 @@ export default function DonationSection() {
         
         {/* Section Header - Bilingual */}
         <div className="flex flex-col items-center text-center mb-10">
-          <div className="inline-flex items-center gap-2 mb-3">
-            <span className="w-8 h-px bg-amber-600/60" />
-            <span className="text-xs uppercase tracking-widest text-amber-800 font-semibold font-serif">
-              {showId && "Tali Kasih & Dana Kebajikan"}
-              {showId && showZh && " • "}
-              {showZh && "隨喜功德 · 廣種福田"}
-            </span>
-            <span className="w-8 h-px bg-amber-600/60" />
-          </div>
-
           <h2 className="text-3xl sm:text-5xl font-chinese font-bold text-red-950 mb-2">
             隨喜功德 • 廣種福田
           </h2>
+          <div className="text-sm sm:text-base font-serif font-semibold text-amber-900 mb-2">
+            {showId && "Tali Kasih & Dana Kebajikan"}
+            {showId && showZh && " • "}
+            {showZh && "隨喜功德 · 廣種福田"}
+          </div>
           {showId && (
-            <p className="text-sm font-serif text-stone-700 max-w-lg mx-auto">
+            <p className="text-sm sm:text-base font-serif text-stone-700 max-w-lg mx-auto">
               Doa restu serta kehadiran Bapak/Ibu/Saudara/i adalah karunia terindah bagi kami. Bagi yang hendak menyalurkan tali kasih sukarela demi kelancaran kegiatan wadah keTuhanan Kuang Hang:
             </p>
           )}
           {showZh && (
-            <p className="text-xs font-chinese text-stone-500 max-w-lg mx-auto mt-0.5 leading-relaxed">
+            <p className="text-xs sm:text-sm font-chinese text-stone-600 max-w-lg mx-auto mt-1 leading-relaxed">
               十方大德之道情法喜與蒞臨祈福，乃廣航最大恩典。若欲隨喜發心護持廣航道務聖業者，可隨喜行功：
             </p>
           )}
@@ -63,7 +58,7 @@ export default function DonationSection() {
               <CreditCard className="w-4 h-4 text-amber-400" />
               <span>{donationConfig.bankName}</span>
             </div>
-            <span className="chinese-seal-red text-xs px-2 py-0.5">
+            <span className="chinese-seal-filled text-xs px-2.5 py-0.5">
               隨喜功德
             </span>
           </div>
@@ -120,17 +115,17 @@ export default function DonationSection() {
               <p className="text-xs font-chinese text-amber-300 mb-2">
                 官方帳號資訊即將公佈
               </p>
-              <p className="text-xs text-stone-400 max-w-xs mx-auto leading-relaxed font-serif">
+              <p className="text-xs sm:text-sm text-stone-200 max-w-xs mx-auto leading-relaxed font-serif">
                 Informasi rekening panitia akan segera diperbarui sebelum hari pelaksanaan acara.
               </p>
-              <div className="mt-4 inline-block px-3 py-1 rounded-full bg-white/5 border border-white/10 text-[11px] text-amber-300/80 font-serif">
+              <div className="mt-4 inline-block text-xs text-amber-300 font-serif">
                 Panitia 20 Tahun Kuang Hang Fo Thang • 廣航佛堂籌委會
               </div>
             </div>
           )}
 
-          <div className="mt-6 pt-4 border-t border-white/10 text-[11px] text-stone-400 font-serif flex items-center justify-center gap-1.5">
-            <Heart className="w-3 h-3 text-red-400 fill-red-400" />
+          <div className="mt-6 pt-4 border-t border-white/10 text-xs text-stone-300 font-serif flex items-center justify-center gap-1.5">
+            <Heart className="w-3.5 h-3.5 text-red-400 fill-red-400" />
             <span>
               {showId && "Terima kasih atas ketulusan hati dan kebajikan Anda"}
               {showId && showZh && " • "}
