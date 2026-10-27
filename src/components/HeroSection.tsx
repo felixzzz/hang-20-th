@@ -90,11 +90,11 @@ export default function HeroSection({ guestName }: HeroSectionProps) {
           </div>
         </div>
 
-        {/* Hero Grid */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start mb-16">
+        {/* 1. Main Hero Grid: Balanced Landscape Duo (Monograph & Landscape Archival Photo) */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center mb-10 sm:mb-12">
           
-          {/* Left Column: Monograph Title & Honored Guest Invitation */}
-          <div className="lg:col-span-7 flex flex-col justify-center">
+          {/* Left Column: Monograph Title & Sacred Verse */}
+          <div className="lg:col-span-6 flex flex-col justify-center">
             
             <div className="mb-3">
               <span className="inline-block text-xs font-serif tracking-[0.25em] text-[#9e7631] uppercase mb-1 font-semibold">
@@ -117,77 +117,32 @@ export default function HeroSection({ guestName }: HeroSectionProps) {
             </div>
 
             {/* Poetic Inscription */}
-            <div className="my-4 pl-4 border-l-2 border-[#dfba6d]">
+            <div className="my-3.5 pl-4 border-l-2 border-[#dfba6d]">
               {showId && (
-                <p className="font-serif text-lg sm:text-xl text-stone-800 italic leading-relaxed">
+                <p className="font-serif text-base sm:text-lg text-stone-800 italic leading-relaxed">
                   &ldquo;{hero.quoteId}&rdquo;
                 </p>
               )}
               {showZh && (
-                <p className="font-chinese text-sm sm:text-base text-stone-600 mt-1.5 tracking-wider leading-relaxed">
+                <p className="font-chinese text-sm sm:text-base text-stone-600 mt-1 tracking-wider leading-relaxed">
                   {hero.quoteZh}
                 </p>
               )}
             </div>
 
-            <div className="text-sm sm:text-base text-stone-700 leading-relaxed max-w-xl mb-6 font-serif">
+            <div className="text-xs sm:text-sm text-stone-700 leading-relaxed font-serif mb-5">
               {showId && (
                 <p>{hero.storyParagraphId}</p>
               )}
               {showZh && (
-                <p className="font-chinese text-sm text-stone-600 leading-relaxed mt-1">
+                <p className="font-chinese text-xs sm:text-sm text-stone-600 leading-relaxed mt-1">
                   {hero.storyParagraphZh}
                 </p>
               )}
             </div>
 
-            {/* Inset Guest Honor Card */}
-            <div className="bg-[#ffffff] p-5 sm:p-6 rounded-xl border border-[#dfba6d]/35 shadow-sm relative">
-              <div className="flex items-center justify-between mb-2 pb-2 border-b border-stone-100">
-                <span className="text-[11px] font-serif font-semibold tracking-widest text-[#9e7631] uppercase">
-                  {showId && (hero.guestHonorTitleId || "SURAT PENGHORMATAN TAMU UNDANGAN")}
-                  {showId && showZh && " • "}
-                  {showZh && <span className="font-chinese">{hero.guestHonorTitleZh || "貴賓敬邀函"}</span>}
-                </span>
-                <span className="chinese-seal-red text-[11px] px-2 py-0.5">
-                  {hero.guestHonorSealZh || "同沾法喜"}
-                </span>
-              </div>
-
-              <div className="text-xs text-stone-600 font-serif">
-                {showId && <span>{hero.guestHonorGreetingId || "Kepada Yth. Bapak / Ibu / Saudara/i:"}</span>}
-                {showZh && <span className="font-chinese text-stone-700 ml-1">{hero.guestHonorGreetingZh || "恭請 尊鑒："}</span>}
-              </div>
-
-              <div className="text-xl sm:text-2xl font-serif font-bold text-[#7c1818] tracking-wide my-1.5">
-                {guestName || "Saudara Se-Dharma & Umat Terkasih"}
-              </div>
-
-              <div className="text-xs sm:text-sm text-stone-600 font-serif leading-relaxed">
-                {showId && (
-                  <p>{hero.guestHonorMessageId}</p>
-                )}
-                {showZh && (
-                  <p className="font-chinese text-xs text-stone-500 mt-1">
-                    {hero.guestHonorMessageZh}
-                  </p>
-                )}
-              </div>
-
-              <div className="mt-4 pt-3 border-t border-stone-100 flex flex-wrap items-center justify-between text-xs text-stone-600 font-serif gap-2">
-                <div className="flex items-center gap-1.5 text-[#7c1818] font-medium">
-                  <Calendar className="w-3.5 h-3.5" />
-                  <span>{cms.event.dateTextId} • {cms.event.timeTextId}</span>
-                </div>
-                <div className="flex items-center gap-1.5">
-                  <MapPin className="w-3.5 h-3.5 text-stone-500" />
-                  <span>{cms.event.address}</span>
-                </div>
-              </div>
-            </div>
-
             {/* Quick Action Navigation Buttons */}
-            <div className="flex flex-wrap items-center gap-3 mt-6">
+            <div className="flex flex-wrap items-center gap-3">
               <a
                 href="#rsvp"
                 className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-[#7c1818] hover:bg-[#681313] text-[#fbf5e8] font-serif font-medium text-xs sm:text-sm shadow-xs transition cursor-pointer"
@@ -206,11 +161,12 @@ export default function HeroSection({ guestName }: HeroSectionProps) {
 
           </div>
 
-          {/* Right Column: Hero Archival Photo in Museum Passe-Partout */}
-          <div className="lg:col-span-5 flex flex-col items-center">
+          {/* Right Column: Hero Archival Photo in Full Landscape Museum Frame */}
+          <div className="lg:col-span-6 flex flex-col items-center">
             
             <div className="relative w-full rounded-2xl overflow-hidden bg-white p-3 shadow-md border border-[#dfba6d]/30 group">
-              <div className="relative aspect-[4/5] sm:aspect-[3/4] w-full rounded-xl overflow-hidden bg-stone-900">
+              {/* Landscape Aspect Ratio Container (Matches uncropped 1600x1172 Altar Photo) */}
+              <div className="relative aspect-[16/10] sm:aspect-[16/10] w-full rounded-xl overflow-hidden bg-stone-900">
                 <Image
                   src={heroImg}
                   alt={hero.photoCaptionTitleId || "Altar Agung Kuang Hang Fo Thang"}
@@ -220,9 +176,9 @@ export default function HeroSection({ guestName }: HeroSectionProps) {
                   unoptimized={heroImg.startsWith("http")}
                 />
                 
-                {/* Clean Archival Badge */}
+                {/* Archival Seal Badge */}
                 <div className="absolute top-3 left-3">
-                  <span className="px-2.5 py-1 rounded bg-[#211c19]/80 backdrop-blur-sm border border-white/20 text-[#fbf5e8] text-[11px] font-chinese tracking-widest">
+                  <span className="px-2.5 py-1 rounded-md bg-[#211c19]/85 backdrop-blur-sm border border-white/20 text-[#fbf5e8] text-[11px] font-chinese tracking-widest shadow-sm">
                     {hero.photoCaptionTitleZh || "廣航聖壇"} • {hero.photoCaptionDate || "2006安座"}
                   </span>
                 </div>
@@ -252,12 +208,81 @@ export default function HeroSection({ guestName }: HeroSectionProps) {
             </div>
 
             {/* Commemorative Ribbon */}
-            <div className="w-full mt-3 text-center text-[11px] text-stone-500 font-serif tracking-wider">
+            <div className="w-full mt-2.5 text-center text-[11px] text-stone-500 font-serif tracking-wider">
               {hero.commemorativeRibbon || "廣結善緣 • 航向光明 • 廿載同舟共濟"}
             </div>
 
           </div>
 
+        </div>
+
+        {/* 2. Full-Width Horizontal Landscape Honored Guest Card (題名貴賓席) */}
+        <div className="w-full bg-[#ffffff] p-6 sm:p-8 rounded-2xl sm:rounded-3xl border border-[#dfba6d]/40 shadow-sm relative mb-8 overflow-hidden">
+          <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
+            
+            {/* Left 7 Columns: Personal Salutation & Message */}
+            <div className="md:col-span-7 space-y-2">
+              <div className="flex items-center gap-2">
+                <span className="chinese-seal-red text-[11px] px-2 py-0.5">
+                  {hero.guestHonorSealZh || "同沾法喜"}
+                </span>
+                <span className="text-[11px] font-serif font-semibold tracking-widest text-[#9e7631] uppercase">
+                  {showId && (hero.guestHonorTitleId || "SURAT PENGHORMATAN TAMU UNDANGAN")}
+                  {showId && showZh && " • "}
+                  {showZh && <span className="font-chinese">{hero.guestHonorTitleZh || "貴賓敬邀函"}</span>}
+                </span>
+              </div>
+
+              <div className="text-xs text-stone-600 font-serif pt-1">
+                {showId && <span>{hero.guestHonorGreetingId || "Kepada Yth. Bapak / Ibu / Saudara/i:"}</span>}
+                {showZh && <span className="font-chinese text-stone-700 ml-1">{hero.guestHonorGreetingZh || "恭請 尊鑒："}</span>}
+              </div>
+
+              <div className="text-2xl sm:text-3xl font-serif font-bold text-[#7c1818] tracking-wide">
+                {guestName || "Saudara Se-Dharma & Umat Terkasih"}
+              </div>
+
+              <div className="text-xs sm:text-sm text-stone-600 font-serif leading-relaxed pt-1">
+                {showId && (
+                  <p>{hero.guestHonorMessageId}</p>
+                )}
+                {showZh && (
+                  <p className="font-chinese text-xs text-stone-500 mt-1">
+                    {hero.guestHonorMessageZh}
+                  </p>
+                )}
+              </div>
+            </div>
+
+            {/* Right 5 Columns: Compact Schedule & RSVP Action */}
+            <div className="md:col-span-5 bg-[#faf8f5] rounded-2xl p-4 sm:p-5 border border-[#dfba6d]/30 space-y-3">
+              <div className="flex items-start gap-2.5 text-xs font-serif text-stone-800">
+                <Calendar className="w-4 h-4 text-[#7c1818] shrink-0 mt-0.5" />
+                <div>
+                  <span className="font-semibold text-stone-900 block">{cms.event.dateTextId}</span>
+                  <span className="text-stone-600">{cms.event.timeTextId}</span>
+                  {showZh && <span className="text-[11px] font-chinese text-stone-500 block">{cms.event.dateTextZh}</span>}
+                </div>
+              </div>
+
+              <div className="flex items-start gap-2.5 text-xs font-serif text-stone-800 pt-2 border-t border-stone-200/60">
+                <MapPin className="w-4 h-4 text-[#7c1818] shrink-0 mt-0.5" />
+                <div>
+                  <span className="font-semibold text-stone-900 block">{cms.event.venueNameId}</span>
+                  <span className="text-stone-600 text-[11px] block">{cms.event.address}</span>
+                </div>
+              </div>
+
+              <a
+                href="#rsvp"
+                className="w-full mt-2 inline-flex items-center justify-center gap-2 py-2.5 rounded-full bg-[#7c1818] hover:bg-[#681313] text-[#fbf5e8] font-serif font-medium text-xs shadow-xs transition cursor-pointer"
+              >
+                <span>{showZh && !showId ? "填寫回函 (RSVP)" : "Konfirmasi Kehadiran (RSVP)"}</span>
+                {showId && showZh && <span className="font-chinese opacity-80 text-xs">回函</span>}
+              </a>
+            </div>
+
+          </div>
         </div>
 
         {/* Clean Typographic Countdown Card */}
