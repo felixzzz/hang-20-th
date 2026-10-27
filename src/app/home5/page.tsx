@@ -39,7 +39,7 @@ import { CmsProvider, useCms } from "@/context/CmsContext";
 import AudioPlayer from "@/components/AudioPlayer";
 import { GalleryPhotoItem } from "@/types/cms";
 import { WishItem, initialWishes } from "@/data/defaultWishes";
-import { historyMilestones } from "@/data/history";
+import { historyMilestones, sortMilestonesByYear } from "@/data/history";
 import { galleryItems } from "@/data/gallery";
 
 function Home5UndanganContent() {
@@ -85,7 +85,8 @@ function Home5UndanganContent() {
   const [activePhoto, setActivePhoto] = useState<GalleryPhotoItem | null>(null);
 
   // Milestones (Story)
-  const milestones = cms.milestones && cms.milestones.length > 0 ? cms.milestones : historyMilestones;
+  const rawMilestones = cms.milestones && cms.milestones.length > 0 ? cms.milestones : historyMilestones;
+  const milestones = sortMilestonesByYear(rawMilestones);
 
   // RSVP
   const [rsvpName, setRsvpName] = useState(guestName === "Bapak / Ibu / Saudara/i" ? "" : guestName);

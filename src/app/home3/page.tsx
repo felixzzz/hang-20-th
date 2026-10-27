@@ -33,7 +33,7 @@ import { SpotlightCard } from "@/components/ui/SpotlightCard";
 import { NumberTicker } from "@/components/ui/NumberTicker";
 import { GalleryPhotoItem } from "@/types/cms";
 import { WishItem, initialWishes } from "@/data/defaultWishes";
-import { historyMilestones } from "@/data/history";
+import { historyMilestones, sortMilestonesByYear } from "@/data/history";
 import { galleryItems } from "@/data/gallery";
 
 function Home3ZenContent() {
@@ -79,8 +79,9 @@ function Home3ZenContent() {
     galleryFilter === "all" ? allGallery : allGallery.filter((item) => item.category === galleryFilter);
 
   // Milestones
-  const milestones =
+  const rawMilestones =
     cms.milestones && cms.milestones.length > 0 ? cms.milestones : historyMilestones;
+  const milestones = sortMilestonesByYear(rawMilestones);
   const [selectedYear, setSelectedYear] = useState(milestones[0]?.year || "1997");
   const currentMilestone =
     milestones.find((m) => m.year === selectedYear) || milestones[0];

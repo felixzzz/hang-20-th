@@ -37,7 +37,7 @@ import { FloatingDock, DockItem } from "@/components/ui/FloatingDock";
 import { NumberTicker } from "@/components/ui/NumberTicker";
 import { GalleryPhotoItem } from "@/types/cms";
 import { WishItem, initialWishes } from "@/data/defaultWishes";
-import { historyMilestones } from "@/data/history";
+import { historyMilestones, sortMilestonesByYear } from "@/data/history";
 import { galleryItems } from "@/data/gallery";
 
 function Home2GalaContent() {
@@ -91,8 +91,9 @@ function Home2GalaContent() {
       : allGallery.filter((item) => item.category === galleryCategory);
 
   // Milestones Carousel / Horizontal Slider
-  const milestones =
+  const rawMilestones =
     cms.milestones && cms.milestones.length > 0 ? cms.milestones : historyMilestones;
+  const milestones = sortMilestonesByYear(rawMilestones);
   const [activeMilestoneIdx, setActiveMilestoneIdx] = useState(0);
 
   const nextMilestone = () => {

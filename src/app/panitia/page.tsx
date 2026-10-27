@@ -40,6 +40,7 @@ import {
 import { WishItem, initialWishes } from "@/data/defaultWishes";
 import { SiteCmsConfig, MilestoneItem, GalleryPhotoItem } from "@/types/cms";
 import { defaultCms } from "@/data/defaultCms";
+import { sortMilestonesByYear } from "@/data/history";
 import ImageUploadField from "@/components/ImageUploadField";
 
 interface GuestItem {
@@ -191,7 +192,11 @@ export default function PanitiaDashboard() {
       const resCms = await fetch("/api/cms");
       const jsonCms = await resCms.json();
       if (jsonCms.success && jsonCms.data) {
-        setCmsConfig(jsonCms.data);
+        const sortedData: SiteCmsConfig = {
+          ...jsonCms.data,
+          milestones: sortMilestonesByYear(jsonCms.data.milestones || []),
+        };
+        setCmsConfig(sortedData);
       }
     } catch (e) {
       console.error("loadAllData error:", e);
@@ -208,7 +213,11 @@ export default function PanitiaDashboard() {
 
   // Save CMS changes to Supabase
   const handleSaveCms = async (customConfig?: SiteCmsConfig) => {
-    const configToSave = customConfig || cmsConfig;
+    const rawConfig = customConfig || cmsConfig;
+    const configToSave: SiteCmsConfig = {
+      ...rawConfig,
+      milestones: sortMilestonesByYear(rawConfig.milestones || []),
+    };
     setIsSavingCms(true);
     try {
       const res = await fetch("/api/cms", {
@@ -218,7 +227,11 @@ export default function PanitiaDashboard() {
       });
       const json = await res.json();
       if (json.success && json.data) {
-        setCmsConfig(json.data);
+        const sortedData: SiteCmsConfig = {
+          ...json.data,
+          milestones: sortMilestonesByYear(json.data.milestones || []),
+        };
+        setCmsConfig(sortedData);
         showNotification("Pengaturan berhasil disimpan ke Supabase!");
       } else {
         showNotification(json.error || "Gagal menyimpan ke Supabase.", true);
@@ -436,7 +449,8 @@ export default function PanitiaDashboard() {
       updatedMilestones.push(milestoneForm);
     }
 
-    const newConfig = { ...cmsConfig, milestones: updatedMilestones };
+    const sortedMilestones = sortMilestonesByYear(updatedMilestones);
+    const newConfig = { ...cmsConfig, milestones: sortedMilestones };
     setCmsConfig(newConfig);
     handleSaveCms(newConfig);
     setShowAddMilestoneModal(false);
@@ -458,7 +472,8 @@ export default function PanitiaDashboard() {
   const handleDeleteMilestone = (index: number) => {
     if (!confirm("Hapus milestone kilas sejarah ini?")) return;
     const updatedMilestones = cmsConfig.milestones.filter((_, i) => i !== index);
-    const newConfig = { ...cmsConfig, milestones: updatedMilestones };
+    const sortedMilestones = sortMilestonesByYear(updatedMilestones);
+    const newConfig = { ...cmsConfig, milestones: sortedMilestones };
     setCmsConfig(newConfig);
     handleSaveCms(newConfig);
   };
@@ -2796,12 +2811,17 @@ export default function PanitiaDashboard() {
             <div className="p-6 rounded-2xl bg-stone-900 border border-stone-800 space-y-4">
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <div>
-                  <h3 className="font-serif font-bold text-base text-amber-300 flex items-center gap-2">
-                    <Layers className="w-4 h-4 text-amber-400" />
-                    <span>Napak Tilas 20 Tahun ({cmsConfig.milestones.length} Tahapan Sejarah)</span>
-                  </h3>
-                  <p className="text-xs text-stone-400">
-                    Kilas sejarah perjalanan perintisan dari tahun 1997 sampai perayaan 2026.
+                  <div className="flex items-center gap-2">
+                    <h3 className="font-serif font-bold text-base text-amber-300 flex items-center gap-2">
+                      <Layers className="w-4 h-4 text-amber-400" />
+                      <span>Napak Tilas 20 Tahun ({cmsConfig.milestones.length} Tahapan Sejarah)</span>
+                    </h3>
+                    <span className="text-[10px] bg-amber-500/15 text-amber-300 border border-amber-400/30 px-2 py-0.5 rounded-full font-mono">
+                      ✓ Diurutkan Berdasarkan Tahun
+                    </span>
+                  </div>
+                  <p className="text-xs text-stone-400 mt-1">
+                    Kilas sejarah perjalanan perintisan dari tahun 1997 sampai perayaan 2026 (otomatis diurutkan secara kronologis).
                   </p>
                 </div>
 
@@ -2831,7 +2851,7 @@ export default function PanitiaDashboard() {
 
               {/* Milestones List */}
               <div className="space-y-3">
-                {cmsConfig.milestones.map((m, idx) => (
+                {sortMilestonesByYear(cmsConfig.milestones).map((m, idx) => (
                   <div
                     key={idx}
                     className="p-4 rounded-xl bg-stone-950 border border-stone-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"

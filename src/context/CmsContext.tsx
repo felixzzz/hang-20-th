@@ -3,6 +3,7 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { SiteCmsConfig } from "@/types/cms";
 import { defaultCms } from "@/data/defaultCms";
+import { sortMilestonesByYear } from "@/data/history";
 
 interface CmsContextType {
   cms: SiteCmsConfig;
@@ -27,9 +28,13 @@ export function CmsProvider({ children }: { children: React.ReactNode }) {
       const res = await fetch("/api/cms");
       const json = await res.json();
       if (json.success && json.data) {
-        setCms(json.data);
+        const sortedData = {
+          ...json.data,
+          milestones: sortMilestonesByYear(json.data.milestones || []),
+        };
+        setCms(sortedData);
         // Cache to sessionStorage for instantaneous navigation
-        sessionStorage.setItem("guanghang_cms_cache", JSON.stringify(json.data));
+        sessionStorage.setItem("guanghang_cms_cache", JSON.stringify(sortedData));
       }
     } catch (err) {
       console.warn("Using default CMS due to fetch error:", err);
@@ -44,6 +49,9 @@ export function CmsProvider({ children }: { children: React.ReactNode }) {
       const cached = sessionStorage.getItem("guanghang_cms_cache");
       if (cached) {
         const parsed = JSON.parse(cached);
+        if (Array.isArray(parsed.milestones)) {
+          parsed.milestones = sortMilestonesByYear(parsed.milestones);
+        }
         setCms((prev) => ({ ...prev, ...parsed }));
       }
     } catch (e) {
@@ -55,7 +63,11 @@ export function CmsProvider({ children }: { children: React.ReactNode }) {
 
   const updateCms = async (partial: Partial<SiteCmsConfig>): Promise<boolean> => {
     try {
-      const newConfig = { ...cms, ...partial };
+      const newConfig = {
+        ...cms,
+        ...partial,
+        milestones: sortMilestonesByYear(partial.milestones || cms.milestones || []),
+      };
       const res = await fetch("/api/cms", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -63,8 +75,12 @@ export function CmsProvider({ children }: { children: React.ReactNode }) {
       });
       const json = await res.json();
       if (json.success && json.data) {
-        setCms(json.data);
-        sessionStorage.setItem("guanghang_cms_cache", JSON.stringify(json.data));
+        const sortedData = {
+          ...json.data,
+          milestones: sortMilestonesByYear(json.data.milestones || []),
+        };
+        setCms(sortedData);
+        sessionStorage.setItem("guanghang_cms_cache", JSON.stringify(sortedData));
         return true;
       }
       return false;

@@ -33,7 +33,7 @@ import { LanguageProvider, useLanguage } from "@/context/LanguageContext";
 import { CmsProvider, useCms } from "@/context/CmsContext";
 import { GalleryPhotoItem } from "@/types/cms";
 import { WishItem, initialWishes } from "@/data/defaultWishes";
-import { historyMilestones } from "@/data/history";
+import { historyMilestones, sortMilestonesByYear } from "@/data/history";
 import { galleryItems } from "@/data/gallery";
 
 function Home6FreshContent() {
@@ -75,7 +75,8 @@ function Home6FreshContent() {
   const [activePhoto, setActivePhoto] = useState<GalleryPhotoItem | null>(null);
 
   // Milestones
-  const milestones = cms.milestones && cms.milestones.length > 0 ? cms.milestones : historyMilestones;
+  const rawMilestones = cms.milestones && cms.milestones.length > 0 ? cms.milestones : historyMilestones;
+  const milestones = sortMilestonesByYear(rawMilestones);
 
   // Japanese style RSVP: ご出席 (Hadir), ご欠席 (Tidak Hadir), 保留 (Masih Ragu)
   const [rsvpName, setRsvpName] = useState(guestName === "Bapak / Ibu / Saudara/i" ? "" : guestName);

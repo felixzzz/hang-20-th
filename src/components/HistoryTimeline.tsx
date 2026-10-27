@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import Image from "next/image";
-import { historyMilestones } from "@/data/history";
+import { historyMilestones, sortMilestonesByYear } from "@/data/history";
 import { MapPin, ChevronRight, ChevronLeft } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import { useCms } from "@/context/CmsContext";
@@ -10,7 +10,8 @@ import { useCms } from "@/context/CmsContext";
 export default function HistoryTimeline() {
   const { showId, showZh } = useLanguage();
   const { cms } = useCms();
-  const milestones = cms.milestones && cms.milestones.length > 0 ? cms.milestones : historyMilestones;
+  const rawMilestones = cms.milestones && cms.milestones.length > 0 ? cms.milestones : historyMilestones;
+  const milestones = useMemo(() => sortMilestonesByYear(rawMilestones), [rawMilestones]);
 
   const [selectedIdx, setSelectedIdx] = useState(0);
   const current = milestones[selectedIdx] || milestones[0];

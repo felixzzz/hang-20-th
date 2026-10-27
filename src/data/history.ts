@@ -11,6 +11,45 @@ export interface Milestone {
   image?: string;
 }
 
+/**
+ * Extract 4-digit or numeric year for robust chronological sorting
+ */
+export function extractYearNumber(yearStr: string | number | undefined | null): number {
+  if (!yearStr) return 0;
+  const str = String(yearStr).trim();
+  const match4 = str.match(/\d{4}/);
+  if (match4) return parseInt(match4[0], 10);
+  const matchAny = str.match(/\d+/);
+  if (matchAny) return parseInt(matchAny[0], 10);
+  return 0;
+}
+
+/**
+ * Sorts milestone items by year in ascending chronological order (e.g. 1997 -> 2026).
+ * Preserves relative insertion order for milestones sharing the same year.
+ */
+export function sortMilestonesByYear<T extends { year?: string; title?: string }>(
+  milestones: T[]
+): T[] {
+  if (!Array.isArray(milestones)) return [];
+  return [...milestones]
+    .map((item, index) => ({ item, index }))
+    .sort((a, b) => {
+      const parsedA = extractYearNumber(a.item.year);
+      const parsedB = extractYearNumber(b.item.year);
+      // Place items without a parseable year at the end
+      const yearA = parsedA === 0 ? 999999 : parsedA;
+      const yearB = parsedB === 0 ? 999999 : parsedB;
+      if (yearA !== yearB) {
+        return yearA - yearB;
+      }
+      const rawCompare = (a.item.year || "").localeCompare(b.item.year || "");
+      if (rawCompare !== 0) return rawCompare;
+      return a.index - b.index;
+    })
+    .map((w) => w.item);
+}
+
 export const historyMilestones: Milestone[] = [
   {
     year: "1997",

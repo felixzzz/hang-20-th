@@ -35,7 +35,7 @@ import { TicketCard } from "@/components/ui/TicketCard";
 import { NumberTicker } from "@/components/ui/NumberTicker";
 import { GalleryPhotoItem } from "@/types/cms";
 import { WishItem, initialWishes } from "@/data/defaultWishes";
-import { historyMilestones } from "@/data/history";
+import { historyMilestones, sortMilestonesByYear } from "@/data/history";
 import { galleryItems } from "@/data/gallery";
 
 function Home1EditorialContent() {
@@ -81,8 +81,9 @@ function Home1EditorialContent() {
     galleryFilter === "all" ? allGallery : allGallery.filter((item) => item.category === galleryFilter);
 
   // Milestones
-  const milestones =
+  const rawMilestones =
     cms.milestones && cms.milestones.length > 0 ? cms.milestones : historyMilestones;
+  const milestones = sortMilestonesByYear(rawMilestones);
   const [activeMilestoneYear, setActiveMilestoneYear] = useState(milestones[0]?.year || "1997");
   const currentMilestone =
     milestones.find((m) => m.year === activeMilestoneYear) || milestones[0];

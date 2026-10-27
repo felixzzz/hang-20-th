@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase";
 import { defaultCms } from "@/data/defaultCms";
+import { sortMilestonesByYear } from "@/data/history";
 import { SiteCmsConfig } from "@/types/cms";
 
 const BUCKET_NAME = "cms-media";
@@ -49,7 +50,9 @@ export async function GET() {
       donation: { ...defaultCms.donation, ...(parsed.donation || {}) },
       location: { ...defaultCms.location, ...(parsed.location || {}) },
       shareMessage: { ...defaultCms.shareMessage, ...(parsed.shareMessage || {}) },
-      milestones: Array.isArray(parsed.milestones) ? parsed.milestones : defaultCms.milestones,
+      milestones: sortMilestonesByYear(
+        Array.isArray(parsed.milestones) ? parsed.milestones : defaultCms.milestones
+      ),
       gallery: Array.isArray(parsed.gallery) ? parsed.gallery : defaultCms.gallery,
     };
 
@@ -90,7 +93,9 @@ export async function POST(request: Request) {
       donation: { ...defaultCms.donation, ...(body.donation || {}) },
       location: { ...defaultCms.location, ...(body.location || {}) },
       shareMessage: { ...defaultCms.shareMessage, ...(body.shareMessage || {}) },
-      milestones: Array.isArray(body.milestones) ? body.milestones : defaultCms.milestones,
+      milestones: sortMilestonesByYear(
+        Array.isArray(body.milestones) ? body.milestones : defaultCms.milestones
+      ),
       gallery: Array.isArray(body.gallery) ? body.gallery : defaultCms.gallery,
     };
 
