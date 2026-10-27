@@ -9,10 +9,16 @@ import { useCms } from "@/context/CmsContext";
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const { lang, setLang } = useLanguage();
+  const { lang, setLang, showId, showZh } = useLanguage();
   const { cms } = useCms();
 
   const logoImg = cms.cover.logoImage || "/images/logo-guang-ji.png";
+  const navConfig = cms.navbar || {
+    brandTitleId: "Kuang Hang Fo Thang",
+    brandTitleZh: "廣航佛堂",
+    brandSubtitleId: "Peringatan 20 Tahun Gedung",
+    brandSubtitleZh: "成立廿週年堂慶",
+  };
 
   useEffect(() => {
     const handleScroll = () => {
@@ -56,10 +62,14 @@ export default function Navbar() {
           </div>
           <div className="flex flex-col text-left">
             <span className="font-serif font-bold text-sm sm:text-base tracking-wide text-[#7c1818] leading-tight">
-              Kuang Hang Fo Thang
+              {showZh && !showId ? navConfig.brandTitleZh : navConfig.brandTitleId}
             </span>
             <span className="text-[11px] text-stone-600 font-chinese">
-              廣航佛堂 • 成立廿週年堂慶
+              {showZh && !showId
+                ? navConfig.brandSubtitleZh
+                : showId && !showZh
+                ? navConfig.brandSubtitleId
+                : `${navConfig.brandTitleZh} • ${navConfig.brandSubtitleZh}`}
             </span>
           </div>
         </a>
@@ -75,10 +85,17 @@ export default function Navbar() {
                   className="ml-2 inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-[#7c1818] hover:bg-[#681313] text-[#fbf5e8] font-serif font-medium text-xs shadow-xs transition-all border border-[#dfba6d]/40 cursor-pointer"
                 >
                   <HeartHandshake className="w-3.5 h-3.5 text-[#dfba6d]" />
-                  <span>{link.name}</span>
-                  <span className="font-chinese text-xs opacity-90 pl-1 border-l border-white/20">
-                    {link.zh}
-                  </span>
+                  {showId && <span>{link.name}</span>}
+                  {showId && showZh && (
+                    <span className="font-chinese text-xs opacity-90 pl-1 border-l border-white/20">
+                      {link.zh}
+                    </span>
+                  )}
+                  {!showId && showZh && (
+                    <span className="font-chinese text-xs font-normal">
+                      {link.zh}
+                    </span>
+                  )}
                 </a>
               );
             }
@@ -89,10 +106,17 @@ export default function Navbar() {
                 href={link.href}
                 className="px-2.5 py-1 rounded-full text-xs font-serif font-medium text-stone-800 hover:text-[#7c1818] hover:bg-stone-200/50 transition-colors cursor-pointer flex items-center gap-1"
               >
-                <span>{link.name}</span>
-                <span className="font-chinese text-[11px] text-stone-500 font-normal">
-                  {link.zh}
-                </span>
+                {showId && <span>{link.name}</span>}
+                {showId && showZh && (
+                  <span className="font-chinese text-[11px] text-stone-500 font-normal">
+                    {link.zh}
+                  </span>
+                )}
+                {!showId && showZh && (
+                  <span className="font-chinese text-xs font-normal">
+                    {link.zh}
+                  </span>
+                )}
               </a>
             );
           })}
@@ -141,7 +165,7 @@ export default function Navbar() {
             href="#rsvp"
             className="lg:hidden px-3 py-1 rounded-full bg-[#7c1818] text-[#fbf5e8] text-xs font-serif font-medium border border-[#dfba6d]/40"
           >
-            RSVP
+            {showZh && !showId ? "回函" : "RSVP"}
           </a>
 
           <button
@@ -169,8 +193,13 @@ export default function Navbar() {
                     : "text-stone-800 hover:bg-stone-100"
                 }`}
               >
-                <span>{link.name}</span>
-                <span className="font-chinese text-xs opacity-75">{link.zh}</span>
+                {showId && <span>{link.name}</span>}
+                {showId && showZh && (
+                  <span className="font-chinese text-xs opacity-75">{link.zh}</span>
+                )}
+                {!showId && showZh && (
+                  <span className="font-chinese text-xs font-normal">{link.zh}</span>
+                )}
               </a>
             ))}
           </div>

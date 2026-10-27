@@ -14,8 +14,10 @@ export default function HeroSection({ guestName }: HeroSectionProps) {
   const { showId, showZh } = useLanguage();
   const { cms } = useCms();
 
+  const hero = cms.hero;
+
   // Target countdown date from CMS or default to Saturday, Nov 14, 2026, 19:00 WIB
-  const targetDateStr = cms.hero.countdownDate || "2026-11-14T19:00:00+07:00";
+  const targetDateStr = hero.countdownDate || "2026-11-14T19:00:00+07:00";
   const targetDate = new Date(targetDateStr).getTime();
 
   const [timeLeft, setTimeLeft] = useState({
@@ -66,23 +68,25 @@ export default function HeroSection({ guestName }: HeroSectionProps) {
         <div className="flex flex-wrap items-center justify-between border-b border-[#dfba6d]/30 pb-3 mb-10 text-xs text-stone-600 font-serif">
           <div className="flex items-center gap-2.5">
             <span className="chinese-seal-filled text-[11px] px-2 py-0.5">
-              天恩師德
+              {hero.topBannerSealZh || "天恩師德"}
             </span>
             <span className="tracking-widest uppercase">
-              {showId && (cms.hero.topBannerId || "Peringatan 20 Tahun Gedung (2006 — 2026)")}
+              {showId && (hero.topBannerId || "Peringatan 20 Tahun Gedung (2006 — 2026)")}
               {showId && showZh && " • "}
               {showZh && (
                 <span className="font-chinese font-normal">
-                  {cms.hero.topBannerZh || "落成廿週年堂慶大典"}
+                  {hero.topBannerZh || "落成廿週年堂慶大典"}
                 </span>
               )}
             </span>
           </div>
 
           <div className="hidden sm:flex items-center gap-3 text-stone-600">
-            <span>{cms.hero.cityId || "Palmerah, Jakarta Barat"}</span>
+            <span>
+              {showZh && !showId ? hero.cityZh : hero.cityId}
+            </span>
             <span>•</span>
-            <span className="font-semibold text-[#7c1818]">{cms.hero.eventDateBadge || "14 November 2026"}</span>
+            <span className="font-semibold text-[#7c1818]">{hero.eventDateBadge || "14 November 2026"}</span>
           </div>
         </div>
 
@@ -94,16 +98,18 @@ export default function HeroSection({ guestName }: HeroSectionProps) {
             
             <div className="mb-3">
               <span className="inline-block text-xs font-serif tracking-[0.25em] text-[#9e7631] uppercase mb-1 font-semibold">
-                Dua Dasawarsa Menyalakan Pelita Kebajikan
+                {showId && (hero.sloganId || "Dua Dasawarsa Menyalakan Pelita Kebajikan")}
+                {showId && showZh && " • "}
+                {showZh && <span className="font-chinese">{hero.sloganZh || "廿載同修 • 慧命永續"}</span>}
               </span>
               <h1 className="text-4xl sm:text-6xl font-chinese font-bold text-[#7c1818] tracking-wide leading-tight">
-                {cms.hero.mainTitleZh || "廣航佛堂"}
+                {hero.mainTitleZh || "廣航佛堂"}
                 <span className="block text-2xl sm:text-3xl font-serif text-[#211c19] font-normal tracking-wide mt-2">
-                  {showId && (cms.hero.mainTitleId || "Peringatan 20 Tahun Peresmian Gedung")}
+                  {showId && (hero.mainTitleId || "Peringatan 20 Tahun Peresmian Gedung")}
                   {showId && showZh && " • "}
                   {showZh && (
                     <span className="font-chinese">
-                      {cms.hero.themeZh || "成立廿週年堂慶紀念"}
+                      {hero.themeZh || "成立廿週年堂慶紀念 (2006 — 2026)"}
                     </span>
                   )}
                 </span>
@@ -114,25 +120,23 @@ export default function HeroSection({ guestName }: HeroSectionProps) {
             <div className="my-4 pl-4 border-l-2 border-[#dfba6d]">
               {showId && (
                 <p className="font-serif text-lg sm:text-xl text-stone-800 italic leading-relaxed">
-                  &ldquo;{cms.hero.quoteId}&rdquo;
+                  &ldquo;{hero.quoteId}&rdquo;
                 </p>
               )}
               {showZh && (
                 <p className="font-chinese text-sm sm:text-base text-stone-600 mt-1.5 tracking-wider leading-relaxed">
-                  {cms.hero.quoteZh}
+                  {hero.quoteZh}
                 </p>
               )}
             </div>
 
             <div className="text-sm sm:text-base text-stone-700 leading-relaxed max-w-xl mb-6 font-serif">
               {showId && (
-                <p>
-                  Pada tanggal 12 November 2006, berkat karunia tak terhingga dari Tian En Shi De serta ketulusan hati para pendahulu, gedung Kuang Hang Fo Thang resmi berdiri kokoh di Palmerah. Hari ini, kami mengundang Anda untuk bersama menundukkan kepala dalam syukur dan memperbaharui ikrar kebajikan.
-                </p>
+                <p>{hero.storyParagraphId}</p>
               )}
               {showZh && (
                 <p className="font-chinese text-sm text-stone-600 leading-relaxed mt-1">
-                  廿年前（2006年11月12日），在天恩師德庇佑與前賢們無私奉獻下，廣航佛堂正式落成安座。廿載韶華，慧光普照。今日誠摯恭請十方善信大德共聚一堂，追思感恩，同沾法喜。
+                  {hero.storyParagraphZh}
                 </p>
               )}
             </div>
@@ -141,18 +145,18 @@ export default function HeroSection({ guestName }: HeroSectionProps) {
             <div className="bg-[#ffffff] p-5 sm:p-6 rounded-xl border border-[#dfba6d]/35 shadow-sm relative">
               <div className="flex items-center justify-between mb-2 pb-2 border-b border-stone-100">
                 <span className="text-[11px] font-serif font-semibold tracking-widest text-[#9e7631] uppercase">
-                  {showId && "SURAT PENGHORMATAN TAMU UNDANGAN"}
+                  {showId && (hero.guestHonorTitleId || "SURAT PENGHORMATAN TAMU UNDANGAN")}
                   {showId && showZh && " • "}
-                  {showZh && <span className="font-chinese">貴賓敬邀函</span>}
+                  {showZh && <span className="font-chinese">{hero.guestHonorTitleZh || "貴賓敬邀函"}</span>}
                 </span>
                 <span className="chinese-seal-red text-[11px] px-2 py-0.5">
-                  同沾法喜
+                  {hero.guestHonorSealZh || "同沾法喜"}
                 </span>
               </div>
 
               <div className="text-xs text-stone-600 font-serif">
-                {showId && <span>Kepada Yth. Bapak / Ibu / Saudara/i:</span>}
-                {showZh && <span className="font-chinese text-stone-700 ml-1">恭請 尊鑒：</span>}
+                {showId && <span>{hero.guestHonorGreetingId || "Kepada Yth. Bapak / Ibu / Saudara/i:"}</span>}
+                {showZh && <span className="font-chinese text-stone-700 ml-1">{hero.guestHonorGreetingZh || "恭請 尊鑒："}</span>}
               </div>
 
               <div className="text-xl sm:text-2xl font-serif font-bold text-[#7c1818] tracking-wide my-1.5">
@@ -161,13 +165,11 @@ export default function HeroSection({ guestName }: HeroSectionProps) {
 
               <div className="text-xs sm:text-sm text-stone-600 font-serif leading-relaxed">
                 {showId && (
-                  <p>
-                    Merupakan berkah dan kehormatan yang mendalam bagi segenap pengurus dan panitia untuk menyambut kehadiran Anda dalam Malam Puncak Peringatan 20 Tahun Kuang Hang Fo Thang.
-                  </p>
+                  <p>{hero.guestHonorMessageId}</p>
                 )}
                 {showZh && (
                   <p className="font-chinese text-xs text-stone-500 mt-1">
-                    廣航佛堂全體同修謹此誠摯奉邀，祈盼撥冗光臨，共沐法雨天恩。
+                    {hero.guestHonorMessageZh}
                   </p>
                 )}
               </div>
@@ -190,14 +192,14 @@ export default function HeroSection({ guestName }: HeroSectionProps) {
                 href="#rsvp"
                 className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full bg-[#7c1818] hover:bg-[#681313] text-[#fbf5e8] font-serif font-medium text-xs sm:text-sm shadow-xs transition cursor-pointer"
               >
-                <span>Konfirmasi Kehadiran (RSVP)</span>
-                {showZh && <span className="font-chinese opacity-80 text-xs">回函</span>}
+                <span>{showZh && !showId ? "填寫回函 (RSVP)" : "Konfirmasi Kehadiran (RSVP)"}</span>
+                {showId && showZh && <span className="font-chinese opacity-80 text-xs">回函</span>}
               </a>
               <a
                 href="#sejarah"
                 className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-white hover:bg-stone-50 text-stone-800 font-serif font-medium text-xs sm:text-sm border border-stone-200 transition cursor-pointer"
               >
-                <span>Napak Tilas 20 Tahun</span>
+                <span>{showZh && !showId ? "重溫廿載光輝史話" : "Napak Tilas 20 Tahun"}</span>
                 <ArrowDown className="w-3.5 h-3.5 text-stone-500" />
               </a>
             </div>
@@ -211,7 +213,7 @@ export default function HeroSection({ guestName }: HeroSectionProps) {
               <div className="relative aspect-[4/5] sm:aspect-[3/4] w-full rounded-xl overflow-hidden bg-stone-900">
                 <Image
                   src={heroImg}
-                  alt="Altar Agung Kuang Hang Fo Thang"
+                  alt={hero.photoCaptionTitleId || "Altar Agung Kuang Hang Fo Thang"}
                   fill
                   priority
                   className="object-cover group-hover:scale-103 transition-transform duration-700"
@@ -221,7 +223,7 @@ export default function HeroSection({ guestName }: HeroSectionProps) {
                 {/* Clean Archival Badge */}
                 <div className="absolute top-3 left-3">
                   <span className="px-2.5 py-1 rounded bg-[#211c19]/80 backdrop-blur-sm border border-white/20 text-[#fbf5e8] text-[11px] font-chinese tracking-widest">
-                    廣航聖壇 • 2006安座
+                    {hero.photoCaptionTitleZh || "廣航聖壇"} • {hero.photoCaptionDate || "2006安座"}
                   </span>
                 </div>
               </div>
@@ -230,20 +232,20 @@ export default function HeroSection({ guestName }: HeroSectionProps) {
               <div className="p-3 text-stone-800">
                 <div className="flex items-center justify-between text-xs font-serif mb-1">
                   <span className="font-semibold text-[#7c1818]">
-                    {showId && "Altar Agung Kuang Hang Fo Thang"}
+                    {showId && (hero.photoCaptionTitleId || "Altar Agung Kuang Hang Fo Thang")}
                     {showId && showZh && " • "}
-                    {showZh && <span className="font-chinese font-normal">廣航聖壇大殿</span>}
+                    {showZh && <span className="font-chinese font-normal">{hero.photoCaptionTitleZh || "廣航聖壇大殿"}</span>}
                   </span>
-                  <span className="text-stone-500 text-[11px]">12 Nov 2006</span>
+                  <span className="text-stone-500 text-[11px]">{hero.photoCaptionDate || "12 Nov 2006"}</span>
                 </div>
                 {showId && (
                   <p className="text-xs text-stone-600 font-serif leading-snug">
-                    Pusat spiritual pembinaan kebajikan dan persaudaraan se-dharma di Palmerah Utara.
+                    {hero.photoCaptionDescId}
                   </p>
                 )}
                 {showZh && (
                   <p className="font-chinese text-[11px] text-stone-500 mt-0.5">
-                    立足巴美拉，開拓萬家光明，度化十方有緣善信回歸覺路。
+                    {hero.photoCaptionDescZh}
                   </p>
                 )}
               </div>
@@ -251,7 +253,7 @@ export default function HeroSection({ guestName }: HeroSectionProps) {
 
             {/* Commemorative Ribbon */}
             <div className="w-full mt-3 text-center text-[11px] text-stone-500 font-serif tracking-wider">
-              廣結善緣 • 航向光明 • 廿載同舟共濟
+              {hero.commemorativeRibbon || "廣結善緣 • 航向光明 • 廿載同舟共濟"}
             </div>
 
           </div>
@@ -266,17 +268,17 @@ export default function HeroSection({ guestName }: HeroSectionProps) {
               <div className="flex items-center justify-center md:justify-start gap-2 text-xs font-serif font-semibold uppercase tracking-wider text-[#9e7631] mb-1.5">
                 <Clock className="w-3.5 h-3.5 text-[#9e7631]" />
                 <span>
-                  {showId && "Hitung Mundur Menuju Malam Syukur"}
+                  {showId && (hero.countdownHeadingId || "Hitung Mundur Menuju Malam Syukur")}
                   {showId && showZh && " • "}
-                  {showZh && <span className="font-chinese font-normal">倒計時迎接感恩之夜</span>}
+                  {showZh && <span className="font-chinese font-normal">{hero.countdownHeadingZh || "倒計時迎接感恩之夜"}</span>}
                 </span>
               </div>
               <h2 className="text-xl sm:text-2xl font-serif font-bold text-[#7c1818]">
                 {cms.event.dateTextId} • {cms.event.timeTextId}
               </h2>
               <p className="text-xs sm:text-sm text-stone-600 font-serif mt-1">
-                {showId && "Waktu bersama untuk bersyukur, mengenang jejak perintis, dan mempererat tali dharma."}
-                {showZh && <span className="block font-chinese text-xs text-stone-500">同修相聚感恩回首，共沐法喜，再啟新程。</span>}
+                {showId && (hero.countdownSubtextId || "Waktu bersama untuk bersyukur, mengenang jejak perintis, dan mempererat tali dharma.")}
+                {showZh && <span className="block font-chinese text-xs text-stone-500">{hero.countdownSubtextZh}</span>}
               </p>
             </div>
 

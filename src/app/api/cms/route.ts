@@ -41,6 +41,7 @@ export async function GET() {
 
     // Deep merge with defaultCms to guarantee all keys exist even after schema expansion
     const merged: SiteCmsConfig = {
+      navbar: { ...defaultCms.navbar, ...(parsed.navbar || {}) },
       cover: { ...defaultCms.cover, ...(parsed.cover || {}) },
       hero: { ...defaultCms.hero, ...(parsed.hero || {}) },
       wisdom: { ...defaultCms.wisdom, ...(parsed.wisdom || {}) },
@@ -81,6 +82,7 @@ export async function POST(request: Request) {
 
     // Merge incoming changes with defaults or current values
     const configToSave: SiteCmsConfig = {
+      navbar: { ...defaultCms.navbar, ...(body.navbar || {}) },
       cover: { ...defaultCms.cover, ...(body.cover || {}) },
       hero: { ...defaultCms.hero, ...(body.hero || {}) },
       wisdom: { ...defaultCms.wisdom, ...(body.wisdom || {}) },

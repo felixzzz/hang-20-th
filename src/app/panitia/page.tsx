@@ -34,6 +34,8 @@ import {
   HelpCircle,
   X,
   ExternalLink,
+  Compass,
+  Navigation,
 } from "lucide-react";
 import { WishItem, initialWishes } from "@/data/defaultWishes";
 import { SiteCmsConfig, MilestoneItem, GalleryPhotoItem } from "@/types/cms";
@@ -803,10 +805,10 @@ export default function PanitiaDashboard() {
             </div>
 
             {/* Action Bar & Filters */}
-            <div className="p-4 rounded-2xl bg-stone-900 border border-stone-800 flex flex-wrap items-center justify-between gap-3">
-              <div className="flex flex-wrap items-center gap-2.5 flex-1 min-w-[280px]">
+            <div className="p-4 rounded-2xl bg-stone-900 border border-stone-800 flex flex-col md:flex-row md:items-center justify-between gap-3">
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 flex-1 min-w-0">
                 {/* Search */}
-                <div className="relative flex-1 min-w-[200px]">
+                <div className="relative flex-1 min-w-0">
                   <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-stone-400" />
                   <input
                     type="text"
@@ -821,7 +823,7 @@ export default function PanitiaDashboard() {
                 <select
                   value={filterStatus}
                   onChange={(e: any) => setFilterStatus(e.target.value)}
-                  className="px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-stone-200 outline-none"
+                  className="px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-stone-200 outline-none shrink-0"
                 >
                   <option value="all">Semua Status</option>
                   <option value="hadir">Pasti Hadir</option>
@@ -830,13 +832,13 @@ export default function PanitiaDashboard() {
                 </select>
               </div>
 
-              <div className="flex items-center gap-2">
+              <div className="flex flex-wrap items-center gap-2 shrink-0">
                 <button
                   onClick={() => {
                     setWishForm({ name: "", status: "hadir", guests: 1, message: "" });
                     setShowAddWishModal(true);
                   }}
-                  className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-amber-600 hover:bg-amber-500 text-stone-950 font-bold text-xs transition cursor-pointer shadow-md"
+                  className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-xl bg-amber-600 hover:bg-amber-500 text-stone-950 font-bold text-xs transition cursor-pointer shadow-md flex-1 sm:flex-initial"
                 >
                   <Plus className="w-4 h-4" />
                   <span>Tambah Ucapan Manual</span>
@@ -844,7 +846,7 @@ export default function PanitiaDashboard() {
 
                 <button
                   onClick={exportCsv}
-                  className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-stone-800 hover:bg-stone-700 text-stone-200 text-xs font-semibold border border-stone-700 transition cursor-pointer"
+                  className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-xl bg-stone-800 hover:bg-stone-700 text-stone-200 text-xs font-semibold border border-stone-700 transition cursor-pointer flex-1 sm:flex-initial"
                 >
                   <Download className="w-4 h-4" />
                   <span>Unduh CSV</span>
@@ -1119,37 +1121,165 @@ export default function PanitiaDashboard() {
         {/* ============================================================== */}
         {activeTab === "cms_text" && (
           <div className="space-y-8">
-            <div className="flex items-center justify-between pb-4 border-b border-stone-800">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-stone-800 gap-4">
               <div>
                 <h2 className="text-lg font-serif font-bold text-amber-300">
-                  Pengaturan Teks & Konten Website
+                  Pengaturan Teks & Konten Acara
                 </h2>
                 <p className="text-xs text-stone-400">
-                  Ubah teks judul, tema, wejangan, tanggal acara, lokasi, dan nomor rekening dana kebajikan.
+                  Ubah teks navigasi, kartu sampul landscape, sambutan peringatan, wejangan suci, jadwal acara, lokasi, dan nomor rekening dana kebajikan.
                 </p>
               </div>
 
               <button
                 onClick={() => handleSaveCms()}
                 disabled={isSavingCms}
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-500 disabled:opacity-50 text-stone-950 font-bold text-xs shadow-lg transition cursor-pointer"
+                className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-500 disabled:opacity-50 text-stone-950 font-bold text-xs shadow-lg transition cursor-pointer shrink-0"
               >
                 <Save className="w-4 h-4" />
                 <span>{isSavingCms ? "Menyimpan ke Supabase..." : "Simpan Teks ke Supabase"}</span>
               </button>
             </div>
 
-            {/* Section 1: Hero & Sampul */}
-            <div className="p-6 rounded-2xl bg-stone-900 border border-stone-800 space-y-4">
-              <h3 className="font-serif font-bold text-base text-amber-300 flex items-center gap-2">
-                <Sparkles className="w-4 h-4 text-amber-400" />
-                <span>Sampul Amplop & Hero Utama</span>
-              </h3>
+            {/* Section 1: Header & Navigasi (Navbar) */}
+            <div className="p-5 sm:p-6 rounded-2xl bg-stone-900 border border-stone-800 space-y-4">
+              <div className="border-b border-stone-800/80 pb-3">
+                <h3 className="font-serif font-bold text-base text-amber-300 flex items-center gap-2">
+                  <Compass className="w-4 h-4 text-amber-400" />
+                  <span>Header & Bilah Navigasi (Navbar)</span>
+                </h3>
+                <p className="text-xs text-stone-400 mt-0.5">
+                  Teks nama wadah dan subjudul yang tampil di bilah navigasi atas (desktop dan ponsel).
+                </p>
+              </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
                   <label className="block text-[11px] uppercase tracking-wider text-stone-400 font-semibold mb-1">
-                    Judul Utama (Mandarin)
+                    Nama Fo Thang (Indonesia)
+                  </label>
+                  <input
+                    type="text"
+                    value={cmsConfig.navbar?.brandTitleId || ""}
+                    onChange={(e) =>
+                      setCmsConfig({
+                        ...cmsConfig,
+                        navbar: { ...cmsConfig.navbar, brandTitleId: e.target.value },
+                      })
+                    }
+                    placeholder="Kuang Hang Fo Thang"
+                    className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[11px] uppercase tracking-wider text-stone-400 font-semibold mb-1">
+                    Nama Fo Thang (Mandarin)
+                  </label>
+                  <input
+                    type="text"
+                    value={cmsConfig.navbar?.brandTitleZh || ""}
+                    onChange={(e) =>
+                      setCmsConfig({
+                        ...cmsConfig,
+                        navbar: { ...cmsConfig.navbar, brandTitleZh: e.target.value },
+                      })
+                    }
+                    placeholder="廣航佛堂"
+                    className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none font-chinese text-sm"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[11px] uppercase tracking-wider text-stone-400 font-semibold mb-1">
+                    Subjudul Header (Indonesia)
+                  </label>
+                  <input
+                    type="text"
+                    value={cmsConfig.navbar?.brandSubtitleId || ""}
+                    onChange={(e) =>
+                      setCmsConfig({
+                        ...cmsConfig,
+                        navbar: { ...cmsConfig.navbar, brandSubtitleId: e.target.value },
+                      })
+                    }
+                    placeholder="Peringatan 20 Tahun Gedung"
+                    className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[11px] uppercase tracking-wider text-stone-400 font-semibold mb-1">
+                    Subjudul Header (Mandarin)
+                  </label>
+                  <input
+                    type="text"
+                    value={cmsConfig.navbar?.brandSubtitleZh || ""}
+                    onChange={(e) =>
+                      setCmsConfig({
+                        ...cmsConfig,
+                        navbar: { ...cmsConfig.navbar, brandSubtitleZh: e.target.value },
+                      })
+                    }
+                    placeholder="成立廿週年堂慶"
+                    className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none font-chinese text-sm"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Section 2: Sampul Amplop Landscape (Hero Cover) */}
+            <div className="p-5 sm:p-6 rounded-2xl bg-stone-900 border border-stone-800 space-y-4">
+              <div className="border-b border-stone-800/80 pb-3">
+                <h3 className="font-serif font-bold text-base text-amber-300 flex items-center gap-2">
+                  <Sparkles className="w-4 h-4 text-amber-400" />
+                  <span>Sampul Amplop Landscape (Hero Cover)</span>
+                </h3>
+                <p className="text-xs text-stone-400 mt-0.5">
+                  Kartu undangan bergaya landscape folio yang tampil saat pertama kali tamu membuka link.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-[11px] uppercase tracking-wider text-stone-400 font-semibold mb-1">
+                    Pita Lencana Atas (Indonesia)
+                  </label>
+                  <input
+                    type="text"
+                    value={cmsConfig.cover.badgeId}
+                    onChange={(e) =>
+                      setCmsConfig({
+                        ...cmsConfig,
+                        cover: { ...cmsConfig.cover, badgeId: e.target.value },
+                      })
+                    }
+                    placeholder="Peringatan 20 Tahun Gedung"
+                    className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[11px] uppercase tracking-wider text-stone-400 font-semibold mb-1">
+                    Pita Lencana Atas (Mandarin)
+                  </label>
+                  <input
+                    type="text"
+                    value={cmsConfig.cover.badgeZh}
+                    onChange={(e) =>
+                      setCmsConfig({
+                        ...cmsConfig,
+                        cover: { ...cmsConfig.cover, badgeZh: e.target.value },
+                      })
+                    }
+                    placeholder="廿週年堂慶紀念"
+                    className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none font-chinese text-sm"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[11px] uppercase tracking-wider text-stone-400 font-semibold mb-1">
+                    Judul Monograf Sampul (Mandarin)
                   </label>
                   <input
                     type="text"
@@ -1161,13 +1291,14 @@ export default function PanitiaDashboard() {
                         hero: { ...cmsConfig.hero, mainTitleZh: e.target.value },
                       })
                     }
+                    placeholder="廣航佛堂"
                     className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none font-chinese text-base"
                   />
                 </div>
 
                 <div>
                   <label className="block text-[11px] uppercase tracking-wider text-stone-400 font-semibold mb-1">
-                    Subjudul / Nama Tempat (Indonesia)
+                    Subjudul / Tahun Monograf (Indonesia)
                   </label>
                   <input
                     type="text"
@@ -1178,13 +1309,14 @@ export default function PanitiaDashboard() {
                         cover: { ...cmsConfig.cover, titleId: e.target.value },
                       })
                     }
+                    placeholder="Kuang Hang Fo Thang • 2006 — 2026"
                     className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none"
                   />
                 </div>
 
                 <div>
                   <label className="block text-[11px] uppercase tracking-wider text-stone-400 font-semibold mb-1">
-                    Tema Acara (Indonesia)
+                    Slogan / Filosofi Sampul (Indonesia)
                   </label>
                   <input
                     type="text"
@@ -1195,13 +1327,14 @@ export default function PanitiaDashboard() {
                         cover: { ...cmsConfig.cover, subtitleId: e.target.value },
                       })
                     }
+                    placeholder="Mengarungi Samudra Kebajikan, Menyalakan Pelita Kebijaksanaan"
                     className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none"
                   />
                 </div>
 
                 <div>
                   <label className="block text-[11px] uppercase tracking-wider text-stone-400 font-semibold mb-1">
-                    Tema Acara (Mandarin)
+                    Slogan / Filosofi Sampul (Mandarin)
                   </label>
                   <input
                     type="text"
@@ -1210,34 +1343,88 @@ export default function PanitiaDashboard() {
                       setCmsConfig({
                         ...cmsConfig,
                         cover: { ...cmsConfig.cover, subtitleZh: e.target.value },
-                        hero: { ...cmsConfig.hero, themeZh: e.target.value },
                       })
                     }
-                    className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none font-chinese"
+                    placeholder="同舟共濟度眾生 • 薪火相傳護慧命"
+                    className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none font-chinese text-sm"
                   />
                 </div>
 
                 <div>
                   <label className="block text-[11px] uppercase tracking-wider text-stone-400 font-semibold mb-1">
-                    Target Tanggal Hitung Mundur (ISO / Local Time)
+                    Salam Penghormatan Tamu (Indonesia)
                   </label>
                   <input
                     type="text"
-                    value={cmsConfig.hero.countdownDate}
+                    value={cmsConfig.cover.guestPrefixId}
                     onChange={(e) =>
                       setCmsConfig({
                         ...cmsConfig,
-                        hero: { ...cmsConfig.hero, countdownDate: e.target.value },
+                        cover: { ...cmsConfig.cover, guestPrefixId: e.target.value },
                       })
                     }
-                    placeholder="2026-11-14T19:00:00+07:00"
-                    className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none font-mono"
+                    placeholder="Yth. Tamu Undangan Terkasih"
+                    className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none"
                   />
                 </div>
 
                 <div>
                   <label className="block text-[11px] uppercase tracking-wider text-stone-400 font-semibold mb-1">
-                    Teks Tombol Buka Undangan
+                    Salam Penghormatan Tamu (Mandarin)
+                  </label>
+                  <input
+                    type="text"
+                    value={cmsConfig.cover.guestPrefixZh}
+                    onChange={(e) =>
+                      setCmsConfig({
+                        ...cmsConfig,
+                        cover: { ...cmsConfig.cover, guestPrefixZh: e.target.value },
+                      })
+                    }
+                    placeholder="恭請 貴賓尊鑒"
+                    className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none font-chinese text-sm"
+                  />
+                </div>
+
+                <div className="md:col-span-2">
+                  <label className="block text-[11px] uppercase tracking-wider text-stone-400 font-semibold mb-1">
+                    Teks Ajakan Undangan (Indonesia)
+                  </label>
+                  <input
+                    type="text"
+                    value={cmsConfig.cover.inviteTextId}
+                    onChange={(e) =>
+                      setCmsConfig({
+                        ...cmsConfig,
+                        cover: { ...cmsConfig.cover, inviteTextId: e.target.value },
+                      })
+                    }
+                    placeholder="Dengan penuh hormat mengundang kehadiran Anda dalam malam syukur bersama."
+                    className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none"
+                  />
+                </div>
+
+                <div className="md:col-span-2">
+                  <label className="block text-[11px] uppercase tracking-wider text-stone-400 font-semibold mb-1">
+                    Teks Ajakan Undangan (Mandarin)
+                  </label>
+                  <input
+                    type="text"
+                    value={cmsConfig.cover.inviteTextZh}
+                    onChange={(e) =>
+                      setCmsConfig({
+                        ...cmsConfig,
+                        cover: { ...cmsConfig.cover, inviteTextZh: e.target.value },
+                      })
+                    }
+                    placeholder="謹代表廣航佛堂全體道親，誠摯敬邀閣下撥冗蒞臨，同沾法喜。"
+                    className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none font-chinese text-sm"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[11px] uppercase tracking-wider text-stone-400 font-semibold mb-1">
+                    Teks Tombol Buka Undangan (Indonesia)
                   </label>
                   <input
                     type="text"
@@ -1248,18 +1435,636 @@ export default function PanitiaDashboard() {
                         cover: { ...cmsConfig.cover, buttonTextId: e.target.value },
                       })
                     }
+                    placeholder="Buka Undangan Resmi"
                     className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[11px] uppercase tracking-wider text-stone-400 font-semibold mb-1">
+                    Teks Tombol Buka Undangan (Mandarin)
+                  </label>
+                  <input
+                    type="text"
+                    value={cmsConfig.cover.buttonTextZh}
+                    onChange={(e) =>
+                      setCmsConfig({
+                        ...cmsConfig,
+                        cover: { ...cmsConfig.cover, buttonTextZh: e.target.value },
+                      })
+                    }
+                    placeholder="恭啟尊榮邀請函"
+                    className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none font-chinese text-sm"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[11px] uppercase tracking-wider text-stone-400 font-semibold mb-1">
+                    Petunjuk Tombol Buka (Indonesia)
+                  </label>
+                  <input
+                    type="text"
+                    value={cmsConfig.cover.buttonSubtextId}
+                    onChange={(e) =>
+                      setCmsConfig({
+                        ...cmsConfig,
+                        cover: { ...cmsConfig.cover, buttonSubtextId: e.target.value },
+                      })
+                    }
+                    placeholder="Sentuh tombol untuk membuka surat undangan resmi"
+                    className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[11px] uppercase tracking-wider text-stone-400 font-semibold mb-1">
+                    Petunjuk Tombol Buka (Mandarin)
+                  </label>
+                  <input
+                    type="text"
+                    value={cmsConfig.cover.buttonSubtextZh}
+                    onChange={(e) =>
+                      setCmsConfig({
+                        ...cmsConfig,
+                        cover: { ...cmsConfig.cover, buttonSubtextZh: e.target.value },
+                      })
+                    }
+                    placeholder="點擊按鈕開啟正式邀請函"
+                    className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none font-chinese text-sm"
                   />
                 </div>
               </div>
             </div>
 
-            {/* Section 2: Wejangan Suci */}
-            <div className="p-6 rounded-2xl bg-stone-900 border border-stone-800 space-y-4">
-              <h3 className="font-serif font-bold text-base text-amber-300 flex items-center gap-2">
-                <FileText className="w-4 h-4 text-amber-400" />
-                <span>Untaian Wejangan Suci (Wisdom Quote)</span>
-              </h3>
+            {/* Section 3: Hero Section & Sambutan Peringatan (Halaman Utama) */}
+            <div className="p-5 sm:p-6 rounded-2xl bg-stone-900 border border-stone-800 space-y-5">
+              <div className="border-b border-stone-800/80 pb-3">
+                <h3 className="font-serif font-bold text-base text-amber-300 flex items-center gap-2">
+                  <Sparkles className="w-4 h-4 text-amber-400" />
+                  <span>Hero Section & Sambutan Peringatan (Halaman Utama)</span>
+                </h3>
+                <p className="text-xs text-stone-400 mt-0.5">
+                  Pengaturan lengkap untuk tajuk editorial, slogan, sambutan, plat foto altar, dan hitung mundur di halaman utama.
+                </p>
+              </div>
+
+              {/* Sub-block A: Editorial Top Banner */}
+              <div className="space-y-3">
+                <h4 className="text-xs uppercase tracking-wider text-amber-400 font-bold">
+                  1. Pita Editorial Atas (Top Banner)
+                </h4>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                  <div>
+                    <label className="block text-[11px] text-stone-400 font-medium mb-1">
+                      Stempel Pojok Kiri (Mandarin)
+                    </label>
+                    <input
+                      type="text"
+                      value={cmsConfig.hero.topBannerSealZh}
+                      onChange={(e) =>
+                        setCmsConfig({
+                          ...cmsConfig,
+                          hero: { ...cmsConfig.hero, topBannerSealZh: e.target.value },
+                        })
+                      }
+                      placeholder="天恩師德"
+                      className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none font-chinese text-sm"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[11px] text-stone-400 font-medium mb-1">
+                      Teks Tajuk (Indonesia)
+                    </label>
+                    <input
+                      type="text"
+                      value={cmsConfig.hero.topBannerId}
+                      onChange={(e) =>
+                        setCmsConfig({
+                          ...cmsConfig,
+                          hero: { ...cmsConfig.hero, topBannerId: e.target.value },
+                        })
+                      }
+                      placeholder="Peringatan 20 Tahun Gedung (2006 — 2026)"
+                      className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[11px] text-stone-400 font-medium mb-1">
+                      Teks Tajuk (Mandarin)
+                    </label>
+                    <input
+                      type="text"
+                      value={cmsConfig.hero.topBannerZh}
+                      onChange={(e) =>
+                        setCmsConfig({
+                          ...cmsConfig,
+                          hero: { ...cmsConfig.hero, topBannerZh: e.target.value },
+                        })
+                      }
+                      placeholder="落成廿週年堂慶大典"
+                      className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none font-chinese text-sm"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[11px] text-stone-400 font-medium mb-1">
+                      Kota Pelaksanaan (Indonesia)
+                    </label>
+                    <input
+                      type="text"
+                      value={cmsConfig.hero.cityId}
+                      onChange={(e) =>
+                        setCmsConfig({
+                          ...cmsConfig,
+                          hero: { ...cmsConfig.hero, cityId: e.target.value },
+                        })
+                      }
+                      placeholder="Jakarta"
+                      className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[11px] text-stone-400 font-medium mb-1">
+                      Kota Pelaksanaan (Mandarin)
+                    </label>
+                    <input
+                      type="text"
+                      value={cmsConfig.hero.cityZh}
+                      onChange={(e) =>
+                        setCmsConfig({
+                          ...cmsConfig,
+                          hero: { ...cmsConfig.hero, cityZh: e.target.value },
+                        })
+                      }
+                      placeholder="雅加達"
+                      className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none font-chinese text-sm"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[11px] text-stone-400 font-medium mb-1">
+                      Badge Tanggal Tajuk
+                    </label>
+                    <input
+                      type="text"
+                      value={cmsConfig.hero.eventDateBadge}
+                      onChange={(e) =>
+                        setCmsConfig({
+                          ...cmsConfig,
+                          hero: { ...cmsConfig.hero, eventDateBadge: e.target.value },
+                        })
+                      }
+                      placeholder="14 November 2026"
+                      className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Sub-block B: Main Slogan & Title */}
+              <div className="space-y-3 pt-2 border-t border-stone-800/60">
+                <h4 className="text-xs uppercase tracking-wider text-amber-400 font-bold">
+                  2. Slogan & Judul Peringatan
+                </h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-[11px] text-stone-400 font-medium mb-1">
+                      Slogan Pembuka (Indonesia)
+                    </label>
+                    <input
+                      type="text"
+                      value={cmsConfig.hero.sloganId}
+                      onChange={(e) =>
+                        setCmsConfig({
+                          ...cmsConfig,
+                          hero: { ...cmsConfig.hero, sloganId: e.target.value },
+                        })
+                      }
+                      placeholder="Dua Dasawarsa Menyalakan Pelita Kebajikan"
+                      className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[11px] text-stone-400 font-medium mb-1">
+                      Slogan Pembuka (Mandarin)
+                    </label>
+                    <input
+                      type="text"
+                      value={cmsConfig.hero.sloganZh}
+                      onChange={(e) =>
+                        setCmsConfig({
+                          ...cmsConfig,
+                          hero: { ...cmsConfig.hero, sloganZh: e.target.value },
+                        })
+                      }
+                      placeholder="廿載同修 • 慧命永續"
+                      className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none font-chinese text-sm"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[11px] text-stone-400 font-medium mb-1">
+                      Judul Besar (Indonesia)
+                    </label>
+                    <input
+                      type="text"
+                      value={cmsConfig.hero.mainTitleId}
+                      onChange={(e) =>
+                        setCmsConfig({
+                          ...cmsConfig,
+                          hero: { ...cmsConfig.hero, mainTitleId: e.target.value },
+                        })
+                      }
+                      placeholder="Peringatan 20 Tahun Peresmian Gedung"
+                      className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[11px] text-stone-400 font-medium mb-1">
+                      Judul Tema (Mandarin)
+                    </label>
+                    <input
+                      type="text"
+                      value={cmsConfig.hero.themeZh}
+                      onChange={(e) =>
+                        setCmsConfig({
+                          ...cmsConfig,
+                          hero: { ...cmsConfig.hero, themeZh: e.target.value },
+                        })
+                      }
+                      placeholder="成立廿週年堂慶紀念 (2006 — 2026)"
+                      className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none font-chinese text-sm"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Sub-block C: Quote & Story */}
+              <div className="space-y-3 pt-2 border-t border-stone-800/60">
+                <h4 className="text-xs uppercase tracking-wider text-amber-400 font-bold">
+                  3. Untaian Puisi & Narasi Pembuka
+                </h4>
+                <div className="space-y-3">
+                  <div>
+                    <label className="block text-[11px] text-stone-400 font-medium mb-1">
+                      Kutipan Puisi Peringatan (Indonesia)
+                    </label>
+                    <textarea
+                      rows={2}
+                      value={cmsConfig.hero.quoteId}
+                      onChange={(e) =>
+                        setCmsConfig({
+                          ...cmsConfig,
+                          hero: { ...cmsConfig.hero, quoteId: e.target.value },
+                        })
+                      }
+                      className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[11px] text-stone-400 font-medium mb-1">
+                      Kutipan Puisi Peringatan (Mandarin)
+                    </label>
+                    <textarea
+                      rows={2}
+                      value={cmsConfig.hero.quoteZh}
+                      onChange={(e) =>
+                        setCmsConfig({
+                          ...cmsConfig,
+                          hero: { ...cmsConfig.hero, quoteZh: e.target.value },
+                        })
+                      }
+                      className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none font-chinese text-sm"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[11px] text-stone-400 font-medium mb-1">
+                      Paragraf Sambutan Singkat (Indonesia)
+                    </label>
+                    <textarea
+                      rows={3}
+                      value={cmsConfig.hero.storyParagraphId}
+                      onChange={(e) =>
+                        setCmsConfig({
+                          ...cmsConfig,
+                          hero: { ...cmsConfig.hero, storyParagraphId: e.target.value },
+                        })
+                      }
+                      className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[11px] text-stone-400 font-medium mb-1">
+                      Paragraf Sambutan Singkat (Mandarin)
+                    </label>
+                    <textarea
+                      rows={2}
+                      value={cmsConfig.hero.storyParagraphZh}
+                      onChange={(e) =>
+                        setCmsConfig({
+                          ...cmsConfig,
+                          hero: { ...cmsConfig.hero, storyParagraphZh: e.target.value },
+                        })
+                      }
+                      className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none font-chinese text-sm"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Sub-block D: Guest Honor Card */}
+              <div className="space-y-3 pt-2 border-t border-stone-800/60">
+                <h4 className="text-xs uppercase tracking-wider text-amber-400 font-bold">
+                  4. Kartu Penghormatan Tamu (Honor Card)
+                </h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-[11px] text-stone-400 font-medium mb-1">
+                      Judul Kartu Tamu (Indonesia)
+                    </label>
+                    <input
+                      type="text"
+                      value={cmsConfig.hero.guestHonorTitleId}
+                      onChange={(e) =>
+                        setCmsConfig({
+                          ...cmsConfig,
+                          hero: { ...cmsConfig.hero, guestHonorTitleId: e.target.value },
+                        })
+                      }
+                      placeholder="SURAT PENGHORMATAN TAMU UNDANGAN"
+                      className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[11px] text-stone-400 font-medium mb-1">
+                      Judul Kartu Tamu (Mandarin)
+                    </label>
+                    <input
+                      type="text"
+                      value={cmsConfig.hero.guestHonorTitleZh}
+                      onChange={(e) =>
+                        setCmsConfig({
+                          ...cmsConfig,
+                          hero: { ...cmsConfig.hero, guestHonorTitleZh: e.target.value },
+                        })
+                      }
+                      placeholder="貴賓敬邀函"
+                      className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none font-chinese text-sm"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[11px] text-stone-400 font-medium mb-1">
+                      Stempel Kartu Tamu (Mandarin)
+                    </label>
+                    <input
+                      type="text"
+                      value={cmsConfig.hero.guestHonorSealZh}
+                      onChange={(e) =>
+                        setCmsConfig({
+                          ...cmsConfig,
+                          hero: { ...cmsConfig.hero, guestHonorSealZh: e.target.value },
+                        })
+                      }
+                      placeholder="同沾法喜"
+                      className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none font-chinese text-sm"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[11px] text-stone-400 font-medium mb-1">
+                      Salam Penghormatan (Indonesia)
+                    </label>
+                    <input
+                      type="text"
+                      value={cmsConfig.hero.guestHonorGreetingId}
+                      onChange={(e) =>
+                        setCmsConfig({
+                          ...cmsConfig,
+                          hero: { ...cmsConfig.hero, guestHonorGreetingId: e.target.value },
+                        })
+                      }
+                      placeholder="Kepada Yth. Bapak / Ibu / Saudara/i:"
+                      className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none"
+                    />
+                  </div>
+
+                  <div className="md:col-span-2">
+                    <label className="block text-[11px] text-stone-400 font-medium mb-1">
+                      Pesan Kehormatan Tamu (Indonesia)
+                    </label>
+                    <textarea
+                      rows={2}
+                      value={cmsConfig.hero.guestHonorMessageId}
+                      onChange={(e) =>
+                        setCmsConfig({
+                          ...cmsConfig,
+                          hero: { ...cmsConfig.hero, guestHonorMessageId: e.target.value },
+                        })
+                      }
+                      className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none"
+                    />
+                  </div>
+
+                  <div className="md:col-span-2">
+                    <label className="block text-[11px] text-stone-400 font-medium mb-1">
+                      Pesan Kehormatan Tamu (Mandarin)
+                    </label>
+                    <textarea
+                      rows={2}
+                      value={cmsConfig.hero.guestHonorMessageZh}
+                      onChange={(e) =>
+                        setCmsConfig({
+                          ...cmsConfig,
+                          hero: { ...cmsConfig.hero, guestHonorMessageZh: e.target.value },
+                        })
+                      }
+                      className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none font-chinese text-sm"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Sub-block E: Archival Photo Plate */}
+              <div className="space-y-3 pt-2 border-t border-stone-800/60">
+                <h4 className="text-xs uppercase tracking-wider text-amber-400 font-bold">
+                  5. Keterangan Plat Foto Altar (Archival Plate)
+                </h4>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                  <div>
+                    <label className="block text-[11px] text-stone-400 font-medium mb-1">
+                      Judul Plat Foto (Indonesia)
+                    </label>
+                    <input
+                      type="text"
+                      value={cmsConfig.hero.photoCaptionTitleId}
+                      onChange={(e) =>
+                        setCmsConfig({
+                          ...cmsConfig,
+                          hero: { ...cmsConfig.hero, photoCaptionTitleId: e.target.value },
+                        })
+                      }
+                      placeholder="Altar Agung Kuang Hang Fo Thang"
+                      className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[11px] text-stone-400 font-medium mb-1">
+                      Judul Plat Foto (Mandarin)
+                    </label>
+                    <input
+                      type="text"
+                      value={cmsConfig.hero.photoCaptionTitleZh}
+                      onChange={(e) =>
+                        setCmsConfig({
+                          ...cmsConfig,
+                          hero: { ...cmsConfig.hero, photoCaptionTitleZh: e.target.value },
+                        })
+                      }
+                      placeholder="廣航聖壇大殿"
+                      className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none font-chinese text-sm"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[11px] text-stone-400 font-medium mb-1">
+                      Tanggal Arsip Foto
+                    </label>
+                    <input
+                      type="text"
+                      value={cmsConfig.hero.photoCaptionDate}
+                      onChange={(e) =>
+                        setCmsConfig({
+                          ...cmsConfig,
+                          hero: { ...cmsConfig.hero, photoCaptionDate: e.target.value },
+                        })
+                      }
+                      placeholder="12 Nov 2006"
+                      className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none"
+                    />
+                  </div>
+
+                  <div className="md:col-span-3">
+                    <label className="block text-[11px] text-stone-400 font-medium mb-1">
+                      Keterangan Deskripsi Plat (Indonesia)
+                    </label>
+                    <input
+                      type="text"
+                      value={cmsConfig.hero.photoCaptionDescId}
+                      onChange={(e) =>
+                        setCmsConfig({
+                          ...cmsConfig,
+                          hero: { ...cmsConfig.hero, photoCaptionDescId: e.target.value },
+                        })
+                      }
+                      className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Sub-block F: Countdown Timer */}
+              <div className="space-y-3 pt-2 border-t border-stone-800/60">
+                <h4 className="text-xs uppercase tracking-wider text-amber-400 font-bold">
+                  6. Hitung Mundur Acara (Countdown Timer)
+                </h4>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-[11px] text-stone-400 font-medium mb-1">
+                      Judul Hitung Mundur (Indonesia)
+                    </label>
+                    <input
+                      type="text"
+                      value={cmsConfig.hero.countdownHeadingId}
+                      onChange={(e) =>
+                        setCmsConfig({
+                          ...cmsConfig,
+                          hero: { ...cmsConfig.hero, countdownHeadingId: e.target.value },
+                        })
+                      }
+                      placeholder="Menghitung Hari Menuju Malam Puncak Syukur"
+                      className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[11px] text-stone-400 font-medium mb-1">
+                      Judul Hitung Mundur (Mandarin)
+                    </label>
+                    <input
+                      type="text"
+                      value={cmsConfig.hero.countdownHeadingZh}
+                      onChange={(e) =>
+                        setCmsConfig({
+                          ...cmsConfig,
+                          hero: { ...cmsConfig.hero, countdownHeadingZh: e.target.value },
+                        })
+                      }
+                      placeholder="倒數計時 • 共迎盛典"
+                      className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none font-chinese text-sm"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[11px] text-stone-400 font-medium mb-1">
+                      Subteks Hitung Mundur (Indonesia)
+                    </label>
+                    <input
+                      type="text"
+                      value={cmsConfig.hero.countdownSubtextId}
+                      onChange={(e) =>
+                        setCmsConfig({
+                          ...cmsConfig,
+                          hero: { ...cmsConfig.hero, countdownSubtextId: e.target.value },
+                        })
+                      }
+                      placeholder="Sabtu, 14 November 2026 • Palmerah, Jakarta Barat"
+                      className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-[11px] text-stone-400 font-medium mb-1">
+                      Target Waktu ISO (Tanggal & Jam Mulai)
+                    </label>
+                    <input
+                      type="text"
+                      value={cmsConfig.hero.countdownDate}
+                      onChange={(e) =>
+                        setCmsConfig({
+                          ...cmsConfig,
+                          hero: { ...cmsConfig.hero, countdownDate: e.target.value },
+                        })
+                      }
+                      placeholder="2026-11-14T19:00:00+07:00"
+                      className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none font-mono"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Section 4: Wejangan Suci */}
+            <div className="p-5 sm:p-6 rounded-2xl bg-stone-900 border border-stone-800 space-y-4">
+              <div className="border-b border-stone-800/80 pb-3">
+                <h3 className="font-serif font-bold text-base text-amber-300 flex items-center gap-2">
+                  <FileText className="w-4 h-4 text-amber-400" />
+                  <span>Untaian Wejangan Suci (Wisdom Quote)</span>
+                </h3>
+                <p className="text-xs text-stone-400 mt-0.5">
+                  Wejangan pembinaan dari Guru Agung Ji Gong Huo Fo yang ditampilkan di bagian awal.
+                </p>
+              </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
@@ -1275,13 +2080,14 @@ export default function PanitiaDashboard() {
                         wisdom: { ...cmsConfig.wisdom, sealZh: e.target.value },
                       })
                     }
-                    className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none font-chinese"
+                    placeholder="活佛師尊慈訓"
+                    className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none font-chinese text-sm"
                   />
                 </div>
 
                 <div>
                   <label className="block text-[11px] uppercase tracking-wider text-stone-400 font-semibold mb-1">
-                    Judul Bagian Wejangan
+                    Judul Bagian Wejangan (Indonesia)
                   </label>
                   <input
                     type="text"
@@ -1292,6 +2098,43 @@ export default function PanitiaDashboard() {
                         wisdom: { ...cmsConfig.wisdom, headingId: e.target.value },
                       })
                     }
+                    placeholder="Untaian Wejangan Suci Guru Agung"
+                    className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[11px] uppercase tracking-wider text-stone-400 font-semibold mb-1">
+                    Judul Bagian Wejangan (Mandarin)
+                  </label>
+                  <input
+                    type="text"
+                    value={cmsConfig.wisdom.headingZh}
+                    onChange={(e) =>
+                      setCmsConfig({
+                        ...cmsConfig,
+                        wisdom: { ...cmsConfig.wisdom, headingZh: e.target.value },
+                      })
+                    }
+                    placeholder="活佛師尊慈語 • 薪火相傳"
+                    className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none font-chinese text-sm"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[11px] uppercase tracking-wider text-stone-400 font-semibold mb-1">
+                    Subjudul / Pengantar (Indonesia)
+                  </label>
+                  <input
+                    type="text"
+                    value={cmsConfig.wisdom.subheadingId}
+                    onChange={(e) =>
+                      setCmsConfig({
+                        ...cmsConfig,
+                        wisdom: { ...cmsConfig.wisdom, subheadingId: e.target.value },
+                      })
+                    }
+                    placeholder="Pelita Kebijaksanaan Menuntun Perjalanan Rohani"
                     className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none"
                   />
                 </div>
@@ -1326,7 +2169,7 @@ export default function PanitiaDashboard() {
                         wisdom: { ...cmsConfig.wisdom, quoteZh: e.target.value },
                       })
                     }
-                    className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none font-chinese"
+                    className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none font-chinese text-sm"
                   />
                 </div>
 
@@ -1343,6 +2186,7 @@ export default function PanitiaDashboard() {
                         wisdom: { ...cmsConfig.wisdom, closingId: e.target.value },
                       })
                     }
+                    placeholder="Semoga senantiasa teguh dalam ikrar suci, bersama mengarungi samudra kebajikan."
                     className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none"
                   />
                 </div>
@@ -1360,18 +2204,24 @@ export default function PanitiaDashboard() {
                         wisdom: { ...cmsConfig.wisdom, closingZh: e.target.value },
                       })
                     }
-                    className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none font-chinese"
+                    placeholder="願共勉之，同心同德，廣化眾生。"
+                    className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none font-chinese text-sm"
                   />
                 </div>
               </div>
             </div>
 
-            {/* Section 3: Waktu & Detail Acara */}
-            <div className="p-6 rounded-2xl bg-stone-900 border border-stone-800 space-y-4">
-              <h3 className="font-serif font-bold text-base text-amber-300 flex items-center gap-2">
-                <Calendar className="w-4 h-4 text-amber-400" />
-                <span>Waktu & Detail Acara (Event Details)</span>
-              </h3>
+            {/* Section 5: Waktu & Detail Acara */}
+            <div className="p-5 sm:p-6 rounded-2xl bg-stone-900 border border-stone-800 space-y-4">
+              <div className="border-b border-stone-800/80 pb-3">
+                <h3 className="font-serif font-bold text-base text-amber-300 flex items-center gap-2">
+                  <Calendar className="w-4 h-4 text-amber-400" />
+                  <span>Waktu & Detail Acara (Event Details)</span>
+                </h3>
+                <p className="text-xs text-stone-400 mt-0.5">
+                  Informasi tanggal, jam pelaksanaan, nama gedung, alamat, dan busana yang dianjurkan.
+                </p>
+              </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
@@ -1387,6 +2237,7 @@ export default function PanitiaDashboard() {
                         event: { ...cmsConfig.event, dateTextId: e.target.value },
                       })
                     }
+                    placeholder="Sabtu, 14 November 2026"
                     className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none"
                   />
                 </div>
@@ -1404,13 +2255,14 @@ export default function PanitiaDashboard() {
                         event: { ...cmsConfig.event, dateTextZh: e.target.value },
                       })
                     }
-                    className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none font-chinese"
+                    placeholder="二零二六年十一月十四日（星期六）"
+                    className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none font-chinese text-sm"
                   />
                 </div>
 
                 <div>
                   <label className="block text-[11px] uppercase tracking-wider text-stone-400 font-semibold mb-1">
-                    Waktu Mulai
+                    Waktu Mulai Acara (Indonesia)
                   </label>
                   <input
                     type="text"
@@ -1421,7 +2273,26 @@ export default function PanitiaDashboard() {
                         event: { ...cmsConfig.event, timeTextId: e.target.value },
                       })
                     }
+                    placeholder="18.00 WIB — Selesai"
                     className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[11px] uppercase tracking-wider text-stone-400 font-semibold mb-1">
+                    Waktu Mulai Acara (Mandarin)
+                  </label>
+                  <input
+                    type="text"
+                    value={cmsConfig.event.timeTextZh}
+                    onChange={(e) =>
+                      setCmsConfig({
+                        ...cmsConfig,
+                        event: { ...cmsConfig.event, timeTextZh: e.target.value },
+                      })
+                    }
+                    placeholder="晚上 18:00 準時開始"
+                    className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none font-chinese text-sm"
                   />
                 </div>
 
@@ -1438,6 +2309,7 @@ export default function PanitiaDashboard() {
                         event: { ...cmsConfig.event, timeNotesId: e.target.value },
                       })
                     }
+                    placeholder="Registrasi kehadiran dibuka pukul 17.00 WIB"
                     className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none"
                   />
                 </div>
@@ -1455,6 +2327,7 @@ export default function PanitiaDashboard() {
                         event: { ...cmsConfig.event, venueNameId: e.target.value },
                       })
                     }
+                    placeholder="Gedung Kuang Hang Fo Thang"
                     className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none"
                   />
                 </div>
@@ -1472,6 +2345,25 @@ export default function PanitiaDashboard() {
                         event: { ...cmsConfig.event, dresscodeId: e.target.value },
                       })
                     }
+                    placeholder="Batik Resmi / Pakaian Rapi Sopan"
+                    className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[11px] uppercase tracking-wider text-stone-400 font-semibold mb-1">
+                    Catatan Dress Code
+                  </label>
+                  <input
+                    type="text"
+                    value={cmsConfig.event.dresscodeNotesId}
+                    onChange={(e) =>
+                      setCmsConfig({
+                        ...cmsConfig,
+                        event: { ...cmsConfig.event, dresscodeNotesId: e.target.value },
+                      })
+                    }
+                    placeholder="Disarankan mengenakan busana berwarna cerah atau batik sopan"
                     className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none"
                   />
                 </div>
@@ -1514,15 +2406,20 @@ export default function PanitiaDashboard() {
               </div>
             </div>
 
-            {/* Section 4: Tali Kasih / Rekening Dana Kebajikan */}
-            <div className="p-6 rounded-2xl bg-stone-900 border border-stone-800 space-y-4">
-              <div className="flex items-center justify-between">
-                <h3 className="font-serif font-bold text-base text-amber-300 flex items-center gap-2">
-                  <CreditCard className="w-4 h-4 text-amber-400" />
-                  <span>Tali Kasih & Dana Kebajikan (隨喜功德)</span>
-                </h3>
+            {/* Section 6: Tali Kasih / Rekening Dana Kebajikan */}
+            <div className="p-5 sm:p-6 rounded-2xl bg-stone-900 border border-stone-800 space-y-4">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-stone-800/80 gap-3">
+                <div>
+                  <h3 className="font-serif font-bold text-base text-amber-300 flex items-center gap-2">
+                    <CreditCard className="w-4 h-4 text-amber-400" />
+                    <span>Tali Kasih & Dana Kebajikan (隨喜功德)</span>
+                  </h3>
+                  <p className="text-xs text-stone-400 mt-0.5">
+                    Informasi rekening transfer dana kebajikan atau sukarela bagi umat.
+                  </p>
+                </div>
 
-                <label className="inline-flex items-center gap-2 cursor-pointer">
+                <label className="inline-flex items-center gap-2 cursor-pointer bg-stone-950 px-3 py-1.5 rounded-xl border border-stone-800 shrink-0">
                   <input
                     type="checkbox"
                     checked={cmsConfig.donation.isReady}
@@ -1617,6 +2514,111 @@ export default function PanitiaDashboard() {
               </div>
             </div>
 
+            {/* Section 7: Denah & Petunjuk Lokasi */}
+            <div className="p-5 sm:p-6 rounded-2xl bg-stone-900 border border-stone-800 space-y-4">
+              <div className="border-b border-stone-800/80 pb-3">
+                <h3 className="font-serif font-bold text-base text-amber-300 flex items-center gap-2">
+                  <MapPin className="w-4 h-4 text-amber-400" />
+                  <span>Denah & Petunjuk Lokasi (Location Map)</span>
+                </h3>
+                <p className="text-xs text-stone-400 mt-0.5">
+                  Informasi alamat lengkap dan peta Google Maps interaktif yang disematkan (embed).
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-[11px] uppercase tracking-wider text-stone-400 font-semibold mb-1">
+                    Judul Bagian Lokasi (Indonesia)
+                  </label>
+                  <input
+                    type="text"
+                    value={cmsConfig.location.headingId}
+                    onChange={(e) =>
+                      setCmsConfig({
+                        ...cmsConfig,
+                        location: { ...cmsConfig.location, headingId: e.target.value },
+                      })
+                    }
+                    placeholder="Petunjuk Lokasi & Arah Menuju Gedung"
+                    className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[11px] uppercase tracking-wider text-stone-400 font-semibold mb-1">
+                    Judul Bagian Lokasi (Mandarin)
+                  </label>
+                  <input
+                    type="text"
+                    value={cmsConfig.location.headingZh}
+                    onChange={(e) =>
+                      setCmsConfig({
+                        ...cmsConfig,
+                        location: { ...cmsConfig.location, headingZh: e.target.value },
+                      })
+                    }
+                    placeholder="道場座標 • 交通導引"
+                    className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none font-chinese text-sm"
+                  />
+                </div>
+
+                <div className="md:col-span-2">
+                  <label className="block text-[11px] uppercase tracking-wider text-stone-400 font-semibold mb-1">
+                    Alamat Lengkap Serta Kode Pos
+                  </label>
+                  <input
+                    type="text"
+                    value={cmsConfig.location.fullAddress}
+                    onChange={(e) =>
+                      setCmsConfig({
+                        ...cmsConfig,
+                        location: { ...cmsConfig.location, fullAddress: e.target.value },
+                      })
+                    }
+                    placeholder="Kuang Hang Fo Thang, Jl. Palmerah Utara III No. 186A, RT.002/RW.06, Palmerah, Jakarta Barat 11480"
+                    className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none"
+                  />
+                </div>
+
+                <div className="md:col-span-2">
+                  <label className="block text-[11px] uppercase tracking-wider text-stone-400 font-semibold mb-1">
+                    Tautan Peta Buka di Google Maps
+                  </label>
+                  <input
+                    type="text"
+                    value={cmsConfig.location.googleMapsUrl}
+                    onChange={(e) =>
+                      setCmsConfig({
+                        ...cmsConfig,
+                        location: { ...cmsConfig.location, googleMapsUrl: e.target.value },
+                      })
+                    }
+                    placeholder="https://maps.app.goo.gl/H2sa6pPhX2pn1KdJA"
+                    className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none"
+                  />
+                </div>
+
+                <div className="md:col-span-2">
+                  <label className="block text-[11px] uppercase tracking-wider text-stone-400 font-semibold mb-1">
+                    URL Iframe Google Maps (Embed Map)
+                  </label>
+                  <input
+                    type="text"
+                    value={cmsConfig.location.embedMapUrl}
+                    onChange={(e) =>
+                      setCmsConfig({
+                        ...cmsConfig,
+                        location: { ...cmsConfig.location, embedMapUrl: e.target.value },
+                      })
+                    }
+                    placeholder="https://maps.google.com/maps?q=Kuang+Hang+Fo+Thang+Palmerah+Jakarta+Barat&t=&z=16&ie=UTF8&iwloc=&output=embed"
+                    className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none font-mono text-[11px]"
+                  />
+                </div>
+              </div>
+            </div>
+
             {/* Bottom Save Button */}
             <div className="flex justify-end pt-4">
               <button
@@ -1636,7 +2638,7 @@ export default function PanitiaDashboard() {
         {/* ============================================================== */}
         {activeTab === "cms_media" && (
           <div className="space-y-8">
-            <div className="flex items-center justify-between pb-4 border-b border-stone-800">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-stone-800 gap-4">
               <div>
                 <h2 className="text-lg font-serif font-bold text-amber-300">
                   Manajemen Foto & Galeri Website
@@ -1649,7 +2651,7 @@ export default function PanitiaDashboard() {
               <button
                 onClick={() => handleSaveCms()}
                 disabled={isSavingCms}
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-500 disabled:opacity-50 text-stone-950 font-bold text-xs shadow-lg transition cursor-pointer"
+                className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-500 disabled:opacity-50 text-stone-950 font-bold text-xs shadow-lg transition cursor-pointer shrink-0"
               >
                 <Save className="w-4 h-4" />
                 <span>{isSavingCms ? "Menyimpan..." : "Simpan Media ke Supabase"}</span>
@@ -1880,7 +2882,7 @@ export default function PanitiaDashboard() {
         {/* ============================================================== */}
         {activeTab === "share" && (
           <div className="space-y-6">
-            <div className="flex items-center justify-between pb-4 border-b border-stone-800">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 border-b border-stone-800 gap-4">
               <div>
                 <h2 className="text-lg font-serif font-bold text-amber-300">
                   Kustomisasi Kata-Kata / Pesan Share WhatsApp
@@ -1893,7 +2895,7 @@ export default function PanitiaDashboard() {
               <button
                 onClick={() => handleSaveCms()}
                 disabled={isSavingCms}
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-500 disabled:opacity-50 text-stone-950 font-bold text-xs shadow-lg transition cursor-pointer"
+                className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-500 disabled:opacity-50 text-stone-950 font-bold text-xs shadow-lg transition cursor-pointer shrink-0"
               >
                 <Save className="w-4 h-4" />
                 <span>{isSavingCms ? "Menyimpan..." : "Simpan Template ke Supabase"}</span>
@@ -2026,8 +3028,8 @@ export default function PanitiaDashboard() {
       {/* MODAL 1: TAMBAH / EDIT UCAPAN (CRUD)                           */}
       {/* ============================================================== */}
       {(showAddWishModal || editingWish) && (
-        <div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4">
-          <div className="w-full max-w-lg rounded-3xl bg-stone-900 border border-amber-500/40 p-6 space-y-4 shadow-2xl">
+        <div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4 overflow-y-auto">
+          <div className="w-full max-w-lg rounded-3xl bg-stone-900 border border-amber-500/40 p-6 space-y-4 shadow-2xl my-auto max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between pb-3 border-b border-stone-800">
               <h3 className="font-serif font-bold text-base text-amber-200">
                 {editingWish ? "Edit Doa & Konfirmasi Tamu" : "Tambah Ucapan / Doa Manual"}
@@ -2134,8 +3136,8 @@ export default function PanitiaDashboard() {
       {/* MODAL 2: IMPOR TAMU MASSAL                                     */}
       {/* ============================================================== */}
       {showBulkModal && (
-        <div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4">
-          <div className="w-full max-w-lg rounded-3xl bg-stone-900 border border-amber-500/40 p-6 space-y-4 shadow-2xl">
+        <div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4 overflow-y-auto">
+          <div className="w-full max-w-lg rounded-3xl bg-stone-900 border border-amber-500/40 p-6 space-y-4 shadow-2xl my-auto max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between pb-3 border-b border-stone-800">
               <h3 className="font-serif font-bold text-base text-amber-200">
                 Impor Daftar Tamu Massal (Bulk)
@@ -2183,7 +3185,7 @@ export default function PanitiaDashboard() {
       {/* ============================================================== */}
       {showAddPhotoModal && (
         <div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4 overflow-y-auto">
-          <div className="w-full max-w-lg rounded-3xl bg-stone-900 border border-amber-500/40 p-6 space-y-4 shadow-2xl my-auto">
+          <div className="w-full max-w-lg rounded-3xl bg-stone-900 border border-amber-500/40 p-6 space-y-4 shadow-2xl my-auto max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between pb-3 border-b border-stone-800">
               <h3 className="font-serif font-bold text-base text-amber-200">
                 {editingPhoto ? "Ubah Foto Galeri" : "Tambah Foto Galeri Baru"}
@@ -2268,7 +3270,7 @@ export default function PanitiaDashboard() {
       {/* ============================================================== */}
       {showAddMilestoneModal && (
         <div className="fixed inset-0 z-50 bg-black/80 flex items-center justify-center p-4 overflow-y-auto">
-          <div className="w-full max-w-xl rounded-3xl bg-stone-900 border border-amber-500/40 p-6 space-y-4 shadow-2xl my-auto">
+          <div className="w-full max-w-xl rounded-3xl bg-stone-900 border border-amber-500/40 p-6 space-y-4 shadow-2xl my-auto max-h-[90vh] overflow-y-auto">
             <div className="flex items-center justify-between pb-3 border-b border-stone-800">
               <h3 className="font-serif font-bold text-base text-amber-200">
                 {editingMilestone ? "Ubah Kilas Sejarah" : "Tambah Kilas Sejarah Baru"}
