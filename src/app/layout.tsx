@@ -53,7 +53,7 @@ export const metadata: Metadata = {
     siteName: "20th Anniversary Guang Hang Fo Thang",
     images: [
       {
-        url: "/images/guang-hang-15.jpg",
+        url: "/images/guang-hang-10.jpg",
         width: 1200,
         height: 630,
         alt: "20 Tahun Guang Hang Fo Thang",

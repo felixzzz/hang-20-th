@@ -32,7 +32,7 @@ export default function HeroCover({ guestName, isOpen, onOpen }: HeroCoverProps)
     }, 600);
   };
 
-  const bgImg = cms.cover.bgImage || "/images/guang-hang-15.jpg";
+  const bgImg = cms.cover.bgImage || "/images/guang-hang-10.jpg";
   const logoImg = cms.cover.logoImage || "/images/logo-guang-ji.png";
 
   return (

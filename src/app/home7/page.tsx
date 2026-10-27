@@ -848,15 +848,15 @@ function Home7RetroComputerContent() {
                       <div className="p-2 bg-[#c0c0c0] border-t-2 border-l-2 border-t-white border-l-white border-b-2 border-r-2 border-b-black border-r-black shadow-md">
                         <div className="relative aspect-[4/3] bg-stone-900 border border-stone-400 overflow-hidden">
                           <Image
-                            src="/images/guang-hang-15.jpg"
-                            alt="Gedung Kuang Hang Fo Thang"
+                            src="/images/guang-hang-10.jpg"
+                            alt="Kebersamaan & Perjuangan Kuang Hang Fo Thang"
                             fill
                             className="object-cover"
                             sizes="(max-width: 768px) 100vw, 400px"
                           />
                         </div>
                         <div className="p-1 text-[10px] font-mono text-center text-stone-700 bg-stone-100 border-t border-stone-300 mt-1">
-                          FILE: GUANGHANG_2006.BMP (12.11.2006)
+                          FILE: GUANGHANG_10.BMP (同舟共濟 • 2000)
                         </div>
                       </div>
                     </div>

@@ -21,7 +21,7 @@ export const defaultCms: SiteCmsConfig = {
     guestPrefixZh: "恭請 貴賓尊鑒",
     inviteTextId: "Dengan penuh hormat mengundang kehadiran Anda dalam malam syukur bersama.",
     inviteTextZh: "謹代表廣航佛堂全體道親，誠摯敬邀閣下撥冗蒞臨，同沾法喜。",
-    bgImage: "/images/guang-hang-15.jpg",
+    bgImage: "/images/guang-hang-10.jpg",
     logoImage: "/images/logo-guang-ji.png",
     buttonTextId: "Buka Undangan Resmi",
     buttonTextZh: "恭啟尊榮邀請函",

@@ -50,7 +50,7 @@ export default function HeroSection({ guestName }: HeroSectionProps) {
     return () => clearInterval(interval);
   }, [targetDate]);
 
-  const heroImg = cms.cover.bgImage || "/images/guang-hang-15.jpg";
+  const heroImg = cms.cover.bgImage || "/images/guang-hang-10.jpg";
 
   return (
     <section id="top" className="relative pt-6 sm:pt-10 pb-16 sm:pb-24 px-4 sm:px-6 overflow-hidden">

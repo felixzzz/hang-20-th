@@ -204,7 +204,7 @@ function Home5UndanganContent() {
     "Peringatan Peresmian Gedung 20 Tahun Kuang Hang Fo Thang. 廣航佛堂落成廿週年堂慶大典。"
   )}&location=${encodeURIComponent(address)}`;
 
-  const bgImg = cms.cover.bgImage || "/images/guang-hang-15.jpg";
+  const bgImg = cms.cover.bgImage || "/images/guang-hang-10.jpg";
 
   return (
     <div className="min-h-screen bg-[#2c1212] text-[#2c1d1d] font-sans relative overflow-x-hidden">
