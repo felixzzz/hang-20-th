@@ -47,6 +47,8 @@ import {
   Terminal,
   Download,
   Search,
+  Power,
+  RotateCw,
 } from "lucide-react";
 import { LanguageProvider, useLanguage } from "@/context/LanguageContext";
 import { CmsProvider, useCms } from "@/context/CmsContext";
@@ -55,7 +57,14 @@ import { WishItem, initialWishes } from "@/data/defaultWishes";
 import { historyMilestones, sortMilestonesByYear } from "@/data/history";
 import { galleryItems } from "@/data/gallery";
 
-// Helper for retro 90s PC click audio
+declare global {
+  interface Window {
+    YT: any;
+    onYouTubeIframeAPIReady: () => void;
+  }
+}
+
+// 8-bit retro sound synthesizer using Web Audio API
 const playRetroClick = (freq = 900) => {
   try {
     if (typeof window === "undefined") return;
@@ -87,14 +96,139 @@ function Home7RetroComputerContent() {
   const { cms } = useCms();
 
   // Active Window & Tab State
-  type TabType = "welcome" | "sejarah" | "acara" | "galeri" | "rsvp" | "donasi" | "peta";
+  type TabType = "welcome" | "sejarah" | "acara" | "galeri" | "rsvp" | "donasi";
   const [activeTab, setActiveTab] = useState<TabType>("welcome");
   const [isWindowMaximized, setIsWindowMaximized] = useState(false);
   const [isWindowMinimized, setIsWindowMinimized] = useState(false);
   const [showWinamp, setShowWinamp] = useState(true);
   const [showStartMenu, setShowStartMenu] = useState(false);
-  const [crtEffect, setCrtEffect] = useState(true);
+  const [crtEffect, setCrtEffect] = useState(false);
   const [showRecycleBinModal, setShowRecycleBinModal] = useState(false);
+
+  // Real YouTube Audio Player Integration
+  const ytPlayerRef = useRef<any>(null);
+  const [isAudioReady, setIsAudioReady] = useState(false);
+  const [isPlayingAudio, setIsPlayingAudio] = useState(false);
+  const [audioVolume, setAudioVolume] = useState(85);
+  const [audioCurrentSeconds, setAudioCurrentSeconds] = useState(0);
+
+  // Initialize YouTube Iframe Player
+  useEffect(() => {
+    const initPlayer = () => {
+      if (ytPlayerRef.current) return;
+      try {
+        ytPlayerRef.current = new window.YT.Player("home7-youtube-audio-player", {
+          height: "1",
+          width: "1",
+          videoId: "__vWA6Lv9pE",
+          playerVars: {
+            autoplay: 0,
+            loop: 1,
+            playlist: "__vWA6Lv9pE",
+            controls: 0,
+            playsinline: 1,
+          },
+          events: {
+            onReady: (event: any) => {
+              setIsAudioReady(true);
+              try {
+                event.target.setVolume(audioVolume);
+              } catch (e) {}
+            },
+            onStateChange: (event: any) => {
+              if (event.data === window.YT.PlayerState.PLAYING) {
+                setIsPlayingAudio(true);
+              } else if (
+                event.data === window.YT.PlayerState.PAUSED ||
+                event.data === window.YT.PlayerState.ENDED
+              ) {
+                setIsPlayingAudio(false);
+              }
+            },
+          },
+        });
+      } catch (err) {
+        console.warn("YouTube player init error:", err);
+      }
+    };
+
+    if (window.YT && window.YT.Player) {
+      initPlayer();
+    } else {
+      const existingScript = document.getElementById("yt-iframe-api");
+      if (!existingScript) {
+        const tag = document.createElement("script");
+        tag.id = "yt-iframe-api";
+        tag.src = "https://www.youtube.com/iframe_api";
+        document.body.appendChild(tag);
+      }
+      const prevCallback = window.onYouTubeIframeAPIReady;
+      window.onYouTubeIframeAPIReady = () => {
+        if (prevCallback) prevCallback();
+        initPlayer();
+      };
+    }
+  }, [audioVolume]);
+
+  // Audio Playback Controls
+  const togglePlayAudio = () => {
+    playRetroClick();
+    if (!ytPlayerRef.current) return;
+    try {
+      if (isPlayingAudio) {
+        ytPlayerRef.current.pauseVideo();
+        setIsPlayingAudio(false);
+      } else {
+        ytPlayerRef.current.playVideo();
+        setIsPlayingAudio(true);
+      }
+    } catch (e) {
+      console.warn("togglePlayAudio error:", e);
+    }
+  };
+
+  const stopAudio = () => {
+    playRetroClick(400);
+    if (!ytPlayerRef.current) return;
+    try {
+      ytPlayerRef.current.stopVideo();
+      setIsPlayingAudio(false);
+      setAudioCurrentSeconds(0);
+    } catch (e) {}
+  };
+
+  const changeVolume = (newVol: number) => {
+    setAudioVolume(newVol);
+    if (ytPlayerRef.current && ytPlayerRef.current.setVolume) {
+      try {
+        ytPlayerRef.current.setVolume(newVol);
+      } catch (e) {}
+    }
+  };
+
+  // Equalizer Spectrum & Timer Simulation
+  const [spectrumHeights, setSpectrumHeights] = useState([35, 60, 80, 55, 90, 75, 45, 70, 85, 50]);
+
+  useEffect(() => {
+    let timer: any;
+    if (isPlayingAudio) {
+      timer = setInterval(() => {
+        setAudioCurrentSeconds((prev) => prev + 1);
+        setSpectrumHeights(
+          Array.from({ length: 10 }, () => Math.floor(Math.random() * 85) + 15)
+        );
+      }, 1000);
+    } else {
+      setSpectrumHeights([15, 20, 25, 20, 15, 20, 25, 20, 15, 10]);
+    }
+    return () => clearInterval(timer);
+  }, [isPlayingAudio]);
+
+  const formatAudioTime = (totalSec: number) => {
+    const mins = Math.floor(totalSec / 60);
+    const secs = totalSec % 60;
+    return `${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
+  };
 
   // Live Real-Time Clock
   const [currentTime, setCurrentTime] = useState("");
@@ -149,7 +283,7 @@ function Home7RetroComputerContent() {
   const filteredGallery =
     galleryFilter === "all" ? allGallery : allGallery.filter((item) => item.category === galleryFilter);
 
-  // Milestones (Guaranteed sorted by year!)
+  // Milestones (Sorted by Year Chronologically!)
   const rawMilestones = cms.milestones && cms.milestones.length > 0 ? cms.milestones : historyMilestones;
   const milestones = sortMilestonesByYear(rawMilestones);
   const [selectedMilestoneIdx, setSelectedMilestoneIdx] = useState(0);
@@ -174,26 +308,6 @@ function Home7RetroComputerContent() {
 
   const [copiedAddress, setCopiedAddress] = useState(false);
   const [copiedAccount, setCopiedAccount] = useState(false);
-
-  // Winamp Audio Simulation
-  const [isPlayingAudio, setIsPlayingAudio] = useState(false);
-  const [audioProgress, setAudioProgress] = useState(42);
-  const [spectrumHeights, setSpectrumHeights] = useState([40, 70, 85, 60, 95, 80, 50, 75, 90, 65]);
-
-  useEffect(() => {
-    let animInterval: any;
-    if (isPlayingAudio) {
-      animInterval = setInterval(() => {
-        setSpectrumHeights(
-          Array.from({ length: 10 }, () => Math.floor(Math.random() * 85) + 15)
-        );
-        setAudioProgress((prev) => (prev >= 100 ? 0 : prev + 1));
-      }, 150);
-    } else {
-      setSpectrumHeights([15, 20, 25, 20, 15, 20, 25, 20, 15, 10]);
-    }
-    return () => clearInterval(animInterval);
-  }, [isPlayingAudio]);
 
   useEffect(() => {
     fetch("/api/rsvp")
@@ -323,15 +437,23 @@ function Home7RetroComputerContent() {
         crtEffect ? "crt-scanlines" : ""
       }`}
       style={{
-        backgroundImage: `radial-gradient(circle at 50% 50%, #008888 0%, #007070 100%)`,
+        backgroundImage: `radial-gradient(circle at 50% 50%, #008b8b 0%, #007070 100%)`,
       }}
     >
-      {/* CRT Scanline Filter Overlay */}
+      {/* Hidden YouTube Audio Player Container (Preserves Audio Playback without being paused by browser) */}
+      <div
+        className="fixed -top-[9999px] -left-[9999px] w-[1px] h-[1px] opacity-0 pointer-events-none"
+        aria-hidden="true"
+      >
+        <div id="home7-youtube-audio-player" />
+      </div>
+
+      {/* CRT Scanline Filter Overlay (Toggleable in Menu) */}
       {crtEffect && (
         <div
-          className="fixed inset-0 pointer-events-none z-50 opacity-15"
+          className="fixed inset-0 pointer-events-none z-50 opacity-20"
           style={{
-            backgroundImage: `linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.4) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.04), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.04))`,
+            backgroundImage: `linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.45) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.04), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.04))`,
             backgroundSize: `100% 3px, 6px 100%`,
           }}
           aria-hidden="true"
@@ -342,18 +464,25 @@ function Home7RetroComputerContent() {
       <div className="p-2 sm:p-4 md:p-6 max-w-7xl mx-auto flex flex-col lg:flex-row gap-4 items-start relative z-10">
         
         {/* ============================================================== */}
-        {/* DESKTOP ICONS (Left Column)                                    */}
+        {/* DESKTOP ICONS                                                  */}
         {/* ============================================================== */}
-        <div className="w-full lg:w-32 flex lg:flex-col flex-wrap gap-2 lg:gap-4 shrink-0 select-none pb-2 lg:pb-0">
+        <div className="w-full lg:w-28 flex lg:flex-col flex-wrap gap-2 lg:gap-3 shrink-0 select-none pb-1 lg:pb-0">
           
+          {/* Main Temple / Undangan Icon with Guang Ji Logo */}
           <button
             onClick={() => openTab("welcome")}
             className="flex flex-col items-center justify-center p-2 rounded hover:bg-white/10 active:bg-white/20 text-white group cursor-pointer transition w-20 sm:w-24 lg:w-full"
           >
-            <div className="w-10 h-10 sm:w-12 sm:h-12 bg-[#c0c0c0] border-t-2 border-l-2 border-t-white border-l-white border-b-2 border-r-2 border-b-black border-r-black flex items-center justify-center shadow-md mb-1 group-active:translate-y-0.5">
-              <FileText className="w-6 h-6 text-[#000080]" />
+            <div className="w-11 h-11 sm:w-12 sm:h-12 bg-[#c0c0c0] border-t-2 border-l-2 border-t-white border-l-white border-b-2 border-r-2 border-b-black border-r-black flex items-center justify-center shadow-md mb-1 p-1.5 group-active:translate-y-0.5">
+              <Image
+                src="/images/logo-guang-ji.png"
+                alt="Logo Guang Ji"
+                width={36}
+                height={36}
+                className="object-contain"
+              />
             </div>
-            <span className="text-[11px] font-mono text-center leading-tight drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)] line-clamp-2 px-1">
+            <span className="text-[11px] font-mono font-bold text-center leading-tight drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)] line-clamp-2 px-1">
               Undangan.doc
             </span>
           </button>
@@ -362,10 +491,10 @@ function Home7RetroComputerContent() {
             onClick={() => openTab("sejarah")}
             className="flex flex-col items-center justify-center p-2 rounded hover:bg-white/10 active:bg-white/20 text-white group cursor-pointer transition w-20 sm:w-24 lg:w-full"
           >
-            <div className="w-10 h-10 sm:w-12 sm:h-12 bg-[#c0c0c0] border-t-2 border-l-2 border-t-white border-l-white border-b-2 border-r-2 border-b-black border-r-black flex items-center justify-center shadow-md mb-1 group-active:translate-y-0.5">
+            <div className="w-11 h-11 sm:w-12 sm:h-12 bg-[#c0c0c0] border-t-2 border-l-2 border-t-white border-l-white border-b-2 border-r-2 border-b-black border-r-black flex items-center justify-center shadow-md mb-1 group-active:translate-y-0.5">
               <Clock className="w-6 h-6 text-[#7c1818]" />
             </div>
-            <span className="text-[11px] font-mono text-center leading-tight drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)] line-clamp-2 px-1">
+            <span className="text-[11px] font-mono font-bold text-center leading-tight drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)] line-clamp-2 px-1">
               NapakTilas.exe
             </span>
           </button>
@@ -374,10 +503,10 @@ function Home7RetroComputerContent() {
             onClick={() => openTab("acara")}
             className="flex flex-col items-center justify-center p-2 rounded hover:bg-white/10 active:bg-white/20 text-white group cursor-pointer transition w-20 sm:w-24 lg:w-full"
           >
-            <div className="w-10 h-10 sm:w-12 sm:h-12 bg-[#c0c0c0] border-t-2 border-l-2 border-t-white border-l-white border-b-2 border-r-2 border-b-black border-r-black flex items-center justify-center shadow-md mb-1 group-active:translate-y-0.5">
+            <div className="w-11 h-11 sm:w-12 sm:h-12 bg-[#c0c0c0] border-t-2 border-l-2 border-t-white border-l-white border-b-2 border-r-2 border-b-black border-r-black flex items-center justify-center shadow-md mb-1 group-active:translate-y-0.5">
               <Calendar className="w-6 h-6 text-[#b5791c]" />
             </div>
-            <span className="text-[11px] font-mono text-center leading-tight drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)] line-clamp-2 px-1">
+            <span className="text-[11px] font-mono font-bold text-center leading-tight drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)] line-clamp-2 px-1">
               Jadwal.cal
             </span>
           </button>
@@ -386,10 +515,10 @@ function Home7RetroComputerContent() {
             onClick={() => openTab("galeri")}
             className="flex flex-col items-center justify-center p-2 rounded hover:bg-white/10 active:bg-white/20 text-white group cursor-pointer transition w-20 sm:w-24 lg:w-full"
           >
-            <div className="w-10 h-10 sm:w-12 sm:h-12 bg-[#c0c0c0] border-t-2 border-l-2 border-t-white border-l-white border-b-2 border-r-2 border-b-black border-r-black flex items-center justify-center shadow-md mb-1 group-active:translate-y-0.5">
+            <div className="w-11 h-11 sm:w-12 sm:h-12 bg-[#c0c0c0] border-t-2 border-l-2 border-t-white border-l-white border-b-2 border-r-2 border-b-black border-r-black flex items-center justify-center shadow-md mb-1 group-active:translate-y-0.5">
               <Sparkles className="w-6 h-6 text-emerald-800" />
             </div>
-            <span className="text-[11px] font-mono text-center leading-tight drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)] line-clamp-2 px-1">
+            <span className="text-[11px] font-mono font-bold text-center leading-tight drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)] line-clamp-2 px-1">
               Galeri.bmp
             </span>
           </button>
@@ -398,10 +527,10 @@ function Home7RetroComputerContent() {
             onClick={() => openTab("rsvp")}
             className="flex flex-col items-center justify-center p-2 rounded hover:bg-white/10 active:bg-white/20 text-white group cursor-pointer transition w-20 sm:w-24 lg:w-full"
           >
-            <div className="w-10 h-10 sm:w-12 sm:h-12 bg-[#c0c0c0] border-t-2 border-l-2 border-t-white border-l-white border-b-2 border-r-2 border-b-black border-r-black flex items-center justify-center shadow-md mb-1 group-active:translate-y-0.5">
+            <div className="w-11 h-11 sm:w-12 sm:h-12 bg-[#c0c0c0] border-t-2 border-l-2 border-t-white border-l-white border-b-2 border-r-2 border-b-black border-r-black flex items-center justify-center shadow-md mb-1 group-active:translate-y-0.5">
               <Send className="w-6 h-6 text-[#831f1f]" />
             </div>
-            <span className="text-[11px] font-mono text-center leading-tight drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)] line-clamp-2 px-1">
+            <span className="text-[11px] font-mono font-bold text-center leading-tight drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)] line-clamp-2 px-1">
               RSVP_Form.exe
             </span>
           </button>
@@ -410,10 +539,10 @@ function Home7RetroComputerContent() {
             onClick={() => openTab("donasi")}
             className="flex flex-col items-center justify-center p-2 rounded hover:bg-white/10 active:bg-white/20 text-white group cursor-pointer transition w-20 sm:w-24 lg:w-full"
           >
-            <div className="w-10 h-10 sm:w-12 sm:h-12 bg-[#c0c0c0] border-t-2 border-l-2 border-t-white border-l-white border-b-2 border-r-2 border-b-black border-r-black flex items-center justify-center shadow-md mb-1 group-active:translate-y-0.5">
+            <div className="w-11 h-11 sm:w-12 sm:h-12 bg-[#c0c0c0] border-t-2 border-l-2 border-t-white border-l-white border-b-2 border-r-2 border-b-black border-r-black flex items-center justify-center shadow-md mb-1 group-active:translate-y-0.5">
               <CreditCard className="w-6 h-6 text-[#006600]" />
             </div>
-            <span className="text-[11px] font-mono text-center leading-tight drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)] line-clamp-2 px-1">
+            <span className="text-[11px] font-mono font-bold text-center leading-tight drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)] line-clamp-2 px-1">
               Donasi.txt
             </span>
           </button>
@@ -425,10 +554,10 @@ function Home7RetroComputerContent() {
             }}
             className="flex flex-col items-center justify-center p-2 rounded hover:bg-white/10 active:bg-white/20 text-white group cursor-pointer transition w-20 sm:w-24 lg:w-full"
           >
-            <div className="w-10 h-10 sm:w-12 sm:h-12 bg-[#c0c0c0] border-t-2 border-l-2 border-t-white border-l-white border-b-2 border-r-2 border-b-black border-r-black flex items-center justify-center shadow-md mb-1 group-active:translate-y-0.5">
-              <Music className="w-6 h-6 text-purple-900" />
+            <div className="w-11 h-11 sm:w-12 sm:h-12 bg-[#292929] border-t-2 border-l-2 border-t-stone-400 border-l-stone-400 border-b-2 border-r-2 border-b-black border-r-black flex items-center justify-center shadow-md mb-1 group-active:translate-y-0.5">
+              <Music className="w-6 h-6 text-[#00ff00]" />
             </div>
-            <span className="text-[11px] font-mono text-center leading-tight drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)] line-clamp-2 px-1">
+            <span className="text-[11px] font-mono font-bold text-center leading-tight drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)] line-clamp-2 px-1">
               Winamp.exe
             </span>
           </button>
@@ -440,10 +569,10 @@ function Home7RetroComputerContent() {
             }}
             className="flex flex-col items-center justify-center p-2 rounded hover:bg-white/10 active:bg-white/20 text-white group cursor-pointer transition w-20 sm:w-24 lg:w-full"
           >
-            <div className="w-10 h-10 sm:w-12 sm:h-12 bg-[#c0c0c0] border-t-2 border-l-2 border-t-white border-l-white border-b-2 border-r-2 border-b-black border-r-black flex items-center justify-center shadow-md mb-1 group-active:translate-y-0.5">
+            <div className="w-11 h-11 sm:w-12 sm:h-12 bg-[#c0c0c0] border-t-2 border-l-2 border-t-white border-l-white border-b-2 border-r-2 border-b-black border-r-black flex items-center justify-center shadow-md mb-1 group-active:translate-y-0.5">
               <Trash2 className="w-6 h-6 text-stone-700" />
             </div>
-            <span className="text-[11px] font-mono text-center leading-tight drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)] line-clamp-2 px-1">
+            <span className="text-[11px] font-mono font-bold text-center leading-tight drop-shadow-[0_1px_2px_rgba(0,0,0,0.9)] line-clamp-2 px-1">
               Recycle Bin
             </span>
           </button>
@@ -462,9 +591,14 @@ function Home7RetroComputerContent() {
             
             {/* Window Title Bar */}
             <div className="bg-gradient-to-r from-[#000080] via-[#1084d0] to-[#000080] text-white px-2 py-1.5 flex items-center justify-between select-none">
-              <div className="flex items-center gap-1.5 truncate pr-2">
-                <div className="w-4 h-4 rounded-xs bg-amber-400 flex items-center justify-center text-[10px] text-stone-950 font-bold shrink-0">
-                  廣
+              <div className="flex items-center gap-2 truncate pr-2">
+                <div className="relative w-4 h-4 shrink-0">
+                  <Image
+                    src="/images/logo-guang-ji.png"
+                    alt="Logo Guang Ji"
+                    fill
+                    className="object-contain"
+                  />
                 </div>
                 <span className="font-mono font-bold text-xs sm:text-sm tracking-wide truncate">
                   Guang Hang '97 — 20 Tahun Peringatan Gedung (1997 - 2026)
@@ -511,17 +645,21 @@ function Home7RetroComputerContent() {
               <span className="hover:bg-[#000080] hover:text-white px-1.5 py-0.5 rounded-xs cursor-pointer">
                 <u>B</u>erkas
               </span>
-              <span className="hover:bg-[#000080] hover:text-white px-1.5 py-0.5 rounded-xs cursor-pointer">
-                <u>T</u>ampilan
-              </span>
+              <button
+                onClick={togglePlayAudio}
+                className="hover:bg-[#000080] hover:text-white px-1.5 py-0.5 rounded-xs cursor-pointer font-bold text-emerald-800 flex items-center gap-1"
+              >
+                <Music className="w-3 h-3" />
+                <span><u>M</u>usik: {isPlayingAudio ? "[PLAYING]" : "[PAUSED]"}</span>
+              </button>
               <button
                 onClick={() => {
                   playRetroClick();
                   setLang(lang === "id" ? "zh" : "id");
                 }}
-                className="hover:bg-[#000080] hover:text-white px-1.5 py-0.5 rounded-xs cursor-pointer font-bold flex items-center gap-1"
+                className="hover:bg-[#000080] hover:text-white px-1.5 py-0.5 rounded-xs cursor-pointer font-bold"
               >
-                <span><u>B</u>ahasa: {lang === "id" ? "INDONESIA (Klik ke 中文)" : "中文 (點擊切換印尼文)"}</span>
+                <u>B</u>ahasa: {lang === "id" ? "INDONESIA" : "中文"}
               </button>
               <button
                 onClick={() => {
@@ -597,7 +735,7 @@ function Home7RetroComputerContent() {
 
                   {/* Personal Guest Card */}
                   <div className="p-4 bg-[#c0c0c0] border-t-2 border-l-2 border-t-white border-l-white border-b-2 border-r-2 border-b-black border-r-black space-y-2">
-                    <span className="text-[10px] font-mono uppercase tracking-wider text-stone-700 block">
+                    <span className="text-[10px] font-mono uppercase tracking-wider text-stone-700 block font-bold">
                       SURAT PENGHORMATAN KEPADA:
                     </span>
                     <div className="p-3 bg-white border-t-2 border-l-2 border-t-[#808080] border-l-[#808080] border-b-2 border-r-2 border-b-white border-r-white">
@@ -612,9 +750,25 @@ function Home7RetroComputerContent() {
                     </div>
                   </div>
 
+                  {/* Audio Starter Callout if Audio not yet playing */}
+                  {!isPlayingAudio && (
+                    <div className="p-3 bg-emerald-50 border border-emerald-500 flex items-center justify-between gap-3 text-xs font-mono">
+                      <div className="flex items-center gap-2 text-emerald-800">
+                        <Music className="w-4 h-4 animate-bounce" />
+                        <span>Musik hymne perayaan belum diputar. Sentuh tombol untuk memulai musik.</span>
+                      </div>
+                      <button
+                        onClick={togglePlayAudio}
+                        className="px-3 py-1 bg-emerald-700 text-white font-bold text-xs rounded-xs hover:bg-emerald-800 cursor-pointer shrink-0"
+                      >
+                        ▶ Putar Lagu
+                      </button>
+                    </div>
+                  )}
+
                   {/* Retro 90s LED Green Digital Countdown Box */}
                   <div className="p-4 bg-black border-2 border-stone-600 rounded-xs text-center space-y-2 select-none shadow-inner">
-                    <span className="text-[10px] font-mono uppercase tracking-widest text-emerald-400 block">
+                    <span className="text-[10px] font-mono uppercase tracking-widest text-emerald-400 block font-bold">
                       SYSTEM TIMER • COUNTDOWN TO 14 NOVEMBER 2026 (19:00 WIB)
                     </span>
                     <div className="grid grid-cols-4 gap-2 max-w-md mx-auto text-emerald-400 font-mono">
@@ -728,8 +882,8 @@ function Home7RetroComputerContent() {
                       </p>
                     </div>
 
-                    <span className="text-[11px] font-mono bg-stone-100 px-2 py-1 border border-stone-300">
-                      Entri: {selectedMilestoneIdx + 1} / {milestones.length}
+                    <span className="text-[11px] font-mono bg-stone-100 px-2 py-1 border border-stone-300 font-bold">
+                      Tahapan: {selectedMilestoneIdx + 1} / {milestones.length}
                     </span>
                   </div>
 
@@ -987,9 +1141,9 @@ function Home7RetroComputerContent() {
                             playRetroClick();
                             setGalleryFilter(cat);
                           }}
-                          className={`px-2 py-0.5 border text-[11px] font-mono cursor-pointer ${
+                          className={`px-2 py-0.5 border text-[11px] font-mono cursor-pointer font-bold ${
                             galleryFilter === cat
-                              ? "bg-[#000080] text-white border-[#000080] font-bold"
+                              ? "bg-[#000080] text-white border-[#000080]"
                               : "bg-[#c0c0c0] text-black border-t-white border-l-white border-b-black border-r-black"
                           }`}
                         >
@@ -1325,10 +1479,10 @@ function Home7RetroComputerContent() {
             <div className="bg-black p-2 border border-stone-700 my-1 space-y-1.5">
               <div className="flex items-center justify-between text-[#00ff00] text-[11px]">
                 <div className="flex items-center gap-1">
-                  <span className="animate-pulse">●</span>
-                  <span className="font-bold">{isPlayingAudio ? "PLAY" : "PAUSE"}</span>
+                  <span className={isPlayingAudio ? "text-emerald-400 animate-pulse" : "text-stone-600"}>●</span>
+                  <span className="font-bold">{isPlayingAudio ? "PLAY" : "PAUSED"}</span>
                 </div>
-                <span className="tracking-wider">03:25</span>
+                <span className="tracking-wider">{formatAudioTime(audioCurrentSeconds)}</span>
               </div>
 
               {/* Scrolling Track Name Ticker */}
@@ -1357,42 +1511,50 @@ function Home7RetroComputerContent() {
             <div className="flex items-center justify-between gap-1 p-1 bg-[#3a3a3a] border border-stone-700">
               <button
                 onClick={() => playRetroClick()}
-                className="p-1 bg-[#4a4a4a] hover:bg-[#5a5a5a] text-white border border-stone-500 text-[10px]"
-                title="Previous"
+                className="p-1.5 bg-[#4a4a4a] hover:bg-[#5a5a5a] text-white border border-stone-500 text-[10px] cursor-pointer"
+                title="Previous Track"
               >
                 <Rewind className="w-3 h-3" />
               </button>
               <button
-                onClick={() => {
-                  playRetroClick(isPlayingAudio ? 500 : 1000);
-                  setIsPlayingAudio(!isPlayingAudio);
-                }}
-                className="grow py-1 px-2 bg-[#4a4a4a] hover:bg-[#5a5a5a] text-[#00ff00] border border-stone-500 text-xs font-bold flex items-center justify-center gap-1"
+                onClick={togglePlayAudio}
+                className="grow py-1.5 px-2 bg-[#4a4a4a] hover:bg-[#5a5a5a] text-[#00ff00] border border-stone-500 text-xs font-bold flex items-center justify-center gap-1 cursor-pointer"
               >
-                {isPlayingAudio ? <Pause className="w-3 h-3" /> : <Play className="w-3 h-3 fill-current" />}
+                {isPlayingAudio ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5 fill-current" />}
                 <span>{isPlayingAudio ? "PAUSE" : "PLAY"}</span>
               </button>
               <button
-                onClick={() => {
-                  playRetroClick(400);
-                  setIsPlayingAudio(false);
-                }}
-                className="p-1 bg-[#4a4a4a] hover:bg-[#5a5a5a] text-white border border-stone-500 text-[10px]"
-                title="Stop"
+                onClick={stopAudio}
+                className="p-1.5 bg-[#4a4a4a] hover:bg-[#5a5a5a] text-white border border-stone-500 text-[10px] cursor-pointer"
+                title="Stop Audio"
               >
                 <Square className="w-3 h-3" />
               </button>
               <button
                 onClick={() => playRetroClick()}
-                className="p-1 bg-[#4a4a4a] hover:bg-[#5a5a5a] text-white border border-stone-500 text-[10px]"
-                title="Next"
+                className="p-1.5 bg-[#4a4a4a] hover:bg-[#5a5a5a] text-white border border-stone-500 text-[10px] cursor-pointer"
+                title="Next Track"
               >
                 <FastForward className="w-3 h-3" />
               </button>
             </div>
 
+            {/* Volume Slider Bar */}
+            <div className="p-1.5 bg-[#2d2d2d] border border-stone-700 mt-1 flex items-center gap-2 text-[10px] text-stone-300">
+              <Volume2 className="w-3 h-3 text-emerald-400 shrink-0" />
+              <input
+                type="range"
+                min="0"
+                max="100"
+                value={audioVolume}
+                onChange={(e) => changeVolume(parseInt(e.target.value))}
+                className="w-full accent-emerald-500 h-1.5 bg-black rounded cursor-pointer"
+              />
+              <span className="w-6 text-right font-mono text-emerald-400">{audioVolume}%</span>
+            </div>
+
             <div className="p-1 text-[9px] text-stone-400 text-center font-mono">
-              AUDIO: INSTRUMENTAL HARMONI
+              AUDIO: INSTRUMENTAL HARMONI FO THANG
             </div>
           </div>
         )}
@@ -1402,27 +1564,35 @@ function Home7RetroComputerContent() {
       {/* ============================================================== */}
       {/* WINDOWS 95 BOTTOM TASKBAR (FIXED)                              */}
       {/* ============================================================== */}
-      <footer className="fixed bottom-0 left-0 right-0 h-11 bg-[#c0c0c0] border-t-2 border-t-white border-b-2 border-b-black z-50 flex items-center justify-between px-1.5 select-none font-mono">
+      <footer className="fixed bottom-0 left-0 right-0 h-10 bg-[#c0c0c0] border-t-2 border-t-white border-b-2 border-b-black z-50 flex items-center justify-between px-1.5 select-none font-mono">
         
         {/* Left: Start Button & Taskbar Windows */}
-        <div className="flex items-center gap-1.5">
+        <div className="flex items-center gap-2">
           
-          {/* Start Button */}
+          {/* Start Button with Official Guang Ji Logo */}
           <button
             onClick={() => {
               playRetroClick(showStartMenu ? 500 : 1000);
               setShowStartMenu(!showStartMenu);
             }}
-            className={`flex items-center gap-1.5 px-2.5 py-1 text-xs font-bold font-sans cursor-pointer ${
+            className={`h-7 sm:h-7.5 flex items-center gap-1.5 px-2 sm:px-2.5 text-xs font-bold font-sans cursor-pointer select-none transition-none shadow-xs ${
               showStartMenu
-                ? "bg-[#c0c0c0] border-t-2 border-l-2 border-t-black border-l-black border-b-2 border-r-2 border-b-white border-r-white"
+                ? "bg-[#c0c0c0] border-t-2 border-l-2 border-t-black border-l-black border-b-2 border-r-2 border-b-white border-r-white pt-0.5"
                 : "bg-[#c0c0c0] border-t-2 border-l-2 border-t-white border-l-white border-b-2 border-r-2 border-b-black border-r-black active:border-t-black active:border-l-black active:border-b-white active:border-r-white"
             }`}
           >
-            <div className="w-4 h-4 bg-amber-400 border border-stone-900 rounded-xs flex items-center justify-center font-bold text-[9px]">
-              廣
+            <div className="relative w-4 h-4 sm:w-4.5 sm:h-4.5 shrink-0 flex items-center justify-center">
+              <Image
+                src="/images/logo-guang-ji.png"
+                alt="Logo Guang Ji"
+                width={18}
+                height={18}
+                className="object-contain"
+              />
             </div>
-            <span>Start</span>
+            <span className="font-bold tracking-normal text-stone-900 text-xs">
+              Start
+            </span>
           </button>
 
           {/* Running Windows Task Tabs */}
@@ -1431,13 +1601,21 @@ function Home7RetroComputerContent() {
               playRetroClick();
               setIsWindowMinimized(!isWindowMinimized);
             }}
-            className={`hidden sm:flex items-center gap-1 px-3 py-1 text-xs font-mono font-bold cursor-pointer max-w-[180px] truncate ${
+            className={`h-7 hidden sm:flex items-center gap-1.5 px-3 text-xs font-mono font-bold cursor-pointer max-w-[200px] truncate ${
               !isWindowMinimized
                 ? "bg-[#e0e0e0] border-t-2 border-l-2 border-t-black border-l-black border-b-2 border-r-2 border-b-white border-r-white text-black"
                 : "bg-[#c0c0c0] border-t-2 border-l-2 border-t-white border-l-white border-b-2 border-r-2 border-b-black border-r-black text-stone-700"
             }`}
           >
-            <Monitor className="w-3.5 h-3.5 shrink-0 text-[#000080]" />
+            <div className="relative w-3.5 h-3.5 shrink-0">
+              <Image
+                src="/images/logo-guang-ji.png"
+                alt="Logo Guang Ji"
+                width={14}
+                height={14}
+                className="object-contain"
+              />
+            </div>
             <span className="truncate">Guang Hang '97</span>
           </button>
 
@@ -1446,30 +1624,31 @@ function Home7RetroComputerContent() {
               playRetroClick();
               setShowWinamp(!showWinamp);
             }}
-            className={`hidden md:flex items-center gap-1 px-3 py-1 text-xs font-mono font-bold cursor-pointer max-w-[140px] truncate ${
+            className={`h-7 hidden md:flex items-center gap-1.5 px-3 text-xs font-mono font-bold cursor-pointer max-w-[140px] truncate ${
               showWinamp
                 ? "bg-[#e0e0e0] border-t-2 border-l-2 border-t-black border-l-black border-b-2 border-r-2 border-b-white border-r-white text-black"
                 : "bg-[#c0c0c0] border-t-2 border-l-2 border-t-white border-l-white border-b-2 border-r-2 border-b-black border-r-black text-stone-700"
             }`}
           >
-            <Music className="w-3.5 h-3.5 shrink-0 text-purple-800" />
+            <Music className="w-3.5 h-3.5 shrink-0 text-emerald-800" />
             <span className="truncate">WinAmp</span>
           </button>
 
         </div>
 
         {/* Right: System Tray & Clock */}
-        <div className="border-t border-l border-t-[#808080] border-l-[#808080] border-b border-r border-b-[#ffffff] border-r-[#ffffff] px-2 py-0.5 flex items-center gap-2 text-xs font-mono bg-[#c0c0c0]">
+        <div className="border-t border-l border-t-[#808080] border-l-[#808080] border-b border-r border-b-[#ffffff] border-r-[#ffffff] px-2.5 py-0.5 flex items-center gap-2.5 text-xs font-mono bg-[#c0c0c0] h-7">
           
           <button
-            onClick={() => {
-              playRetroClick();
-              setIsPlayingAudio(!isPlayingAudio);
-            }}
-            title="Audio Controller"
-            className="text-stone-700 hover:text-black cursor-pointer"
+            onClick={togglePlayAudio}
+            title={isPlayingAudio ? "Mute / Pause Musik" : "Play Musik Latar"}
+            className="text-stone-700 hover:text-black cursor-pointer flex items-center gap-1"
           >
-            {isPlayingAudio ? <Volume2 className="w-3.5 h-3.5 text-emerald-700" /> : <VolumeX className="w-3.5 h-3.5" />}
+            {isPlayingAudio ? (
+              <Volume2 className="w-3.5 h-3.5 text-emerald-700 animate-pulse" />
+            ) : (
+              <VolumeX className="w-3.5 h-3.5 text-stone-500" />
+            )}
           </button>
 
           <button
@@ -1477,13 +1656,13 @@ function Home7RetroComputerContent() {
               playRetroClick();
               setLang(lang === "id" ? "zh" : "id");
             }}
-            className="font-bold text-[10px] px-1 bg-stone-300 border border-stone-400 cursor-pointer"
-            title="Switch Language"
+            className="font-bold text-[10px] px-1.5 py-0.5 bg-stone-300 border border-stone-400 cursor-pointer hover:bg-stone-200"
+            title="Switch Language (ID / 中文)"
           >
             {lang === "id" ? "ID" : "ZH"}
           </button>
 
-          <span className="text-stone-900 font-bold tracking-wider text-[11px]">
+          <span className="text-stone-900 font-bold tracking-wider text-[11px] min-w-[58px] text-right">
             {currentTime || "19:00:00"}
           </span>
         </div>
@@ -1494,107 +1673,141 @@ function Home7RetroComputerContent() {
       {/* START MENU POPUP (WINDOWS 95 STYLE)                             */}
       {/* ============================================================== */}
       {showStartMenu && (
-        <div className="fixed bottom-11 left-1.5 z-50 w-64 bg-[#c0c0c0] border-t-2 border-l-2 border-t-white border-l-white border-b-2 border-r-2 border-b-black border-r-black shadow-2xl flex select-none font-sans">
-          
-          {/* Vertical Blue Ribbon */}
-          <div className="w-8 bg-gradient-to-t from-[#000080] to-[#1084d0] flex items-end justify-center pb-3 text-white">
-            <span className="font-bold font-mono text-sm tracking-widest -rotate-90 origin-bottom-center whitespace-nowrap">
-              GUANG HANG 97
-            </span>
+        <>
+          {/* Backdrop Overlay to close Start Menu on click outside */}
+          <div
+            className="fixed inset-0 z-40 bg-transparent"
+            onClick={() => setShowStartMenu(false)}
+          />
+
+          <div className="fixed bottom-10 sm:bottom-10.5 left-1.5 z-50 w-64 sm:w-72 bg-[#c0c0c0] border-t-2 border-l-2 border-t-white border-l-white border-b-2 border-r-2 border-b-black border-r-black shadow-2xl flex select-none font-sans">
+            
+            {/* Vertical Blue Ribbon with Guang Ji Emblem */}
+            <div className="w-9 bg-gradient-to-t from-[#000080] via-[#0040a0] to-[#1084d0] flex flex-col justify-between items-center py-2 text-white">
+              <div className="relative w-6 h-6">
+                <Image
+                  src="/images/logo-guang-ji.png"
+                  alt="Logo Guang Ji"
+                  fill
+                  className="object-contain filter brightness-110 drop-shadow-md"
+                />
+              </div>
+              <span className="font-bold font-mono text-xs tracking-widest -rotate-90 origin-center whitespace-nowrap mb-6 text-amber-300">
+                GUANG HANG '97
+              </span>
+            </div>
+
+            {/* Menu Items */}
+            <div className="grow p-1 text-xs space-y-0.5">
+              <button
+                onClick={() => openTab("welcome")}
+                className="w-full text-left px-2 py-1.5 flex items-center gap-2 hover:bg-[#000080] hover:text-white cursor-pointer group"
+              >
+                <div className="relative w-4 h-4 shrink-0">
+                  <Image
+                    src="/images/logo-guang-ji.png"
+                    alt="Logo Guang Ji"
+                    fill
+                    className="object-contain"
+                  />
+                </div>
+                <span>Surat Undangan Resmi</span>
+              </button>
+
+              <button
+                onClick={() => openTab("sejarah")}
+                className="w-full text-left px-2 py-1.5 flex items-center gap-2 hover:bg-[#000080] hover:text-white cursor-pointer"
+              >
+                <Clock className="w-4 h-4 text-[#7c1818]" />
+                <span>Napak Tilas 20 Tahun (1997-2026)</span>
+              </button>
+
+              <button
+                onClick={() => openTab("acara")}
+                className="w-full text-left px-2 py-1.5 flex items-center gap-2 hover:bg-[#000080] hover:text-white cursor-pointer"
+              >
+                <Calendar className="w-4 h-4 text-[#b5791c]" />
+                <span>Jadwal & Lokasi Acara</span>
+              </button>
+
+              <button
+                onClick={() => openTab("galeri")}
+                className="w-full text-left px-2 py-1.5 flex items-center gap-2 hover:bg-[#000080] hover:text-white cursor-pointer"
+              >
+                <Sparkles className="w-4 h-4 text-emerald-800" />
+                <span>Galeri Foto Arsip</span>
+              </button>
+
+              <button
+                onClick={() => openTab("rsvp")}
+                className="w-full text-left px-2 py-1.5 flex items-center gap-2 hover:bg-[#000080] hover:text-white cursor-pointer"
+              >
+                <Send className="w-4 h-4 text-[#831f1f]" />
+                <span>Konfirmasi Kehadiran (RSVP)</span>
+              </button>
+
+              <button
+                onClick={() => openTab("donasi")}
+                className="w-full text-left px-2 py-1.5 flex items-center gap-2 hover:bg-[#000080] hover:text-white cursor-pointer"
+              >
+                <CreditCard className="w-4 h-4 text-[#006600]" />
+                <span>Dana Kebajikan & QRIS</span>
+              </button>
+
+              <div className="border-t border-stone-400 my-1" />
+
+              <button
+                onClick={() => {
+                  togglePlayAudio();
+                  setShowStartMenu(false);
+                }}
+                className="w-full text-left px-2 py-1.5 flex items-center gap-2 hover:bg-[#000080] hover:text-white cursor-pointer text-emerald-900 font-bold"
+              >
+                <Music className="w-4 h-4 text-emerald-700" />
+                <span>{isPlayingAudio ? "Pause Musik Latar" : "▶ Putar Musik Latar"}</span>
+              </button>
+
+              <button
+                onClick={() => {
+                  playRetroClick();
+                  setShowWinamp(!showWinamp);
+                  setShowStartMenu(false);
+                }}
+                className="w-full text-left px-2 py-1.5 flex items-center gap-2 hover:bg-[#000080] hover:text-white cursor-pointer"
+              >
+                <Sliders className="w-4 h-4 text-purple-800" />
+                <span>{showWinamp ? "Tutup WinAmp" : "Buka WinAmp Player"}</span>
+              </button>
+
+              <button
+                onClick={() => {
+                  playRetroClick();
+                  setLang(lang === "id" ? "zh" : "id");
+                  setShowStartMenu(false);
+                }}
+                className="w-full text-left px-2 py-1.5 flex items-center gap-2 hover:bg-[#000080] hover:text-white cursor-pointer"
+              >
+                <Monitor className="w-4 h-4 text-stone-700" />
+                <span>Ganti Bahasa ({lang === "id" ? "Ke 中文" : "Ke Indonesia"})</span>
+              </button>
+
+              <div className="border-t border-stone-400 my-1" />
+
+              <button
+                onClick={() => {
+                  playRetroClick(200);
+                  window.scrollTo({ top: 0, behavior: "smooth" });
+                  setShowStartMenu(false);
+                }}
+                className="w-full text-left px-2 py-1.5 flex items-center gap-2 hover:bg-[#000080] hover:text-white cursor-pointer text-stone-700"
+              >
+                <Power className="w-4 h-4 text-red-600" />
+                <span>Shut Down / Reset Layar...</span>
+              </button>
+            </div>
+
           </div>
-
-          {/* Menu Items */}
-          <div className="grow p-1 text-xs space-y-0.5">
-            <button
-              onClick={() => openTab("welcome")}
-              className="w-full text-left px-2 py-1.5 flex items-center gap-2 hover:bg-[#000080] hover:text-white cursor-pointer"
-            >
-              <FileText className="w-4 h-4 text-[#000080] group-hover:text-white" />
-              <span>Surat Undangan Resmi</span>
-            </button>
-
-            <button
-              onClick={() => openTab("sejarah")}
-              className="w-full text-left px-2 py-1.5 flex items-center gap-2 hover:bg-[#000080] hover:text-white cursor-pointer"
-            >
-              <Clock className="w-4 h-4 text-[#7c1818]" />
-              <span>Napak Tilas 20 Tahun (1997-2026)</span>
-            </button>
-
-            <button
-              onClick={() => openTab("acara")}
-              className="w-full text-left px-2 py-1.5 flex items-center gap-2 hover:bg-[#000080] hover:text-white cursor-pointer"
-            >
-              <Calendar className="w-4 h-4 text-[#b5791c]" />
-              <span>Jadwal & Lokasi Acara</span>
-            </button>
-
-            <button
-              onClick={() => openTab("galeri")}
-              className="w-full text-left px-2 py-1.5 flex items-center gap-2 hover:bg-[#000080] hover:text-white cursor-pointer"
-            >
-              <Sparkles className="w-4 h-4 text-emerald-800" />
-              <span>Galeri Foto Arsip</span>
-            </button>
-
-            <button
-              onClick={() => openTab("rsvp")}
-              className="w-full text-left px-2 py-1.5 flex items-center gap-2 hover:bg-[#000080] hover:text-white cursor-pointer"
-            >
-              <Send className="w-4 h-4 text-[#831f1f]" />
-              <span>Konfirmasi Kehadiran (RSVP)</span>
-            </button>
-
-            <button
-              onClick={() => openTab("donasi")}
-              className="w-full text-left px-2 py-1.5 flex items-center gap-2 hover:bg-[#000080] hover:text-white cursor-pointer"
-            >
-              <CreditCard className="w-4 h-4 text-[#006600]" />
-              <span>Dana Kebajikan & QRIS</span>
-            </button>
-
-            <div className="border-t border-stone-400 my-1" />
-
-            <button
-              onClick={() => {
-                playRetroClick();
-                setShowWinamp(!showWinamp);
-                setShowStartMenu(false);
-              }}
-              className="w-full text-left px-2 py-1.5 flex items-center gap-2 hover:bg-[#000080] hover:text-white cursor-pointer"
-            >
-              <Music className="w-4 h-4 text-purple-800" />
-              <span>{showWinamp ? "Tutup WinAmp" : "Buka WinAmp Player"}</span>
-            </button>
-
-            <button
-              onClick={() => {
-                playRetroClick();
-                setLang(lang === "id" ? "zh" : "id");
-                setShowStartMenu(false);
-              }}
-              className="w-full text-left px-2 py-1.5 flex items-center gap-2 hover:bg-[#000080] hover:text-white cursor-pointer"
-            >
-              <Monitor className="w-4 h-4 text-stone-700" />
-              <span>Ganti Bahasa ({lang === "id" ? "Ke Mandarin" : "Ke Indonesia"})</span>
-            </button>
-
-            <div className="border-t border-stone-400 my-1" />
-
-            <button
-              onClick={() => {
-                playRetroClick(200);
-                window.scrollTo({ top: 0, behavior: "smooth" });
-                setShowStartMenu(false);
-              }}
-              className="w-full text-left px-2 py-1.5 flex items-center gap-2 hover:bg-[#000080] hover:text-white cursor-pointer text-stone-700"
-            >
-              <Square className="w-4 h-4" />
-              <span>Shut Down / Reset Layar...</span>
-            </button>
-          </div>
-
-        </div>
+        </>
       )}
 
       {/* ============================================================== */}
@@ -1614,7 +1827,7 @@ function Home7RetroComputerContent() {
               <span className="truncate">IMAGE PREVIEW - {activePhoto.title}</span>
               <button
                 onClick={() => setActivePhoto(null)}
-                className="w-4 h-4 bg-[#c0c0c0] text-black border border-black flex items-center justify-center text-[10px] font-bold"
+                className="w-4 h-4 bg-[#c0c0c0] text-black border border-black flex items-center justify-center text-[10px] font-bold cursor-pointer"
               >
                 ✕
               </button>
@@ -1653,7 +1866,7 @@ function Home7RetroComputerContent() {
           >
             <div className="bg-gradient-to-r from-[#000080] to-[#1084d0] text-white px-2 py-1 flex items-center justify-between font-bold">
               <span>RECYCLE BIN</span>
-              <button onClick={() => setShowRecycleBinModal(false)}>✕</button>
+              <button onClick={() => setShowRecycleBinModal(false)} className="cursor-pointer">✕</button>
             </div>
             <div className="p-4 space-y-3 bg-white border border-stone-400 mt-1 text-center">
               <Trash2 className="w-10 h-10 text-stone-500 mx-auto" />
@@ -1663,7 +1876,7 @@ function Home7RetroComputerContent() {
               </p>
               <button
                 onClick={() => setShowRecycleBinModal(false)}
-                className="px-4 py-1.5 bg-[#c0c0c0] text-black border-t-2 border-l-2 border-t-white border-l-white border-b-2 border-r-2 border-b-black border-r-black font-bold"
+                className="px-4 py-1.5 bg-[#c0c0c0] text-black border-t-2 border-l-2 border-t-white border-l-white border-b-2 border-r-2 border-b-black border-r-black font-bold cursor-pointer"
               >
                 Tutup (OK)
               </button>
