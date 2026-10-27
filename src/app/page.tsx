@@ -16,7 +16,6 @@ import DonationSection from "@/components/DonationSection";
 import LocationMap from "@/components/LocationMap";
 import Footer from "@/components/Footer";
 import AudioPlayer from "@/components/AudioPlayer";
-import VariationSwitcher from "@/components/VariationSwitcher";
 
 function InvitationContent() {
   const searchParams = useSearchParams();
@@ -88,9 +87,6 @@ function InvitationContent() {
         <LocationMap />
         <Footer onReopenEnvelope={handleReopen} />
       </div>
-
-      {/* Layout Template Switcher */}
-      <VariationSwitcher />
     </main>
   );
 }

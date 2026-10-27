@@ -28,7 +28,9 @@ import {
 } from "lucide-react";
 import { LanguageProvider, useLanguage } from "@/context/LanguageContext";
 import { CmsProvider, useCms } from "@/context/CmsContext";
-import VariationSwitcher from "@/components/VariationSwitcher";
+import { Marquee } from "@/components/ui/Marquee";
+import { SpotlightCard } from "@/components/ui/SpotlightCard";
+import { NumberTicker } from "@/components/ui/NumberTicker";
 import { GalleryPhotoItem } from "@/types/cms";
 import { WishItem, initialWishes } from "@/data/defaultWishes";
 import { historyMilestones } from "@/data/history";
@@ -115,7 +117,6 @@ function Home3ZenContent() {
       .catch(() => {});
   }, []);
 
-  // Track guest opening
   useEffect(() => {
     if (rawTo && rawTo.trim()) {
       fetch("/api/guests", {
@@ -151,8 +152,8 @@ function Home3ZenContent() {
         setSubmitted(true);
         if (status === "hadir") {
           confetti({
-            particleCount: 70,
-            spread: 60,
+            particleCount: 75,
+            spread: 65,
             origin: { y: 0.6 },
             colors: ["#a2362b", "#d6cebf", "#8c7355"],
           });
@@ -195,17 +196,34 @@ function Home3ZenContent() {
   )}&location=${encodeURIComponent(address)}`;
 
   return (
-    <div className="min-h-screen bg-[#f5f2eb] text-[#24211e] font-sans selection:bg-[#dcd4c5] selection:text-[#a2362b] pb-24">
+    <div className="min-h-screen bg-[#f4f1ea] text-[#24211e] font-sans selection:bg-[#dcd4c5] selection:text-[#a2362b] pb-24">
       
+      {/* 21st.dev Running Verse Marquee */}
+      <div className="bg-[#24211e] text-[#f4f1ea] py-1.5 border-b border-stone-400/40">
+        <Marquee repeat={5} pauseOnHover className="[--duration:32s] text-xs font-mono tracking-widest py-0">
+          <span className="flex items-center gap-4 mx-4">
+            <span className="font-bold text-amber-300">廣航佛堂 • 20TH ANNIVERSARY</span>
+            <span>+</span>
+            <span>12.11.2006 — 14.11.2026</span>
+            <span>+</span>
+            <span>TIAN EN SHI DE (天恩師德)</span>
+            <span>+</span>
+            <span>PALMERAH UTARA III NO. 186A</span>
+            <span>+</span>
+            <span>19:00 WIB</span>
+          </span>
+        </Marquee>
+      </div>
+
       {/* Hairline Architectural Header */}
-      <header className="border-b border-stone-300/80 bg-[#f5f2eb]/90 backdrop-blur-md sticky top-0 z-40 px-4 sm:px-8 py-3">
+      <header className="border-b border-stone-300/80 bg-[#f4f1ea]/90 backdrop-blur-md sticky top-0 z-40 px-4 sm:px-8 py-3">
         <div className="max-w-6xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="w-2.5 h-2.5 rounded-full bg-[#a2362b]" />
             <div className="flex items-baseline gap-2">
               <span className="font-chinese font-bold text-base text-stone-900">廣航佛堂</span>
               <span className="text-xs font-mono tracking-widest uppercase text-stone-500 hidden sm:inline">
-                20TH ANNIVERSARY • 2006 — 2026
+                ZEN ARCHITECTURAL BENTO • 2006 — 2026
               </span>
             </div>
           </div>
@@ -217,30 +235,17 @@ function Home3ZenContent() {
 
             {/* Language Switcher */}
             <div className="flex items-center bg-[#eae4d7] rounded-lg p-0.5 border border-stone-300 text-xs font-mono">
-              <button
-                onClick={() => setLang("all")}
-                className={`px-2 py-0.5 rounded transition-all ${
-                  lang === "all" ? "bg-stone-900 text-white font-bold" : "text-stone-600 hover:text-stone-950"
-                }`}
-              >
-                ALL
-              </button>
-              <button
-                onClick={() => setLang("id")}
-                className={`px-2 py-0.5 rounded transition-all ${
-                  lang === "id" ? "bg-stone-900 text-white font-bold" : "text-stone-600 hover:text-stone-950"
-                }`}
-              >
-                ID
-              </button>
-              <button
-                onClick={() => setLang("zh")}
-                className={`px-2 py-0.5 rounded transition-all ${
-                  lang === "zh" ? "bg-stone-900 text-white font-bold" : "text-stone-600 hover:text-stone-950"
-                }`}
-              >
-                中
-              </button>
+              {(["all", "id", "zh"] as const).map((m) => (
+                <button
+                  key={m}
+                  onClick={() => setLang(m)}
+                  className={`px-2 py-0.5 rounded transition-all ${
+                    lang === m ? "bg-stone-900 text-white font-bold" : "text-stone-600 hover:text-stone-950"
+                  }`}
+                >
+                  {m.toUpperCase()}
+                </button>
+              ))}
             </div>
           </div>
         </div>
@@ -255,7 +260,13 @@ function Home3ZenContent() {
         <section className="grid grid-cols-1 md:grid-cols-12 gap-4">
           
           {/* Card A: Main Monograph & Guest Welcome (8 Columns) */}
-          <div className="md:col-span-8 bg-white rounded-2xl border border-stone-300/80 p-6 sm:p-10 flex flex-col justify-between shadow-xs">
+          <div className="md:col-span-8 bg-white rounded-2xl border border-stone-300/80 p-6 sm:p-10 flex flex-col justify-between shadow-xs relative">
+            {/* Corner Crosshairs */}
+            <div className="absolute top-2 left-2 text-[10px] font-mono text-stone-300 select-none">+</div>
+            <div className="absolute top-2 right-2 text-[10px] font-mono text-stone-300 select-none">+</div>
+            <div className="absolute bottom-2 left-2 text-[10px] font-mono text-stone-300 select-none">+</div>
+            <div className="absolute bottom-2 right-2 text-[10px] font-mono text-stone-300 select-none">+</div>
+
             <div>
               <div className="flex items-center justify-between mb-4">
                 <span className="text-[11px] font-mono uppercase tracking-[0.2em] text-[#a2362b] font-semibold">
@@ -282,13 +293,7 @@ function Home3ZenContent() {
                   {guestName}
                 </div>
                 <p className="text-xs text-stone-600 font-sans mt-2 leading-relaxed">
-                  {showId && "Merupakan kehormatan bagi wadah Kuang Hang Fo Thang untuk menyambut kehadiran Anda dalam malam syukur bersama."}
-                  {showId && showZh && " "}
-                  {showZh && (
-                    <span className="font-chinese block text-stone-500 mt-1">
-                      謹此誠摯奉邀閣下撥冗光臨，同沾法喜，齊沐聖澤。
-                    </span>
-                  )}
+                  Merupakan kehormatan bagi wadah Kuang Hang Fo Thang untuk menyambut kehadiran Anda dalam malam syukur bersama.
                 </p>
               </div>
 
@@ -303,8 +308,8 @@ function Home3ZenContent() {
             </div>
           </div>
 
-          {/* Card B: Live Precision Countdown Matrix (4 Columns) */}
-          <div className="md:col-span-4 bg-white rounded-2xl border border-stone-300/80 p-6 flex flex-col justify-between shadow-xs">
+          {/* Card B: Live Precision Countdown Matrix (4 Columns) with NumberTicker */}
+          <div className="md:col-span-4 bg-white rounded-2xl border border-stone-300/80 p-6 flex flex-col justify-between shadow-xs relative">
             <div>
               <div className="flex items-center justify-between mb-4">
                 <span className="text-[11px] font-mono uppercase tracking-wider text-stone-500 flex items-center gap-1.5">
@@ -327,7 +332,7 @@ function Home3ZenContent() {
                   >
                     <span className="text-xs font-mono text-stone-600">{item.label}</span>
                     <span className="text-2xl font-bold font-mono text-stone-900">
-                      {String(item.val).padStart(2, "0")}
+                      <NumberTicker value={item.val} />
                     </span>
                   </div>
                 ))}
@@ -459,7 +464,6 @@ function Home3ZenContent() {
               </h2>
             </div>
 
-            {/* Year Chips */}
             <div className="flex items-center gap-1.5 font-mono text-xs">
               {milestones.map((m) => (
                 <button
@@ -477,7 +481,6 @@ function Home3ZenContent() {
             </div>
           </div>
 
-          {/* Active Milestone Display */}
           {currentMilestone && (
             <div className="grid grid-cols-1 md:grid-cols-12 gap-8 items-center">
               <div className="md:col-span-7 space-y-3">
@@ -525,67 +528,12 @@ function Home3ZenContent() {
         </section>
 
         {/* ============================================================== */}
-        {/* BENTO SECTION 3: Curated Photo Grid                            */}
-        {/* ============================================================== */}
-        <section className="bg-white rounded-2xl border border-stone-300/80 p-6 sm:p-10 shadow-xs">
-          <div className="flex flex-wrap items-center justify-between pb-4 mb-6 border-b border-stone-200 gap-2">
-            <div>
-              <span className="text-xs font-mono uppercase tracking-widest text-[#a2362b] block">
-                ARSIP FOTO DUA DASAWARSA
-              </span>
-              <h2 className="text-2xl sm:text-3xl font-bold font-serif text-stone-900">
-                歲月長廊 • 影像典藏
-              </h2>
-            </div>
-
-            <div className="flex items-center gap-1.5 font-mono text-xs">
-              {(["all", "sejarah", "kegiatan", "kebersamaan"] as const).map((cat) => (
-                <button
-                  key={cat}
-                  onClick={() => setGalleryFilter(cat)}
-                  className={`px-3 py-1.5 rounded-lg capitalize transition-all ${
-                    galleryFilter === cat
-                      ? "bg-stone-900 text-white font-bold"
-                      : "bg-[#f5f2eb] text-stone-700 hover:bg-stone-200"
-                  }`}
-                >
-                  {cat === "all" ? "Semua" : cat}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-            {filteredGallery.slice(0, 8).map((photo) => (
-              <div
-                key={photo.id}
-                onClick={() => setSelectedPhoto(photo)}
-                className="group relative h-40 rounded-xl overflow-hidden border border-stone-200 cursor-pointer bg-stone-100"
-              >
-                <Image
-                  src={photo.src}
-                  alt={photo.title}
-                  fill
-                  className="object-cover group-hover:scale-105 transition-transform duration-300"
-                />
-                <div className="absolute inset-0 bg-stone-950/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white">
-                  <Maximize2 className="w-5 h-5" />
-                </div>
-                <div className="absolute bottom-0 inset-x-0 p-2 bg-gradient-to-t from-stone-950/80 to-transparent text-white text-[10px] truncate">
-                  {photo.title}
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
-
-        {/* ============================================================== */}
-        {/* BENTO SECTION 4: Minimalist RSVP & Prayer Registry             */}
+        {/* BENTO SECTION 3: Minimalist RSVP & Prayer Wall                 */}
         {/* ============================================================== */}
         <section id="rsvp" className="bg-white rounded-2xl border border-stone-300/80 p-6 sm:p-10 shadow-xs">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
             
-            {/* Form Column (6 Cols) */}
+            {/* Form Column */}
             <div className="lg:col-span-6">
               <span className="text-xs font-mono uppercase tracking-widest text-[#a2362b] block mb-1">
                 REGISTRASI DIGITAL & DOA
@@ -594,9 +542,7 @@ function Home3ZenContent() {
                 Buku Tamu & Untaian Doa
               </h2>
               <p className="text-xs text-stone-600 mb-6 font-sans">
-                {showId && "Mohon konfirmasi kesediaan hadir Anda untuk membantu kelancaran persiapan konsumsi & tata letak meja."}
-                {showId && showZh && " • "}
-                {showZh && <span className="font-chinese">敬請確認回執，以利道務席位安排</span>}
+                Mohon konfirmasi kesediaan hadir Anda untuk membantu kelancaran persiapan konsumsi & tata letak meja.
               </p>
 
               {submitted ? (
@@ -709,7 +655,7 @@ function Home3ZenContent() {
               )}
             </div>
 
-            {/* Live Wishes Feed Column (6 Cols) */}
+            {/* Live Feed */}
             <div className="lg:col-span-6 flex flex-col justify-between">
               <div>
                 <div className="flex items-center justify-between pb-3 mb-4 border-b border-stone-200 text-xs font-mono text-stone-600">
@@ -782,44 +728,7 @@ function Home3ZenContent() {
           </div>
         </section>
 
-        {/* ============================================================== */}
-        {/* BENTO SECTION 5: Location & Minimalist Map Embed               */}
-        {/* ============================================================== */}
-        <section className="bg-white rounded-2xl border border-stone-300/80 p-6 sm:p-10 shadow-xs">
-          <div className="flex flex-wrap items-center justify-between pb-4 mb-4 border-b border-stone-200 gap-2">
-            <div>
-              <span className="text-xs font-mono uppercase tracking-widest text-[#a2362b] block">
-                KOORDINAT LOKASI
-              </span>
-              <h2 className="text-xl sm:text-2xl font-bold font-serif text-stone-900">
-                Kuang Hang Fo Thang, Palmerah
-              </h2>
-            </div>
-            <a
-              href={cms.location.googleMapsUrl || "https://maps.app.goo.gl/H2sa6pPhX2pn1KdJA"}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="px-3 py-1.5 rounded-lg bg-[#f5f2eb] hover:bg-stone-200 border border-stone-300 text-xs font-mono font-semibold flex items-center gap-1.5"
-            >
-              Navigasi Google Maps <ExternalLink className="w-3 h-3" />
-            </a>
-          </div>
-
-          <div className="rounded-xl overflow-hidden border border-stone-300 h-64 bg-stone-100 mb-3">
-            <iframe
-              src={cms.location.embedMapUrl || "https://maps.google.com/maps?q=Kuang+Hang+Fo+Thang+Palmerah+Jakarta+Barat&t=&z=16&ie=UTF8&iwloc=&output=embed"}
-              width="100%"
-              height="100%"
-              style={{ border: 0 }}
-              loading="lazy"
-            />
-          </div>
-          <p className="text-xs font-sans text-stone-600">
-            {cms.location.fullAddress}
-          </p>
-        </section>
-
-        {/* Minimalist Architectural Footer */}
+        {/* Footer */}
         <footer className="text-center pt-8 border-t border-stone-300 text-xs font-mono text-stone-500">
           <div className="flex items-center justify-center gap-2 text-stone-800 font-bold mb-1">
             <span className="font-chinese">廣航佛堂</span>
@@ -838,41 +747,6 @@ function Home3ZenContent() {
         </footer>
 
       </main>
-
-      {/* Lightbox Modal */}
-      {selectedPhoto && (
-        <div
-          className="fixed inset-0 z-50 bg-stone-950/90 flex items-center justify-center p-4"
-          onClick={() => setSelectedPhoto(null)}
-        >
-          <div
-            className="relative max-w-3xl w-full bg-white rounded-2xl overflow-hidden p-4"
-            onClick={(e) => e.stopPropagation()}
-          >
-            <button
-              onClick={() => setSelectedPhoto(null)}
-              className="absolute top-3 right-3 z-10 w-8 h-8 rounded-full bg-stone-900 text-white flex items-center justify-center hover:bg-stone-800"
-            >
-              <X className="w-4 h-4" />
-            </button>
-            <div className="relative w-full h-80 sm:h-96 mb-3">
-              <Image
-                src={selectedPhoto.src}
-                alt={selectedPhoto.title}
-                fill
-                className="object-contain"
-              />
-            </div>
-            <div className="text-center font-sans">
-              <h5 className="font-bold text-sm text-stone-900">{selectedPhoto.title}</h5>
-              <p className="font-chinese text-xs text-stone-500">{selectedPhoto.chineseTitle}</p>
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Variation Switcher */}
-      <VariationSwitcher />
     </div>
   );
 }
@@ -881,7 +755,7 @@ export default function Home3Page() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen flex items-center justify-center bg-[#f5f2eb] text-stone-900 font-mono">
+        <div className="min-h-screen flex items-center justify-center bg-[#f4f1ea] text-stone-900 font-mono">
           <div className="flex flex-col items-center gap-2">
             <div className="w-6 h-6 rounded-full border-2 border-stone-900 border-t-transparent animate-spin" />
             <span className="text-xs">LOADING ZEN SANCTUARY...</span>
