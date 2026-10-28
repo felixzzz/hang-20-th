@@ -36,6 +36,9 @@ import {
   ExternalLink,
   Compass,
   Navigation,
+  FolderCheck,
+  CheckSquare,
+  Square,
 } from "lucide-react";
 import { WishItem, initialWishes } from "@/data/defaultWishes";
 import { SiteCmsConfig, MilestoneItem, GalleryPhotoItem } from "@/types/cms";
@@ -107,6 +110,15 @@ export default function PanitiaDashboard() {
     chineseTitle: "",
     category: "kebersamaan",
   });
+
+  // Supabase Media Library Bulk Import state
+  const [showMediaLibraryModal, setShowMediaLibraryModal] = useState(false);
+  const [supabaseMediaList, setSupabaseMediaList] = useState<
+    { name: string; url: string; size: number; created_at?: string }[]
+  >([]);
+  const [isLoadingMediaList, setIsLoadingMediaList] = useState(false);
+  const [selectedMediaUrls, setSelectedMediaUrls] = useState<string[]>([]);
+  const [importCategory, setImportCategory] = useState<"kebersamaan" | "kegiatan" | "sejarah">("kebersamaan");
 
   const [showAddMilestoneModal, setShowAddMilestoneModal] = useState(false);
   const [editingMilestone, setEditingMilestone] = useState<{ item: MilestoneItem; index: number } | null>(null);
@@ -434,6 +446,62 @@ export default function PanitiaDashboard() {
     const newConfig = { ...cmsConfig, gallery: updatedGallery };
     setCmsConfig(newConfig);
     handleSaveCms(newConfig);
+  };
+
+  // ==================== PUSTAKA MEDIA SUPABASE (BULK GALLERY) ====================
+  const fetchSupabaseMedia = async () => {
+    setIsLoadingMediaList(true);
+    try {
+      const res = await fetch("/api/upload", { cache: "no-store" });
+      const json = await res.json();
+      if (json.success && Array.isArray(json.data)) {
+        setSupabaseMediaList(json.data);
+      }
+    } catch (e) {
+      console.error("fetchSupabaseMedia error:", e);
+    } finally {
+      setIsLoadingMediaList(false);
+    }
+  };
+
+  const handleToggleSelectMedia = (url: string) => {
+    setSelectedMediaUrls((prev) =>
+      prev.includes(url) ? prev.filter((u) => u !== url) : [...prev, url]
+    );
+  };
+
+  const handleSelectAllMedia = () => {
+    if (selectedMediaUrls.length === supabaseMediaList.length) {
+      setSelectedMediaUrls([]);
+    } else {
+      setSelectedMediaUrls(supabaseMediaList.map((m) => m.url));
+    }
+  };
+
+  const handleImportMediaToGallery = () => {
+    if (selectedMediaUrls.length === 0) return;
+    const newItems: GalleryPhotoItem[] = selectedMediaUrls.map((url, i) => {
+      const found = supabaseMediaList.find((m) => m.url === url);
+      const rawName = found
+        ? found.name.replace(/^\d+-/, "").replace(/\.[^/.]+$/, "")
+        : `Foto ${i + 1}`;
+      const title = rawName.replace(/_/g, " ").trim();
+      return {
+        id: `photo-${Date.now()}-${i}-${Math.random().toString(36).substring(2, 6)}`,
+        src: url,
+        title: title || "Dokumentasi Kuang Hang Fo Thang",
+        chineseTitle: "廣航佛堂道氣剪影",
+        category: importCategory,
+      };
+    });
+
+    const updatedGallery = [...cmsConfig.gallery, ...newItems];
+    const newConfig = { ...cmsConfig, gallery: updatedGallery };
+    setCmsConfig(newConfig);
+    handleSaveCms(newConfig);
+    setShowMediaLibraryModal(false);
+    setSelectedMediaUrls([]);
+    showNotification(`Berhasil menambahkan ${newItems.length} foto ke Galeri dan disimpan ke Supabase!`);
   };
 
   // ==================== KELOLA TIMELINE MILESTONE ====================
@@ -2730,23 +2798,36 @@ export default function PanitiaDashboard() {
                   </p>
                 </div>
 
-                <button
-                  onClick={() => {
-                    setEditingPhoto(null);
-                    setPhotoForm({
-                      id: "",
-                      src: "",
-                      title: "",
-                      chineseTitle: "",
-                      category: "kebersamaan",
-                    });
-                    setShowAddPhotoModal(true);
-                  }}
-                  className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-amber-600 hover:bg-amber-500 text-stone-950 font-bold text-xs transition cursor-pointer shadow-md"
-                >
-                  <Plus className="w-4 h-4" />
-                  <span>Tambah Foto Galeri</span>
-                </button>
+                <div className="flex flex-wrap items-center gap-2">
+                  <button
+                    onClick={() => {
+                      fetchSupabaseMedia();
+                      setShowMediaLibraryModal(true);
+                    }}
+                    className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-stone-800 hover:bg-stone-700 text-amber-300 font-bold text-xs border border-amber-500/30 transition cursor-pointer shadow-md"
+                  >
+                    <FolderCheck className="w-4 h-4 text-amber-400" />
+                    <span>Pilih dari Media Supabase</span>
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      setEditingPhoto(null);
+                      setPhotoForm({
+                        id: "",
+                        src: "",
+                        title: "",
+                        chineseTitle: "",
+                        category: "kebersamaan",
+                      });
+                      setShowAddPhotoModal(true);
+                    }}
+                    className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-amber-600 hover:bg-amber-500 text-stone-950 font-bold text-xs transition cursor-pointer shadow-md"
+                  >
+                    <Plus className="w-4 h-4" />
+                    <span>Tambah Foto Manual</span>
+                  </button>
+                </div>
               </div>
 
               {/* Photo Cards Grid */}
@@ -3406,6 +3487,191 @@ export default function PanitiaDashboard() {
                   className="px-5 py-2 rounded-xl bg-amber-600 hover:bg-amber-500 text-stone-950 font-bold text-xs shadow-md"
                 >
                   Simpan Kilas Sejarah
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ============================================================== */}
+      {/* MODAL 5: PILIH BANYAK FOTO DARI MEDIA SUPABASE                */}
+      {/* ============================================================== */}
+      {showMediaLibraryModal && (
+        <div className="fixed inset-0 z-50 bg-black/85 flex items-center justify-center p-4 overflow-y-auto">
+          <div className="w-full max-w-4xl rounded-3xl bg-stone-900 border border-amber-500/40 p-6 space-y-4 shadow-2xl my-auto max-h-[90vh] flex flex-col">
+            <div className="flex items-center justify-between pb-3 border-b border-stone-800 shrink-0">
+              <div>
+                <h3 className="font-serif font-bold text-base sm:text-lg text-amber-200 flex items-center gap-2">
+                  <FolderCheck className="w-5 h-5 text-amber-400" />
+                  <span>Pustaka Media Supabase</span>
+                  <span className="text-xs bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded-full font-mono">
+                    {supabaseMediaList.length} Foto
+                  </span>
+                </h3>
+                <p className="text-xs text-stone-400 mt-0.5">
+                  Centang foto-foto yang pernah diunggah untuk langsung ditambahkan ke Galeri Dokumentasi.
+                </p>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={fetchSupabaseMedia}
+                  disabled={isLoadingMediaList}
+                  className="px-2.5 py-1.5 rounded-lg bg-stone-800 hover:bg-stone-700 text-stone-300 text-xs flex items-center gap-1 transition"
+                  title="Segarkan Media"
+                >
+                  <RefreshCw className={`w-3.5 h-3.5 ${isLoadingMediaList ? "animate-spin" : ""}`} />
+                  <span className="hidden sm:inline">Segarkan</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowMediaLibraryModal(false)}
+                  className="text-stone-400 hover:text-white p-1"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+            </div>
+
+            {/* Selection Toolbar */}
+            <div className="flex flex-wrap items-center justify-between gap-3 p-3 rounded-2xl bg-stone-950 border border-stone-800 shrink-0">
+              <div className="flex items-center gap-3">
+                <button
+                  type="button"
+                  onClick={handleSelectAllMedia}
+                  className="text-xs text-amber-300 hover:text-amber-200 font-medium inline-flex items-center gap-1.5 cursor-pointer"
+                >
+                  {selectedMediaUrls.length === supabaseMediaList.length && supabaseMediaList.length > 0 ? (
+                    <>
+                      <CheckSquare className="w-4 h-4 text-amber-400" />
+                      <span>Hapus Semua Pilihan</span>
+                    </>
+                  ) : (
+                    <>
+                      <Square className="w-4 h-4 text-stone-400" />
+                      <span>Pilih Semua ({supabaseMediaList.length})</span>
+                    </>
+                  )}
+                </button>
+                <span className="text-xs text-stone-500">|</span>
+                <span className="text-xs text-stone-300 font-semibold">
+                  {selectedMediaUrls.length} foto terpilih
+                </span>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <label className="text-[11px] uppercase tracking-wider text-stone-400 font-semibold">
+                  Kategori:
+                </label>
+                <select
+                  value={importCategory}
+                  onChange={(e: any) => setImportCategory(e.target.value)}
+                  className="px-3 py-1.5 rounded-lg bg-stone-900 border border-stone-700 text-xs text-white outline-none"
+                >
+                  <option value="kebersamaan">Kebersamaan Umat</option>
+                  <option value="kegiatan">Kegiatan Pembinaan</option>
+                  <option value="sejarah">Sejarah & Pembangunan</option>
+                </select>
+              </div>
+            </div>
+
+            {/* Media Grid */}
+            <div className="flex-1 overflow-y-auto pr-1">
+              {isLoadingMediaList ? (
+                <div className="py-16 text-center text-sm text-amber-300 flex flex-col items-center justify-center gap-2">
+                  <div className="w-8 h-8 rounded-full border-2 border-amber-400 border-t-transparent animate-spin" />
+                  <span>Mengambil daftar berkas dari Supabase Storage...</span>
+                </div>
+              ) : supabaseMediaList.length === 0 ? (
+                <div className="py-12 text-center text-stone-400 space-y-2">
+                  <ImageIcon className="w-10 h-10 mx-auto text-stone-600" />
+                  <p className="text-xs">Belum ada berkas foto yang ditemukan di Supabase Storage.</p>
+                </div>
+              ) : (
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+                  {supabaseMediaList.map((file) => {
+                    const isSelected = selectedMediaUrls.includes(file.url);
+                    const alreadyInGallery = cmsConfig.gallery.some((g) => g.src === file.url);
+                    const cleanName = file.name.replace(/^\d+-/, "");
+
+                    return (
+                      <div
+                        key={file.name}
+                        onClick={() => handleToggleSelectMedia(file.url)}
+                        className={`group relative rounded-xl overflow-hidden bg-stone-950 border transition cursor-pointer flex flex-col select-none ${
+                          isSelected
+                            ? "border-amber-400 ring-2 ring-amber-400/60 shadow-lg"
+                            : "border-stone-800 hover:border-stone-600"
+                        }`}
+                      >
+                        <div className="relative aspect-[4/3] w-full bg-stone-900">
+                          <img
+                            src={file.url}
+                            alt={file.name}
+                            className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
+                            loading="lazy"
+                          />
+                          <div
+                            className={`absolute top-2 right-2 w-5 h-5 rounded-md flex items-center justify-center transition shadow ${
+                              isSelected
+                                ? "bg-amber-500 text-stone-950"
+                                : "bg-black/60 text-stone-400 group-hover:text-white"
+                            }`}
+                          >
+                            {isSelected ? <Check className="w-3.5 h-3.5 stroke-[3]" /> : <Square className="w-3.5 h-3.5" />}
+                          </div>
+
+                          {alreadyInGallery && (
+                            <span className="absolute bottom-1.5 left-1.5 px-1.5 py-0.5 rounded bg-emerald-950/80 border border-emerald-500/40 text-[9px] text-emerald-300 font-mono">
+                              ✓ Ada di Galeri
+                            </span>
+                          )}
+                        </div>
+
+                        <div className="p-2 text-[10px] space-y-0.5 bg-stone-950">
+                          <p className="font-mono text-stone-200 truncate" title={file.name}>
+                            {cleanName}
+                          </p>
+                          <p className="text-stone-500 font-mono">
+                            {file.size ? `${Math.round(file.size / 1024)} KB` : "Foto"}
+                          </p>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+
+            {/* Modal Footer */}
+            <div className="pt-3 border-t border-stone-800 flex items-center justify-between shrink-0">
+              <span className="text-xs text-stone-400">
+                {selectedMediaUrls.length > 0 ? (
+                  <span className="text-amber-300 font-medium">
+                    {selectedMediaUrls.length} foto siap ditambahkan ke kategori &ldquo;{importCategory}&rdquo;
+                  </span>
+                ) : (
+                  "Pilih foto di atas untuk ditambahkan"
+                )}
+              </span>
+
+              <div className="flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={() => setShowMediaLibraryModal(false)}
+                  className="px-4 py-2 rounded-xl bg-stone-800 hover:bg-stone-700 text-stone-300 text-xs font-semibold cursor-pointer"
+                >
+                  Tutup
+                </button>
+                <button
+                  type="button"
+                  onClick={handleImportMediaToGallery}
+                  disabled={selectedMediaUrls.length === 0}
+                  className="px-5 py-2 rounded-xl bg-amber-600 hover:bg-amber-500 disabled:opacity-40 disabled:cursor-not-allowed text-stone-950 font-bold text-xs shadow-md transition cursor-pointer"
+                >
+                  + Tambahkan ke Galeri ({selectedMediaUrls.length})
                 </button>
               </div>
             </div>
