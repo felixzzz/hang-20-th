@@ -25,7 +25,7 @@ export function CmsProvider({ children }: { children: React.ReactNode }) {
 
   const fetchCmsData = async () => {
     try {
-      const res = await fetch("/api/cms");
+      const res = await fetch("/api/cms", { cache: "no-store" });
       const json = await res.json();
       if (json.success && json.data) {
         const sortedData = {

@@ -173,7 +173,7 @@ export default function PanitiaDashboard() {
     setLoading(true);
     try {
       // 1. Fetch RSVPs
-      const resRsvp = await fetch("/api/rsvp");
+      const resRsvp = await fetch("/api/rsvp", { cache: "no-store" });
       const jsonRsvp = await resRsvp.json();
       if (jsonRsvp.success && Array.isArray(jsonRsvp.data)) {
         setWishes(jsonRsvp.data);
@@ -182,14 +182,14 @@ export default function PanitiaDashboard() {
       }
 
       // 2. Fetch Guests
-      const resGuests = await fetch("/api/guests");
+      const resGuests = await fetch("/api/guests", { cache: "no-store" });
       const jsonGuests = await resGuests.json();
       if (jsonGuests.success && Array.isArray(jsonGuests.data)) {
         setGuests(jsonGuests.data);
       }
 
       // 3. Fetch CMS settings from Supabase
-      const resCms = await fetch("/api/cms");
+      const resCms = await fetch("/api/cms", { cache: "no-store" });
       const jsonCms = await resCms.json();
       if (jsonCms.success && jsonCms.data) {
         const sortedData: SiteCmsConfig = {
@@ -442,11 +442,13 @@ export default function PanitiaDashboard() {
       alert("Tahun dan judul kilas sejarah wajib diisi.");
       return;
     }
-    const updatedMilestones = [...cmsConfig.milestones];
-    if (editingMilestone) {
+    const currentList = sortMilestonesByYear(cmsConfig.milestones || []);
+    let updatedMilestones: MilestoneItem[];
+    if (editingMilestone && editingMilestone.index >= 0) {
+      updatedMilestones = [...currentList];
       updatedMilestones[editingMilestone.index] = milestoneForm;
     } else {
-      updatedMilestones.push(milestoneForm);
+      updatedMilestones = [...currentList, milestoneForm];
     }
 
     const sortedMilestones = sortMilestonesByYear(updatedMilestones);
@@ -471,7 +473,8 @@ export default function PanitiaDashboard() {
 
   const handleDeleteMilestone = (index: number) => {
     if (!confirm("Hapus milestone kilas sejarah ini?")) return;
-    const updatedMilestones = cmsConfig.milestones.filter((_, i) => i !== index);
+    const currentList = sortMilestonesByYear(cmsConfig.milestones || []);
+    const updatedMilestones = currentList.filter((_, i) => i !== index);
     const sortedMilestones = sortMilestonesByYear(updatedMilestones);
     const newConfig = { ...cmsConfig, milestones: sortedMilestones };
     setCmsConfig(newConfig);

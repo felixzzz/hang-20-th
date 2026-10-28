@@ -4,6 +4,9 @@ import { defaultCms } from "@/data/defaultCms";
 import { sortMilestonesByYear } from "@/data/history";
 import { SiteCmsConfig } from "@/types/cms";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 const BUCKET_NAME = "cms-media";
 const CONFIG_FILE_PATH = "cms-settings.json";
 
@@ -83,20 +86,44 @@ export async function POST(request: Request) {
       );
     }
 
-    // Merge incoming changes with defaults or current values
+    // 1. Fetch existing config from Supabase first to prevent accidental overwrites
+    let existingConfig: Partial<SiteCmsConfig> = {};
+    try {
+      const { data: existingData } = await supabaseAdmin.storage
+        .from(BUCKET_NAME)
+        .download(CONFIG_FILE_PATH);
+      if (existingData) {
+        const text = await existingData.text();
+        existingConfig = JSON.parse(text);
+      }
+    } catch (e) {
+      // Ignore if not present yet
+    }
+
+    // 2. Merge incoming changes intelligently:
+    // Base: defaultCms -> Overridden by existingConfig -> Overridden by incoming body
     const configToSave: SiteCmsConfig = {
-      navbar: { ...defaultCms.navbar, ...(body.navbar || {}) },
-      cover: { ...defaultCms.cover, ...(body.cover || {}) },
-      hero: { ...defaultCms.hero, ...(body.hero || {}) },
-      wisdom: { ...defaultCms.wisdom, ...(body.wisdom || {}) },
-      event: { ...defaultCms.event, ...(body.event || {}) },
-      donation: { ...defaultCms.donation, ...(body.donation || {}) },
-      location: { ...defaultCms.location, ...(body.location || {}) },
-      shareMessage: { ...defaultCms.shareMessage, ...(body.shareMessage || {}) },
+      navbar: { ...defaultCms.navbar, ...(existingConfig.navbar || {}), ...(body.navbar || {}) },
+      cover: { ...defaultCms.cover, ...(existingConfig.cover || {}), ...(body.cover || {}) },
+      hero: { ...defaultCms.hero, ...(existingConfig.hero || {}), ...(body.hero || {}) },
+      wisdom: { ...defaultCms.wisdom, ...(existingConfig.wisdom || {}), ...(body.wisdom || {}) },
+      event: { ...defaultCms.event, ...(existingConfig.event || {}), ...(body.event || {}) },
+      donation: { ...defaultCms.donation, ...(existingConfig.donation || {}), ...(body.donation || {}) },
+      location: { ...defaultCms.location, ...(existingConfig.location || {}), ...(body.location || {}) },
+      shareMessage: { ...defaultCms.shareMessage, ...(existingConfig.shareMessage || {}), ...(body.shareMessage || {}) },
       milestones: sortMilestonesByYear(
-        Array.isArray(body.milestones) ? body.milestones : defaultCms.milestones
+        Array.isArray(body.milestones) && body.milestones.length > 0
+          ? body.milestones
+          : (Array.isArray(existingConfig.milestones) && existingConfig.milestones.length > 0
+              ? existingConfig.milestones
+              : defaultCms.milestones)
       ),
-      gallery: Array.isArray(body.gallery) ? body.gallery : defaultCms.gallery,
+      gallery:
+        Array.isArray(body.gallery) && body.gallery.length > 0
+          ? body.gallery
+          : (Array.isArray(existingConfig.gallery) && existingConfig.gallery.length > 0
+              ? existingConfig.gallery
+              : defaultCms.gallery),
     };
 
     const payloadBuffer = Buffer.from(JSON.stringify(configToSave, null, 2), "utf-8");

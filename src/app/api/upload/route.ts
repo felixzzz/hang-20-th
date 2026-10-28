@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
 import { supabaseAdmin } from "@/lib/supabase";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 const BUCKET_NAME = "cms-media";
 
 async function ensureBucket() {
@@ -12,6 +15,46 @@ async function ensureBucket() {
     }
   } catch (err) {
     console.error("ensureBucket error in upload:", err);
+  }
+}
+
+// GET: Retrieve list of previously uploaded media files in Supabase Storage
+export async function GET() {
+  try {
+    await ensureBucket();
+    const { data, error } = await supabaseAdmin.storage
+      .from(BUCKET_NAME)
+      .list("uploads", { limit: 100, sortBy: { column: "created_at", order: "desc" } });
+
+    if (error) {
+      console.error("Supabase list media error:", error);
+      return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+    }
+
+    const files = (data || [])
+      .filter((f) => f.name && !f.name.startsWith("."))
+      .map((f) => {
+        const { data: publicData } = supabaseAdmin.storage
+          .from(BUCKET_NAME)
+          .getPublicUrl(`uploads/${f.name}`);
+        return {
+          name: f.name,
+          size: f.metadata?.size || 0,
+          created_at: f.created_at,
+          url: publicData.publicUrl,
+        };
+      });
+
+    return NextResponse.json({
+      success: true,
+      data: files,
+    });
+  } catch (err: any) {
+    console.error("GET /api/upload error:", err);
+    return NextResponse.json(
+      { success: false, error: err?.message || "Internal server error" },
+      { status: 500 }
+    );
   }
 }
 
