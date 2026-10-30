@@ -2950,6 +2950,9 @@ export default function PanitiaDashboard() {
                           <span className="font-chinese text-xs text-amber-400/90">{m.chineseTitle}</span>
                         </div>
                         <p className="text-xs text-stone-400 line-clamp-1 mt-0.5">{m.description}</p>
+                        {m.chineseDescription && (
+                          <p className="font-chinese text-xs text-stone-500 line-clamp-1 mt-0.5">{m.chineseDescription}</p>
+                        )}
                       </div>
                     </div>
 
@@ -3385,7 +3388,7 @@ export default function PanitiaDashboard() {
             </div>
 
             <div className="space-y-3">
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                 <div>
                   <label className="block text-[11px] uppercase tracking-wider text-stone-400 font-semibold mb-1">
                     Tahun
@@ -3401,7 +3404,7 @@ export default function PanitiaDashboard() {
 
                 <div>
                   <label className="block text-[11px] uppercase tracking-wider text-stone-400 font-semibold mb-1">
-                    Lokasi
+                    Lokasi (Indonesia)
                   </label>
                   <input
                     type="text"
@@ -3411,9 +3414,22 @@ export default function PanitiaDashboard() {
                     className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none"
                   />
                 </div>
+
+                <div>
+                  <label className="block text-[11px] uppercase tracking-wider text-stone-400 font-semibold mb-1">
+                    Lokasi (Mandarin)
+                  </label>
+                  <input
+                    type="text"
+                    value={milestoneForm.chineseLocation || ""}
+                    onChange={(e) => setMilestoneForm({ ...milestoneForm, chineseLocation: e.target.value })}
+                    placeholder="雅加達西區巴美拉"
+                    className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none font-chinese"
+                  />
+                </div>
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
                   <label className="block text-[11px] uppercase tracking-wider text-stone-400 font-semibold mb-1">
                     Judul Tahap (Indonesia)
@@ -3455,15 +3471,43 @@ export default function PanitiaDashboard() {
 
               <div>
                 <label className="block text-[11px] uppercase tracking-wider text-stone-400 font-semibold mb-1">
-                  Poin Sorotan / Renungan
+                  Deskripsi Cerita (Mandarin • 歷史事蹟描述)
                 </label>
-                <input
-                  type="text"
-                  value={milestoneForm.highlight}
-                  onChange={(e) => setMilestoneForm({ ...milestoneForm, highlight: e.target.value })}
-                  placeholder="Benih kebajikan pertama ditaburkan..."
-                  className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none"
+                <textarea
+                  rows={3}
+                  value={milestoneForm.chineseDescription || ""}
+                  onChange={(e) => setMilestoneForm({ ...milestoneForm, chineseDescription: e.target.value })}
+                  placeholder="填寫中文歷史事蹟詳細敘述..."
+                  className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none font-chinese"
                 />
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="block text-[11px] uppercase tracking-wider text-stone-400 font-semibold mb-1">
+                    Poin Sorotan / Renungan (Indonesia)
+                  </label>
+                  <input
+                    type="text"
+                    value={milestoneForm.highlight}
+                    onChange={(e) => setMilestoneForm({ ...milestoneForm, highlight: e.target.value })}
+                    placeholder="Benih kebajikan pertama ditaburkan..."
+                    className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[11px] uppercase tracking-wider text-stone-400 font-semibold mb-1">
+                    Poin Sorotan / Renungan (Mandarin)
+                  </label>
+                  <input
+                    type="text"
+                    value={milestoneForm.chineseHighlight || ""}
+                    onChange={(e) => setMilestoneForm({ ...milestoneForm, chineseHighlight: e.target.value })}
+                    placeholder="第一顆菩提善種在無私奉獻中生根發芽..."
+                    className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none font-chinese"
+                  />
+                </div>
               </div>
 
               <ImageUploadField
