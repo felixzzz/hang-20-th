@@ -121,6 +121,23 @@ export const defaultCms: SiteCmsConfig = {
     googleMapsUrl: "https://maps.app.goo.gl/H2sa6pPhX2pn1KdJA",
     embedMapUrl: "https://maps.google.com/maps?q=Kuang+Hang+Fo+Thang+Palmerah+Jakarta+Barat&t=&z=16&ie=UTF8&iwloc=&output=embed",
   },
+  footer: {
+    logoImage: "",
+    titleZh: "廣航佛堂",
+    subtitleZh: "成立二十週年堂慶紀念 (2006 — 2026)",
+    subtitleId: "Peringatan 20 Tahun Gedung Kuang Hang Fo Thang (2006 — 2026)",
+    quoteId: "Tiada kata yang mampu melukiskan rasa syukur atas Tian En Shi De serta ketulusan seluruh umat yang telah menyatukan hati dalam mengarungi samudra kebajikan selama dua dasawarsa.",
+    quoteZh: "「叩謝天恩師德浩瀚加被，感恩前賢大德至誠護持。廿載同舟普化，萬里慈航不捨眾生。」",
+    instagramUrl: "https://www.instagram.com/guanghangfotang",
+    instagramHandle: "@guanghangfotang",
+    reopenTextId: "Buka Ulang Sampul",
+    reopenTextZh: "重啟封套",
+    backToTopTextId: "Kembali ke Atas",
+    backToTopTextZh: "回頂部",
+    copyrightText: "© 2006 — 2026 Kuang Hang Fo Thang. Seluruh Hak Dilindungi.",
+    mottoPart1: "Dirajut dengan ketulusan hati",
+    mottoPart2: "demi kelestarian dharma",
+  },
   shareMessage: {
     template: `*Undangan Resmi: Peringatan 20 Tahun Kuang Hang Fo Thang (廣航佛堂)*
 

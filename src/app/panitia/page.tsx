@@ -39,6 +39,9 @@ import {
   FolderCheck,
   CheckSquare,
   Square,
+  PanelBottom,
+  Heart,
+  Instagram,
 } from "lucide-react";
 import { WishItem, initialWishes } from "@/data/defaultWishes";
 import { SiteCmsConfig, MilestoneItem, GalleryPhotoItem } from "@/types/cms";
@@ -205,7 +208,12 @@ export default function PanitiaDashboard() {
       const jsonCms = await resCms.json();
       if (jsonCms.success && jsonCms.data) {
         const sortedData: SiteCmsConfig = {
+          ...defaultCms,
           ...jsonCms.data,
+          footer: {
+            ...defaultCms.footer,
+            ...(jsonCms.data.footer || {}),
+          },
           milestones: sortMilestonesByYear(jsonCms.data.milestones || []),
         };
         setCmsConfig(sortedData);
@@ -240,7 +248,12 @@ export default function PanitiaDashboard() {
       const json = await res.json();
       if (json.success && json.data) {
         const sortedData: SiteCmsConfig = {
+          ...defaultCms,
           ...json.data,
+          footer: {
+            ...defaultCms.footer,
+            ...(json.data.footer || {}),
+          },
           milestones: sortMilestonesByYear(json.data.milestones || []),
         };
         setCmsConfig(sortedData);
@@ -1213,7 +1226,7 @@ export default function PanitiaDashboard() {
                   Pengaturan Teks & Konten Acara
                 </h2>
                 <p className="text-xs text-stone-400">
-                  Ubah teks navigasi, kartu sampul landscape, sambutan peringatan, wejangan suci, jadwal acara, lokasi, dan nomor rekening dana kebajikan.
+                  Ubah teks navigasi, kartu sampul landscape, sambutan peringatan, wejangan suci, jadwal acara, lokasi, nomor rekening dana kebajikan, dan footer penutup.
                 </p>
               </div>
 
@@ -2700,6 +2713,289 @@ export default function PanitiaDashboard() {
                     }
                     placeholder="https://maps.google.com/maps?q=Kuang+Hang+Fo+Thang+Palmerah+Jakarta+Barat&t=&z=16&ie=UTF8&iwloc=&output=embed"
                     className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none font-mono text-[11px]"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Section 8: Kaki Halaman & Penutup Undangan (Footer) */}
+            <div className="p-5 sm:p-6 rounded-2xl bg-stone-900 border border-stone-800 space-y-4">
+              <div className="border-b border-stone-800/80 pb-3">
+                <h3 className="font-serif font-bold text-base text-amber-300 flex items-center gap-2">
+                  <PanelBottom className="w-4 h-4 text-amber-400" />
+                  <span>Kaki Halaman & Penutup Undangan (Footer)</span>
+                </h3>
+                <p className="text-xs text-stone-400 mt-0.5">
+                  Pengaturan teks penutup undangan, logo footer, untaian rasa syukur, tautan Instagram, teks tombol aksi, dan hak cipta.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {/* Logo Footer Custom (Opsional) */}
+                <div className="md:col-span-2">
+                  <ImageUploadField
+                    label="Logo Lambang Footer (Opsional)"
+                    value={cmsConfig.footer?.logoImage || ""}
+                    onChange={(url) =>
+                      setCmsConfig({
+                        ...cmsConfig,
+                        footer: { ...cmsConfig.footer, logoImage: url },
+                      })
+                    }
+                    description="Kosongkan jika ingin mengikuti logo sampul atau logo bawaan (/images/logo-guang-ji.png)"
+                    aspectRatio="square"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[11px] uppercase tracking-wider text-stone-400 font-semibold mb-1">
+                    Nama Fo Thang (Mandarin)
+                  </label>
+                  <input
+                    type="text"
+                    value={cmsConfig.footer?.titleZh || ""}
+                    onChange={(e) =>
+                      setCmsConfig({
+                        ...cmsConfig,
+                        footer: { ...cmsConfig.footer, titleZh: e.target.value },
+                      })
+                    }
+                    placeholder="廣航佛堂"
+                    className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none font-chinese text-sm"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[11px] uppercase tracking-wider text-stone-400 font-semibold mb-1">
+                    Subjudul Acara (Mandarin)
+                  </label>
+                  <input
+                    type="text"
+                    value={cmsConfig.footer?.subtitleZh || ""}
+                    onChange={(e) =>
+                      setCmsConfig({
+                        ...cmsConfig,
+                        footer: { ...cmsConfig.footer, subtitleZh: e.target.value },
+                      })
+                    }
+                    placeholder="成立二十週年堂慶紀念 (2006 — 2026)"
+                    className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none font-chinese text-sm"
+                  />
+                </div>
+
+                <div className="md:col-span-2">
+                  <label className="block text-[11px] uppercase tracking-wider text-stone-400 font-semibold mb-1">
+                    Subjudul Acara (Indonesia - Opsional)
+                  </label>
+                  <input
+                    type="text"
+                    value={cmsConfig.footer?.subtitleId || ""}
+                    onChange={(e) =>
+                      setCmsConfig({
+                        ...cmsConfig,
+                        footer: { ...cmsConfig.footer, subtitleId: e.target.value },
+                      })
+                    }
+                    placeholder="Peringatan 20 Tahun Gedung Kuang Hang Fo Thang (2006 — 2026)"
+                    className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none"
+                  />
+                </div>
+
+                <div className="md:col-span-2">
+                  <label className="block text-[11px] uppercase tracking-wider text-stone-400 font-semibold mb-1">
+                    Untaian Doa & Rasa Syukur Penutup (Indonesia)
+                  </label>
+                  <textarea
+                    rows={3}
+                    value={cmsConfig.footer?.quoteId || ""}
+                    onChange={(e) =>
+                      setCmsConfig({
+                        ...cmsConfig,
+                        footer: { ...cmsConfig.footer, quoteId: e.target.value },
+                      })
+                    }
+                    placeholder="Tiada kata yang mampu melukiskan rasa syukur..."
+                    className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none resize-y"
+                  />
+                </div>
+
+                <div className="md:col-span-2">
+                  <label className="block text-[11px] uppercase tracking-wider text-stone-400 font-semibold mb-1">
+                    Untaian Doa & Rasa Syukur Penutup (Mandarin)
+                  </label>
+                  <textarea
+                    rows={2}
+                    value={cmsConfig.footer?.quoteZh || ""}
+                    onChange={(e) =>
+                      setCmsConfig({
+                        ...cmsConfig,
+                        footer: { ...cmsConfig.footer, quoteZh: e.target.value },
+                      })
+                    }
+                    placeholder="「叩謝天恩師德浩瀚加被，感恩前賢大德至誠護持。廿載同舟普化，萬里慈航不捨眾生。」"
+                    className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none resize-y font-chinese text-sm"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[11px] uppercase tracking-wider text-stone-400 font-semibold mb-1">
+                    URL Tautan Instagram
+                  </label>
+                  <input
+                    type="text"
+                    value={cmsConfig.footer?.instagramUrl || ""}
+                    onChange={(e) =>
+                      setCmsConfig({
+                        ...cmsConfig,
+                        footer: { ...cmsConfig.footer, instagramUrl: e.target.value },
+                      })
+                    }
+                    placeholder="https://www.instagram.com/guanghangfotang"
+                    className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[11px] uppercase tracking-wider text-stone-400 font-semibold mb-1">
+                    Handle / Username Instagram
+                  </label>
+                  <input
+                    type="text"
+                    value={cmsConfig.footer?.instagramHandle || ""}
+                    onChange={(e) =>
+                      setCmsConfig({
+                        ...cmsConfig,
+                        footer: { ...cmsConfig.footer, instagramHandle: e.target.value },
+                      })
+                    }
+                    placeholder="@guanghangfotang"
+                    className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[11px] uppercase tracking-wider text-stone-400 font-semibold mb-1">
+                    Tombol Buka Ulang Sampul (Indonesia)
+                  </label>
+                  <input
+                    type="text"
+                    value={cmsConfig.footer?.reopenTextId || ""}
+                    onChange={(e) =>
+                      setCmsConfig({
+                        ...cmsConfig,
+                        footer: { ...cmsConfig.footer, reopenTextId: e.target.value },
+                      })
+                    }
+                    placeholder="Buka Ulang Sampul"
+                    className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[11px] uppercase tracking-wider text-stone-400 font-semibold mb-1">
+                    Tombol Buka Ulang Sampul (Mandarin)
+                  </label>
+                  <input
+                    type="text"
+                    value={cmsConfig.footer?.reopenTextZh || ""}
+                    onChange={(e) =>
+                      setCmsConfig({
+                        ...cmsConfig,
+                        footer: { ...cmsConfig.footer, reopenTextZh: e.target.value },
+                      })
+                    }
+                    placeholder="重啟封套"
+                    className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none font-chinese text-sm"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[11px] uppercase tracking-wider text-stone-400 font-semibold mb-1">
+                    Tombol Kembali ke Atas (Indonesia)
+                  </label>
+                  <input
+                    type="text"
+                    value={cmsConfig.footer?.backToTopTextId || ""}
+                    onChange={(e) =>
+                      setCmsConfig({
+                        ...cmsConfig,
+                        footer: { ...cmsConfig.footer, backToTopTextId: e.target.value },
+                      })
+                    }
+                    placeholder="Kembali ke Atas"
+                    className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[11px] uppercase tracking-wider text-stone-400 font-semibold mb-1">
+                    Tombol Kembali ke Atas (Mandarin)
+                  </label>
+                  <input
+                    type="text"
+                    value={cmsConfig.footer?.backToTopTextZh || ""}
+                    onChange={(e) =>
+                      setCmsConfig({
+                        ...cmsConfig,
+                        footer: { ...cmsConfig.footer, backToTopTextZh: e.target.value },
+                      })
+                    }
+                    placeholder="回頂部"
+                    className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none font-chinese text-sm"
+                  />
+                </div>
+
+                <div className="md:col-span-2">
+                  <label className="block text-[11px] uppercase tracking-wider text-stone-400 font-semibold mb-1">
+                    Teks Hak Cipta (Copyright)
+                  </label>
+                  <input
+                    type="text"
+                    value={cmsConfig.footer?.copyrightText || ""}
+                    onChange={(e) =>
+                      setCmsConfig({
+                        ...cmsConfig,
+                        footer: { ...cmsConfig.footer, copyrightText: e.target.value },
+                      })
+                    }
+                    placeholder="© 2006 — 2026 Kuang Hang Fo Thang. Seluruh Hak Dilindungi."
+                    className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[11px] uppercase tracking-wider text-stone-400 font-semibold mb-1">
+                    Pesan Kaki Kiri (Sebelum Lambang Hati)
+                  </label>
+                  <input
+                    type="text"
+                    value={cmsConfig.footer?.mottoPart1 || ""}
+                    onChange={(e) =>
+                      setCmsConfig({
+                        ...cmsConfig,
+                        footer: { ...cmsConfig.footer, mottoPart1: e.target.value },
+                      })
+                    }
+                    placeholder="Dirajut dengan ketulusan hati"
+                    className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[11px] uppercase tracking-wider text-stone-400 font-semibold mb-1">
+                    Pesan Kaki Kanan (Setelah Lambang Hati)
+                  </label>
+                  <input
+                    type="text"
+                    value={cmsConfig.footer?.mottoPart2 || ""}
+                    onChange={(e) =>
+                      setCmsConfig({
+                        ...cmsConfig,
+                        footer: { ...cmsConfig.footer, mottoPart2: e.target.value },
+                      })
+                    }
+                    placeholder="demi kelestarian dharma"
+                    className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none"
                   />
                 </div>
               </div>

@@ -138,6 +138,23 @@ export interface SiteCmsConfig {
     googleMapsUrl: string;
     embedMapUrl: string;
   };
+  footer: {
+    logoImage?: string;
+    titleZh: string;
+    subtitleZh: string;
+    subtitleId: string;
+    quoteId: string;
+    quoteZh: string;
+    instagramUrl: string;
+    instagramHandle: string;
+    reopenTextId: string;
+    reopenTextZh: string;
+    backToTopTextId: string;
+    backToTopTextZh: string;
+    copyrightText: string;
+    mottoPart1: string;
+    mottoPart2: string;
+  };
   shareMessage: {
     template: string;
   };

@@ -28,8 +28,13 @@ export function CmsProvider({ children }: { children: React.ReactNode }) {
       const res = await fetch("/api/cms", { cache: "no-store" });
       const json = await res.json();
       if (json.success && json.data) {
-        const sortedData = {
+        const sortedData: SiteCmsConfig = {
+          ...defaultCms,
           ...json.data,
+          footer: {
+            ...defaultCms.footer,
+            ...(json.data.footer || {}),
+          },
           milestones: sortMilestonesByYear(json.data.milestones || []),
         };
         setCms(sortedData);
@@ -49,10 +54,18 @@ export function CmsProvider({ children }: { children: React.ReactNode }) {
       const cached = sessionStorage.getItem("guanghang_cms_cache");
       if (cached) {
         const parsed = JSON.parse(cached);
-        if (Array.isArray(parsed.milestones)) {
-          parsed.milestones = sortMilestonesByYear(parsed.milestones);
-        }
-        setCms((prev) => ({ ...prev, ...parsed }));
+        const normalizedCached: SiteCmsConfig = {
+          ...defaultCms,
+          ...parsed,
+          footer: {
+            ...defaultCms.footer,
+            ...(parsed.footer || {}),
+          },
+          milestones: sortMilestonesByYear(
+            Array.isArray(parsed.milestones) ? parsed.milestones : defaultCms.milestones
+          ),
+        };
+        setCms((prev) => ({ ...prev, ...normalizedCached }));
       }
     } catch (e) {
       // ignore
@@ -75,8 +88,13 @@ export function CmsProvider({ children }: { children: React.ReactNode }) {
       });
       const json = await res.json();
       if (json.success && json.data) {
-        const sortedData = {
+        const sortedData: SiteCmsConfig = {
+          ...defaultCms,
           ...json.data,
+          footer: {
+            ...defaultCms.footer,
+            ...(json.data.footer || {}),
+          },
           milestones: sortMilestonesByYear(json.data.milestones || []),
         };
         setCms(sortedData);

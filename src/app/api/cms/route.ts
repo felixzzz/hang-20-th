@@ -52,6 +52,7 @@ export async function GET() {
       event: { ...defaultCms.event, ...(parsed.event || {}) },
       donation: { ...defaultCms.donation, ...(parsed.donation || {}) },
       location: { ...defaultCms.location, ...(parsed.location || {}) },
+      footer: { ...defaultCms.footer, ...(parsed.footer || {}) },
       shareMessage: { ...defaultCms.shareMessage, ...(parsed.shareMessage || {}) },
       milestones: sortMilestonesByYear(
         Array.isArray(parsed.milestones) ? parsed.milestones : defaultCms.milestones
@@ -110,6 +111,7 @@ export async function POST(request: Request) {
       event: { ...defaultCms.event, ...(existingConfig.event || {}), ...(body.event || {}) },
       donation: { ...defaultCms.donation, ...(existingConfig.donation || {}), ...(body.donation || {}) },
       location: { ...defaultCms.location, ...(existingConfig.location || {}), ...(body.location || {}) },
+      footer: { ...defaultCms.footer, ...(existingConfig.footer || {}), ...(body.footer || {}) },
       shareMessage: { ...defaultCms.shareMessage, ...(existingConfig.shareMessage || {}), ...(body.shareMessage || {}) },
       milestones: sortMilestonesByYear(
         Array.isArray(body.milestones) && body.milestones.length > 0
