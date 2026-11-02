@@ -37,8 +37,6 @@ import {
   Award,
   Music2,
   Navigation,
-  Train,
-  Car,
   Instagram,
   Images,
   ZoomIn,
@@ -129,12 +127,23 @@ function Page11MonographContent() {
 
   // RSVP Form States
   const [rsvpName, setRsvpName] = useState(guestName === defaultGuestName ? "" : guestName);
-  const [rsvpStatus, setRsvpStatus] = useState<"hadir" | "ragu" | "tidak">("hadir");
+  const [rsvpStatus, setRsvpStatus] = useState<"hadir" | "tidak">("hadir");
   const [rsvpGuests, setRsvpGuests] = useState<number>(1);
   const [rsvpMessage, setRsvpMessage] = useState("");
   const [isSubmittingRsvp, setIsSubmittingRsvp] = useState(false);
   const [rsvpSubmitted, setRsvpSubmitted] = useState(false);
   const [rsvpError, setRsvpError] = useState("");
+
+  // Multilingual Header Navigation Items
+  const navItems = [
+    { href: "#section-hero", id: "Beranda", zh: "首頁" },
+    { href: "#section-wisdom", id: "Wejangan", zh: "聖訓" },
+    { href: "#section-chronicle", id: "Sejarah", zh: "歷史" },
+    { href: "#section-gallery", id: "Galeri", zh: "光影" },
+    { href: "#section-event", id: "Jadwal", zh: "日程" },
+    { href: "#rsvp-section", id: "RSVP", zh: "赴會", isHighlight: true },
+    { href: "#section-location", id: "Lokasi", zh: "座標" },
+  ];
 
   // Live Wishes State
   const [wishes, setWishes] = useState<WishItem[]>(initialWishes);
@@ -400,7 +409,7 @@ function Page11MonographContent() {
   )}&location=${encodeURIComponent(cms.event?.address || "Jl. Palmerah Utara III No. 186A, Jakarta Barat")}`;
 
   return (
-    <div className="min-h-screen bg-[#FBF9F5] text-[#1C1816] font-serif selection:bg-[#E6C275]/40 selection:text-[#7C1818] relative overflow-x-hidden">
+    <div className="min-h-screen bg-[#FBF9F5] text-[#1C1816] font-serif selection:bg-[#E6C275]/40 selection:text-[#7C1818] relative overflow-x-clip">
       
       {/* Hidden YouTube Audio Iframe */}
       <div id="youtube-hidden-player-page11" className="sr-only pointer-events-none" />
@@ -572,7 +581,7 @@ function Page11MonographContent() {
       {/* =========================================================================
           2. STICKY HAUTE MASTHEAD & NAVIGATION
           ========================================================================= */}
-      <header className="sticky top-0 z-40 bg-[#FBF9F5]/90 backdrop-blur-md border-b border-[#C5983A]/25 px-4 sm:px-8 py-3 transition-colors">
+      <header className="sticky top-0 z-40 bg-[#FBF9F5]/95 backdrop-blur-md border-b border-[#C5983A]/25 px-4 sm:px-8 py-3 transition-colors shadow-[0_2px_12px_rgba(0,0,0,0.03)]">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           
           {/* Brand Signature */}
@@ -601,43 +610,49 @@ function Page11MonographContent() {
             </div>
           </div>
 
-          {/* Quick Anchor Jumps */}
-          <nav className="hidden lg:flex items-center gap-6 text-xs font-sans uppercase tracking-widest text-stone-600">
-            <a href="#section-hero" className="hover:text-[#7C1818] transition-colors">Beranda</a>
-            <a href="#section-wisdom" className="hover:text-[#7C1818] transition-colors">Wejangan</a>
-            <a href="#section-chronicle" className="hover:text-[#7C1818] transition-colors">Sejarah</a>
-            <a href="#section-gallery" className="hover:text-[#7C1818] transition-colors">Galeri</a>
-            <a href="#section-event" className="hover:text-[#7C1818] transition-colors">Jadwal</a>
-            <a href="#rsvp-section" className="hover:text-[#7C1818] transition-colors font-bold text-[#7C1818]">RSVP</a>
-            <a href="#section-location" className="hover:text-[#7C1818] transition-colors">Lokasi</a>
+          {/* Multilingual Quick Anchor Jumps */}
+          <nav className="hidden lg:flex items-center gap-5 text-xs font-sans uppercase tracking-widest text-stone-600">
+            {navItems.map((item) => (
+              <a
+                key={item.href}
+                href={item.href}
+                className={`transition-colors py-1 ${
+                  item.isHighlight
+                    ? "font-bold text-[#7C1818] border-b-2 border-[#7C1818]"
+                    : "hover:text-[#7C1818]"
+                }`}
+              >
+                {lang === "zh" ? (
+                  <span className="font-chinese text-sm font-semibold tracking-wider">{item.zh}</span>
+                ) : lang === "id" ? (
+                  <span>{item.id}</span>
+                ) : (
+                  <span className="inline-flex items-center gap-1">
+                    <span>{item.id}</span>
+                    <span className="font-chinese text-[11px] text-stone-400 font-normal">({item.zh})</span>
+                  </span>
+                )}
+              </a>
+            ))}
           </nav>
 
-          {/* Controls: Audio Ambiance & Bilingual Toggle */}
+          {/* Controls: Audio Ambiance (Icon-only) & Bilingual Toggle */}
           <div className="flex items-center gap-3">
-            {/* Audio Ambiance Toggle */}
+            {/* Audio Ambiance Toggle - Icon Only */}
             <button
               onClick={toggleAudio}
-              className={`flex items-center gap-2 px-3 py-1.5 rounded-none border text-xs font-sans transition-all duration-300 ${
+              className={`w-9 h-9 flex items-center justify-center rounded-none border text-xs font-sans transition-all duration-300 ${
                 isPlayingAudio
-                  ? "bg-[#7C1818] text-[#FAF5E8] border-[#C5983A]"
-                  : "bg-white text-stone-600 border-stone-300 hover:border-[#C5983A]"
+                  ? "bg-[#7C1818] text-[#FAF5E8] border-[#C5983A] shadow-sm"
+                  : "bg-white text-stone-500 border-stone-300 hover:border-[#C5983A] hover:text-[#7C1818]"
               }`}
-              title={cms.audio?.titleId || "Musik Khidmat"}
+              aria-label={isPlayingAudio ? "Mute audio" : "Play audio"}
+              title={isPlayingAudio ? (showZh ? "靜音" : "Heningkan Musik") : (showZh ? "播放音樂" : "Putar Musik")}
             >
               {isPlayingAudio ? (
-                <>
-                  <Volume2 className="w-3.5 h-3.5 text-[#E6C275] animate-pulse" />
-                  <span className="text-[11px] font-sans hidden md:inline">
-                    {cms.audio?.titleZh || "梵音"}: Nyala
-                  </span>
-                </>
+                <Volume2 className="w-4 h-4 text-[#E6C275] animate-pulse" />
               ) : (
-                <>
-                  <VolumeX className="w-3.5 h-3.5 text-stone-400" />
-                  <span className="text-[11px] font-sans hidden md:inline">
-                    {cms.audio?.titleId || "Musik"}: Hening
-                  </span>
-                </>
+                <VolumeX className="w-4 h-4 text-stone-400" />
               )}
             </button>
 
@@ -1448,53 +1463,37 @@ function Page11MonographContent() {
                   <label className="block text-xs font-sans uppercase tracking-wider text-stone-700 font-semibold mb-2">
                     Status Kehadiran <span className="text-[#7C1818]">*</span>
                   </label>
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 font-sans text-xs">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 font-sans text-xs">
                     <button
                       type="button"
                       onClick={() => setRsvpStatus("hadir")}
-                      className={`p-3.5 border text-left transition-all flex items-center justify-between ${
+                      className={`p-4 border text-left transition-all flex items-center justify-between ${
                         rsvpStatus === "hadir"
                           ? "border-[#7C1818] bg-[#7C1818]/5 text-[#7C1818] font-semibold shadow-sm"
                           : "border-stone-200 bg-[#FAF7F2] text-stone-600 hover:border-stone-400"
                       }`}
                     >
                       <div>
-                        <div className="font-bold">Pasti Hadir</div>
-                        <div className="text-[10px] text-stone-500 font-chinese">準時出席</div>
+                        <div className="font-bold text-sm">Pasti Hadir</div>
+                        <div className="text-[11px] text-stone-500 font-chinese mt-0.5">準時出席</div>
                       </div>
-                      {rsvpStatus === "hadir" && <Check className="w-4 h-4 text-[#7C1818]" />}
-                    </button>
-
-                    <button
-                      type="button"
-                      onClick={() => setRsvpStatus("ragu")}
-                      className={`p-3.5 border text-left transition-all flex items-center justify-between ${
-                        rsvpStatus === "ragu"
-                          ? "border-[#C5983A] bg-[#C5983A]/5 text-[#8E5717] font-semibold shadow-sm"
-                          : "border-stone-200 bg-[#FAF7F2] text-stone-600 hover:border-stone-400"
-                      }`}
-                    >
-                      <div>
-                        <div className="font-bold">Masih Ragu</div>
-                        <div className="text-[10px] text-stone-500 font-chinese">暫未確定</div>
-                      </div>
-                      {rsvpStatus === "ragu" && <Check className="w-4 h-4 text-[#C5983A]" />}
+                      {rsvpStatus === "hadir" && <Check className="w-5 h-5 text-[#7C1818]" />}
                     </button>
 
                     <button
                       type="button"
                       onClick={() => setRsvpStatus("tidak")}
-                      className={`p-3.5 border text-left transition-all flex items-center justify-between ${
+                      className={`p-4 border text-left transition-all flex items-center justify-between ${
                         rsvpStatus === "tidak"
                           ? "border-stone-600 bg-stone-100 text-stone-800 font-semibold shadow-sm"
                           : "border-stone-200 bg-[#FAF7F2] text-stone-600 hover:border-stone-400"
                       }`}
                     >
                       <div>
-                        <div className="font-bold">Berhalangan</div>
-                        <div className="text-[10px] text-stone-500 font-chinese">不克出席</div>
+                        <div className="font-bold text-sm">Berhalangan</div>
+                        <div className="text-[11px] text-stone-500 font-chinese mt-0.5">不克出席</div>
                       </div>
-                      {rsvpStatus === "tidak" && <Check className="w-4 h-4 text-stone-700" />}
+                      {rsvpStatus === "tidak" && <Check className="w-5 h-5 text-stone-700" />}
                     </button>
                   </div>
                 </div>
@@ -1769,31 +1768,6 @@ function Page11MonographContent() {
                   <ExternalLink className="w-3.5 h-3.5" /> Buka Google Maps
                 </a>
               </div>
-            </div>
-          </div>
-
-          {/* Transit Advice Details */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="p-5 bg-white border border-[#C5983A]/30">
-              <div className="flex items-center gap-2 text-xs font-sans uppercase tracking-wider text-[#7C1818] font-bold mb-2">
-                <Train className="w-4 h-4 text-[#C5983A]" />
-                <span>{cms.location?.transitKrlTitle || "Kereta Commuter Line (KRL)"}</span>
-              </div>
-              <p className="text-xs font-sans text-stone-600 leading-relaxed">
-                {cms.location?.transitKrlDesc ||
-                  "Turun di Stasiun Palmerah (~5 menit perjalanan dengan ojek/kendaraan daring menuju gedung Kuang Hang)."}
-              </p>
-            </div>
-
-            <div className="p-5 bg-white border border-[#C5983A]/30">
-              <div className="flex items-center gap-2 text-xs font-sans uppercase tracking-wider text-[#7C1818] font-bold mb-2">
-                <Car className="w-4 h-4 text-[#C5983A]" />
-                <span>{cms.location?.transitCarTitle || "Kendaraan Pribadi"}</span>
-              </div>
-              <p className="text-xs font-sans text-stone-600 leading-relaxed">
-                {cms.location?.transitCarDesc ||
-                  "Dapat diakses melalui Jalan Palmerah Barat atau Jalan Gelora Senayan. Tersedia area parkir untuk kendaraan roda dua dan roda empat."}
-              </p>
             </div>
           </div>
 
