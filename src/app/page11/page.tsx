@@ -20,6 +20,8 @@ import {
   ExternalLink,
   ChevronRight,
   ChevronLeft,
+  ChevronDown,
+  ChevronUp,
   Maximize2,
   X,
   CreditCard,
@@ -35,6 +37,11 @@ import {
   Award,
   Music2,
   Navigation,
+  Train,
+  Car,
+  Instagram,
+  Images,
+  ZoomIn,
 } from "lucide-react";
 import { LanguageProvider, useLanguage } from "@/context/LanguageContext";
 import { CmsProvider, useCms } from "@/context/CmsContext";
@@ -84,6 +91,15 @@ const playSacredChime = (tone: "high" | "deep" | "blessing" = "deep") => {
   }
 };
 
+interface LightboxState {
+  src: string;
+  title: string;
+  chineseTitle?: string;
+  subtitle?: string;
+  description?: string;
+  category?: string;
+}
+
 function Page11MonographContent() {
   const searchParams = useSearchParams();
   const rawTo = searchParams.get("to") || "";
@@ -102,9 +118,14 @@ function Page11MonographContent() {
   // Countdown State
   const [timeLeft, setTimeLeft] = useState({ days: 0, hours: 0, minutes: 0, seconds: 0 });
 
-  // Gallery Modal
-  const [selectedPhoto, setSelectedPhoto] = useState<GalleryPhotoItem | null>(null);
-  const [activeGalleryFilter, setActiveGalleryFilter] = useState<string>("all");
+  // Lightbox Modal for any clicked photo
+  const [lightboxPhoto, setLightboxPhoto] = useState<LightboxState | null>(null);
+
+  // Gallery filter state
+  const [activeGalleryFilter, setActiveGalleryFilter] = useState<"all" | "sejarah" | "kegiatan" | "kebersamaan">("all");
+
+  // Timeline expanded descriptions state
+  const [expandedMilestones, setExpandedMilestones] = useState<Record<number, boolean>>({});
 
   // RSVP Form States
   const [rsvpName, setRsvpName] = useState(guestName === defaultGuestName ? "" : guestName);
@@ -129,6 +150,41 @@ function Page11MonographContent() {
   const [copiedAddress, setCopiedAddress] = useState(false);
   const [copiedAccount, setCopiedAccount] = useState(false);
   const [copiedShare, setCopiedShare] = useState(false);
+
+  // Helper to format testimonial date with today as default fallback
+  const formatTestimonialDate = (rawTimestamp?: string) => {
+    const todayStr = new Intl.DateTimeFormat("id-ID", {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+    }).format(new Date());
+
+    if (!rawTimestamp || !rawTimestamp.trim()) {
+      return todayStr;
+    }
+    try {
+      const d = new Date(rawTimestamp);
+      if (isNaN(d.getTime())) return todayStr;
+      return new Intl.DateTimeFormat("id-ID", {
+        day: "numeric",
+        month: "short",
+        year: "numeric",
+      }).format(d);
+    } catch {
+      return todayStr;
+    }
+  };
+
+  // Keyboard escape listener for lightbox
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setLightboxPhoto(null);
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
 
   // Initialize YouTube background player quietly
   useEffect(() => {
@@ -187,7 +243,6 @@ function Page11MonographContent() {
   const handleOpenFolio = () => {
     playSacredChime("deep");
     setIsFolioOpen(true);
-    // Start ambient music gently if user opened
     if (playerRef.current && isAudioLoaded) {
       try {
         playerRef.current.playVideo();
@@ -195,7 +250,7 @@ function Page11MonographContent() {
       } catch (e) {}
     }
 
-    // Record guest opening
+    // Record guest opening in Supabase
     if (rawTo && rawTo.trim()) {
       fetch("/api/guests", {
         method: "PATCH",
@@ -253,6 +308,7 @@ function Page11MonographContent() {
           status: rsvpStatus,
           guests: rsvpStatus === "hadir" ? rsvpGuests : 0,
           message: rsvpMessage.trim(),
+          timestamp: new Date().toISOString(),
         }),
       });
       const data = await res.json();
@@ -281,7 +337,7 @@ function Page11MonographContent() {
   };
 
   const copyAddress = () => {
-    const addr = cms.event?.address || "Jl. Palmerah Utara III No. 186A, Palmerah, Jakarta Barat 11480";
+    const addr = cms.location?.fullAddress || cms.event?.address || "Jl. Palmerah Utara III No. 186A, Palmerah, Jakarta Barat 11480";
     navigator.clipboard.writeText(addr);
     setCopiedAddress(true);
     setTimeout(() => setCopiedAddress(false), 2400);
@@ -297,17 +353,33 @@ function Page11MonographContent() {
 
   const shareMonograph = () => {
     const url = typeof window !== "undefined" ? window.location.href : "";
+    const rawTemplate = cms.shareMessage?.template || `*Undangan Resmi 20 Tahun Guang Hang Fo Thang*\n\nKepada Yth: *{nama}*\n\n{url}`;
+    const formattedText = rawTemplate
+      .replace(/{nama}/g, guestName)
+      .replace(/{url}/g, url)
+      .replace(/{tanggal}/g, cms.event?.dateTextId || "Sabtu, 14 November 2026")
+      .replace(/{waktu}/g, cms.event?.timeTextId || "19.00 WIB")
+      .replace(/{tempat}/g, cms.event?.venueNameId || "Kuang Hang Fo Thang, Palmerah");
+
     if (navigator.share) {
       navigator.share({
         title: "20 Tahun Guang Hang Fo Thang (廣航佛堂 廿週年堂慶大典)",
-        text: `Undangan Resmi 20 Tahun Guang Hang Fo Thang untuk ${guestName}`,
+        text: formattedText,
         url,
       }).catch(() => {});
     } else {
-      navigator.clipboard.writeText(url);
+      navigator.clipboard.writeText(formattedText);
       setCopiedShare(true);
       setTimeout(() => setCopiedShare(false), 2400);
     }
+  };
+
+  // Toggle timeline expansion
+  const toggleMilestoneExpand = (idx: number) => {
+    setExpandedMilestones((prev) => ({
+      ...prev,
+      [idx]: !prev[idx],
+    }));
   };
 
   // Milestones sorted chronologically
@@ -322,9 +394,9 @@ function Page11MonographContent() {
     : allGalleryPhotos.filter((p) => p.category === activeGalleryFilter);
 
   const googleCalendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(
-    "20 Tahun Anniversary Kuang Hang Fo Thang (廣航佛堂廿週年堂慶)"
+    cms.event?.calendarTitle || "20 Tahun Anniversary Kuang Hang Fo Thang (廣航佛堂廿週年堂慶)"
   )}&dates=20261114T120000Z/20261114T150000Z&details=${encodeURIComponent(
-    "Peringatan Peresmian Gedung 20 Tahun Kuang Hang Fo Thang. 廣航佛堂落成廿週年堂慶大典。"
+    cms.event?.calendarDescription || "Peringatan Peresmian Gedung 20 Tahun Kuang Hang Fo Thang. 廣航佛堂落成廿週年堂慶大典。"
   )}&location=${encodeURIComponent(cms.event?.address || "Jl. Palmerah Utara III No. 186A, Jakarta Barat")}`;
 
   return (
@@ -332,6 +404,74 @@ function Page11MonographContent() {
       
       {/* Hidden YouTube Audio Iframe */}
       <div id="youtube-hidden-player-page11" className="sr-only pointer-events-none" />
+
+      {/* =========================================================================
+          LIGHTBOX MODAL FOR CLICKABLE HIGH-RES PHOTOS
+          ========================================================================= */}
+      <AnimatePresence>
+        {lightboxPhoto && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setLightboxPhoto(null)}
+            className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-8 bg-black/95 backdrop-blur-md"
+          >
+            <div
+              onClick={(e) => e.stopPropagation()}
+              className="relative max-w-5xl w-full bg-[#181210] border border-[#C5983A]/40 shadow-2xl p-4 sm:p-6 text-[#FAF5E8] flex flex-col"
+            >
+              {/* Close Button */}
+              <button
+                onClick={() => setLightboxPhoto(null)}
+                className="absolute top-3 right-3 p-2 bg-[#2E201B] border border-[#C5983A]/40 text-stone-300 hover:text-white hover:bg-[#7C1818] transition-colors z-10"
+                title="Tutup (Esc)"
+              >
+                <X className="w-5 h-5" />
+              </button>
+
+              {/* Large Image View */}
+              <div className="relative w-full h-[55vh] sm:h-[70vh] bg-black/40 overflow-hidden mb-4 flex items-center justify-center">
+                <Image
+                  src={lightboxPhoto.src}
+                  alt={lightboxPhoto.title}
+                  fill
+                  className="object-contain"
+                  sizes="100vw"
+                  priority
+                />
+              </div>
+
+              {/* Inscription & Meta */}
+              <div className="border-t border-[#C5983A]/30 pt-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                <div>
+                  <div className="flex items-center gap-2">
+                    <h4 className="text-lg sm:text-xl font-serif text-[#FFF8E7] font-semibold">
+                      {lightboxPhoto.title}
+                    </h4>
+                    {lightboxPhoto.chineseTitle && (
+                      <span className="font-chinese text-sm text-[#E6C275] border-l border-stone-600 pl-2">
+                        {lightboxPhoto.chineseTitle}
+                      </span>
+                    )}
+                  </div>
+                  {lightboxPhoto.description && (
+                    <p className="text-xs font-sans text-stone-400 mt-1 max-w-2xl leading-relaxed">
+                      {lightboxPhoto.description}
+                    </p>
+                  )}
+                </div>
+
+                {lightboxPhoto.category && (
+                  <span className="text-[10px] font-sans uppercase tracking-[0.2em] px-2.5 py-1 bg-[#7C1818]/40 border border-[#C5983A]/40 text-[#E6C275] self-start sm:self-auto">
+                    {lightboxPhoto.category}
+                  </span>
+                )}
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* =========================================================================
           1. SACRED CEREMONIAL FOLIO OVERLAY (ENTRANCE GATEFOLD SCROLL)
@@ -354,8 +494,8 @@ function Page11MonographContent() {
 
               {/* Museum Accession Header */}
               <div className="flex items-center justify-between text-[10px] uppercase font-sans tracking-[0.25em] text-[#C5983A]/70 mb-8 border-b border-[#C5983A]/20 pb-3">
-                <span>廣航典藏 • NO. 020</span>
-                <span>COMMEMORATIVE MONOGRAPH</span>
+                <span>{cms.cover?.badgeZh || "廿週年堂慶紀念"}</span>
+                <span>{cms.cover?.badgeId || "Peringatan 20 Tahun Gedung"}</span>
                 <span>2006 — 2026</span>
               </div>
 
@@ -366,35 +506,39 @@ function Page11MonographContent() {
                   className="cursor-pointer group relative w-20 h-20 rounded-sm border-2 border-[#E6C275] bg-[#7C1818] shadow-[inset_0_2px_8px_rgba(0,0,0,0.4),0_8px_20px_rgba(124,24,24,0.5)] flex items-center justify-center p-2 transition-transform duration-300 group-hover:scale-105 active:scale-95"
                 >
                   <span className="font-chinese text-2xl font-bold text-[#FDF9F0] writing-vertical-rl tracking-widest drop-shadow-sm">
-                    天恩師德
+                    {cms.cover?.sealTopZh || "天恩師德"}
                   </span>
                   <div className="absolute -bottom-1 -right-1 text-[8px] font-sans uppercase tracking-widest text-[#E6C275]/80">
                     印
                   </div>
                 </div>
                 <span className="text-[11px] font-chinese text-[#E6C275]/75 mt-2.5 tracking-wider">
-                  廣航佛堂 • 廿週年堂慶紀念
+                  {cms.cover?.bottomInscriptionZh || "二零零六 — 二零二六 • 廿載同舟"}
                 </span>
               </div>
 
               {/* Title & Archival Inscription */}
               <h1 className="text-3xl sm:text-4xl font-serif tracking-tight text-[#FAF5E9] mb-2">
-                廣航佛堂廿週年堂慶大典
+                {cms.cover?.titleZh || "廣航佛堂"} 廿週年堂慶大典
               </h1>
-              <p className="text-xs sm:text-sm font-sans tracking-[0.2em] uppercase text-[#E6C275]/80 mb-6">
-                Peringatan 20 Tahun Peresmian Gedung Kuang Hang
+              <p className="text-xs sm:text-sm font-sans tracking-[0.2em] uppercase text-[#E6C275]/80 mb-2">
+                {cms.cover?.titleId || "Kuang Hang Fo Thang • 2006 — 2026"}
+              </p>
+              <p className="text-xs font-serif italic text-stone-400 mb-6">
+                &ldquo;{cms.cover?.subtitleId || "Mengarungi Samudra Kebajikan, Menyalakan Pelita Kebijaksanaan"}&rdquo;
               </p>
 
               {/* Personalized Recipient Plate */}
               <div className="my-6 py-4 px-5 bg-[#250E0E]/80 border-y border-[#C5983A]/30">
                 <div className="text-[10px] font-sans uppercase tracking-[0.25em] text-[#C5983A]/90 mb-1">
-                  {cms.cover?.guestPrefixZh || "恭請 貴賓尊鑒"} • Kepada Yth.
+                  {cms.cover?.guestPrefixZh || "恭請 貴賓尊鑒"} • {cms.cover?.guestPrefixId || "Yth. Tamu Undangan Terkasih"}
                 </div>
                 <div className="text-xl sm:text-2xl font-serif text-[#FFF8E7] font-medium tracking-wide">
                   {guestName}
                 </div>
                 <div className="text-[11px] font-sans text-stone-400 mt-1 italic">
-                  {cms.cover?.inviteTextId || "Dengan penuh hormat mengundang kehadiran Anda dalam malam syukur bersama."}
+                  {showId && cms.cover?.inviteTextId}
+                  {showZh && <span className="block font-chinese mt-1 text-[#E6C275]/70">{cms.cover?.inviteTextZh}</span>}
                 </div>
               </div>
 
@@ -405,18 +549,20 @@ function Page11MonographContent() {
                   className="group relative inline-flex items-center gap-3 px-8 py-3.5 bg-gradient-to-r from-[#9E2222] via-[#7C1818] to-[#580F0F] text-[#FDF9F0] font-sans text-xs uppercase tracking-[0.25em] font-semibold rounded-none border border-[#E6C275]/60 shadow-[0_4px_25px_rgba(124,24,24,0.6)] hover:brightness-110 transition-all duration-300 active:scale-98"
                 >
                   <Sparkles className="w-4 h-4 text-[#E6C275] animate-pulse" />
-                  <span>{cms.cover?.buttonTextZh || "恭啟尊榮邀請函"} • Buka Undangan</span>
+                  <span>
+                    {cms.cover?.buttonTextZh || "恭啟尊榮邀請函"} • {cms.cover?.buttonTextId || "Buka Undangan Resmi"}
+                  </span>
                   <ChevronRight className="w-4 h-4 text-[#E6C275] group-hover:translate-x-1 transition-transform" />
                 </button>
                 <span className="text-[10px] font-sans tracking-widest text-[#E6C275]/50">
-                  Sentuh untuk membuka lembar monograf sakral
+                  {cms.cover?.buttonSubtextId || "Sentuh tombol untuk membuka surat undangan resmi"}
                 </span>
               </div>
 
               {/* Bottom Hairline Footer */}
               <div className="mt-8 pt-4 border-t border-[#C5983A]/15 flex items-center justify-between text-[10px] font-sans text-stone-500">
-                <span>Palmerah, Jakarta Barat</span>
-                <span>14 November 2026 • 19:00 WIB</span>
+                <span>{cms.hero?.cityId || "Palmerah, Jakarta Barat"}</span>
+                <span>{cms.event?.dateTextId || "14 November 2026"} • {cms.event?.timeTextId || "19:00 WIB"}</span>
               </div>
             </div>
           </motion.div>
@@ -443,17 +589,28 @@ function Page11MonographContent() {
             <div>
               <div className="flex items-center gap-2">
                 <span className="font-chinese font-bold text-sm text-[#7C1818] tracking-widest">
-                  廣航佛堂
+                  {cms.navbar?.brandTitleZh || "廣航佛堂"}
                 </span>
                 <span className="text-[10px] font-sans uppercase tracking-[0.2em] text-[#C5983A] font-semibold">
-                  20th Anniversary
+                  {cms.navbar?.brandSubtitleId || "Peringatan 20 Tahun Gedung"}
                 </span>
               </div>
               <p className="text-[10px] font-sans text-stone-500 hidden sm:block">
-                Monograph Edition • 12 Nov 2006 — 14 Nov 2026
+                {cms.navbar?.brandTitleId || "Kuang Hang Fo Thang"} • {cms.navbar?.brandSubtitleZh || "成立廿週年堂慶"}
               </p>
             </div>
           </div>
+
+          {/* Quick Anchor Jumps */}
+          <nav className="hidden lg:flex items-center gap-6 text-xs font-sans uppercase tracking-widest text-stone-600">
+            <a href="#section-hero" className="hover:text-[#7C1818] transition-colors">Beranda</a>
+            <a href="#section-wisdom" className="hover:text-[#7C1818] transition-colors">Wejangan</a>
+            <a href="#section-chronicle" className="hover:text-[#7C1818] transition-colors">Sejarah</a>
+            <a href="#section-gallery" className="hover:text-[#7C1818] transition-colors">Galeri</a>
+            <a href="#section-event" className="hover:text-[#7C1818] transition-colors">Jadwal</a>
+            <a href="#rsvp-section" className="hover:text-[#7C1818] transition-colors font-bold text-[#7C1818]">RSVP</a>
+            <a href="#section-location" className="hover:text-[#7C1818] transition-colors">Lokasi</a>
+          </nav>
 
           {/* Controls: Audio Ambiance & Bilingual Toggle */}
           <div className="flex items-center gap-3">
@@ -465,17 +622,21 @@ function Page11MonographContent() {
                   ? "bg-[#7C1818] text-[#FAF5E8] border-[#C5983A]"
                   : "bg-white text-stone-600 border-stone-300 hover:border-[#C5983A]"
               }`}
-              title="Musik Latar Khidmat"
+              title={cms.audio?.titleId || "Musik Khidmat"}
             >
               {isPlayingAudio ? (
                 <>
                   <Volume2 className="w-3.5 h-3.5 text-[#E6C275] animate-pulse" />
-                  <span className="text-[11px] font-sans hidden md:inline">Musik: Nyala</span>
+                  <span className="text-[11px] font-sans hidden md:inline">
+                    {cms.audio?.titleZh || "梵音"}: Nyala
+                  </span>
                 </>
               ) : (
                 <>
                   <VolumeX className="w-3.5 h-3.5 text-stone-400" />
-                  <span className="text-[11px] font-sans hidden md:inline">Musik: Hening</span>
+                  <span className="text-[11px] font-sans hidden md:inline">
+                    {cms.audio?.titleId || "Musik"}: Hening
+                  </span>
                 </>
               )}
             </button>
@@ -518,8 +679,7 @@ function Page11MonographContent() {
       {/* =========================================================================
           3. CHAPTER 01: THE SACRED INVOCATION (MAIN COVERAGE)
           ========================================================================= */}
-      <section className="relative px-4 sm:px-8 pt-12 pb-20 border-b border-[#C5983A]/20">
-        {/* Subtle Archival Grid lines */}
+      <section id="section-hero" className="relative px-4 sm:px-8 pt-12 pb-20 border-b border-[#C5983A]/20">
         <div className="max-w-6xl mx-auto">
           
           {/* Chapter Stamp & Meta */}
@@ -530,7 +690,7 @@ function Page11MonographContent() {
               <span>堂慶大典 • SACRED INVOCATION</span>
             </div>
             <div className="hidden sm:block text-stone-400">
-              PALMERAH UTARA • JAKARTA BARAT
+              {cms.hero?.cityId || "Palmerah, Jakarta Barat"} • {cms.hero?.cityZh || "雅加達巴美拉"}
             </div>
           </div>
 
@@ -605,7 +765,7 @@ function Page11MonographContent() {
                     className="inline-flex items-center gap-2 px-4 py-2 bg-[#FAF7F2] border border-stone-300 text-stone-700 text-xs font-sans tracking-wider hover:border-[#C5983A] transition-colors"
                   >
                     <Share2 className="w-3.5 h-3.5 text-[#7C1818]" />
-                    {copiedShare ? "Tautan Disalin!" : "Bagikan Undangan"}
+                    {copiedShare ? "Undangan Disalin!" : "Bagikan Undangan"}
                   </button>
                 </div>
               </div>
@@ -614,8 +774,20 @@ function Page11MonographContent() {
             {/* Right: Altar Sanctuary Portrait & Live Countdown Slate */}
             <div className="lg:col-span-5 space-y-6">
               
-              {/* Altar Archival Photograph Frame */}
-              <div className="relative group border border-[#C5983A]/40 p-2 bg-white shadow-lg">
+              {/* Altar Archival Photograph Frame with Click to Zoom */}
+              <div
+                onClick={() =>
+                  setLightboxPhoto({
+                    src: "/images/guang-hang-10.jpg",
+                    title: cms.hero?.photoCaptionTitleId || "Altar Agung Kuang Hang Fo Thang",
+                    chineseTitle: cms.hero?.photoCaptionTitleZh || "廣航聖壇大殿",
+                    subtitle: cms.hero?.photoCaptionDate || "12 Nov 2006 — 14 Nov 2026",
+                    description: cms.hero?.photoCaptionDescId || "Pusat spiritual pembinaan kebajikan dan persaudaraan se-dharma di Palmerah Utara.",
+                    category: "Altar Suci",
+                  })
+                }
+                className="relative group border border-[#C5983A]/40 p-2 bg-white shadow-lg cursor-zoom-in"
+              >
                 <div className="relative w-full aspect-[4/3] overflow-hidden bg-stone-100">
                   <Image
                     src="/images/guang-hang-10.jpg"
@@ -626,6 +798,13 @@ function Page11MonographContent() {
                     priority
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                  
+                  {/* Subtle Zoom Pill Indicator */}
+                  <div className="absolute top-3 right-3 px-2 py-1 bg-black/60 backdrop-blur-sm border border-[#C5983A]/40 text-white text-[10px] font-sans flex items-center gap-1.5 opacity-90 group-hover:opacity-100 transition-opacity">
+                    <ZoomIn className="w-3 h-3 text-[#E6C275]" />
+                    <span>Klik perbesar</span>
+                  </div>
+
                   <div className="absolute bottom-3 left-3 right-3 text-white">
                     <span className="text-[10px] font-sans uppercase tracking-[0.2em] text-[#E6C275] block">
                       {cms.hero?.photoCaptionDate || "12 Nov 2006 — 14 Nov 2026"}
@@ -681,7 +860,7 @@ function Page11MonographContent() {
                 </div>
 
                 <p className="text-[11px] font-sans text-stone-400 text-center">
-                  Sabtu, 14 November 2026 • 19:00 WIB (18:30 WIB Registrasi)
+                  {cms.event?.dateTextId || "Sabtu, 14 November 2026"} • {cms.event?.timeTextId || "19:00 WIB"} ({cms.event?.timeNotesId || "18:30 WIB Registrasi"})
                 </p>
               </div>
 
@@ -694,7 +873,7 @@ function Page11MonographContent() {
       {/* =========================================================================
           4. CHAPTER 02: PATRIARCH MAOTIAN LIVING WISDOM (SACRED STELE)
           ========================================================================= */}
-      <section className="relative px-4 sm:px-8 py-20 bg-[#F4EFE6] border-b border-[#C5983A]/20">
+      <section id="section-wisdom" className="relative px-4 sm:px-8 py-20 bg-[#F4EFE6] border-b border-[#C5983A]/20">
         <div className="max-w-4xl mx-auto">
           
           <div className="flex items-center justify-between border-b border-[#C5983A]/30 pb-3 mb-10 text-[11px] font-sans uppercase tracking-[0.25em] text-[#C5983A]">
@@ -713,7 +892,7 @@ function Page11MonographContent() {
             <div className="text-center mb-8">
               <div className="inline-block p-1 border border-[#7C1818] rounded-sm bg-[#7C1818]/5 mb-3">
                 <span className="font-chinese text-sm font-bold text-[#7C1818] px-2 py-0.5 tracking-widest">
-                  茂田師兄慈悲勉勵
+                  {cms.wisdom?.sealZh || "茂田師兄慈悲勉勵"}
                 </span>
               </div>
               <h3 className="text-2xl sm:text-3xl font-serif text-[#1C1816] font-semibold">
@@ -752,76 +931,264 @@ function Page11MonographContent() {
       {/* =========================================================================
           5. CHAPTER 03: 20-YEAR ARCHIVAL RETROSPECTIVE (CHRONICLE MILESTONES)
           ========================================================================= */}
-      <section className="relative px-4 sm:px-8 py-20 border-b border-[#C5983A]/20">
+      <section id="section-chronicle" className="relative px-4 sm:px-8 py-20 border-b border-[#C5983A]/20">
         <div className="max-w-6xl mx-auto">
           
           <div className="flex items-center justify-between border-b border-[#C5983A]/30 pb-3 mb-12 text-[11px] font-sans uppercase tracking-[0.25em] text-[#C5983A]">
             <div className="flex items-center gap-2">
               <span className="font-bold">SECTION 03</span>
               <span>//</span>
-              <span>廿載編年誌 • 20-YEAR CHRONICLE</span>
+              <span>
+                {cms.historySection?.badgeZh || "歲月印記 • 薪火相傳"} • {cms.historySection?.badgeId || "Napak Tilas 20 Tahun"}
+              </span>
             </div>
             <div className="text-stone-400">1997 — 2026</div>
           </div>
 
           <div className="text-center max-w-2xl mx-auto mb-14">
             <span className="font-chinese text-sm text-[#7C1818] font-bold block mb-1">
-              道脈傳承 • 歷史足跡
+              {cms.historySection?.headingZh || "歲月印記 • 薪火相傳"}
             </span>
             <h3 className="text-3xl sm:text-4xl font-serif text-[#1C1816] font-semibold">
-              Kilas Balik Jejak Langkah Perjuangan
+              {cms.historySection?.headingId || "Napak Tilas 20 Tahun Gedung"}
             </h3>
             <p className="text-xs font-sans text-stone-500 mt-2">
-              Mengenang dedikasi para pendahulu yang telah meletakkan pondasi kokoh bagi kapal dharma Kuang Hang.
+              {cms.historySection?.descriptionId ||
+                "Mengenang jejak tetesan keringat, doa tulus, dan pengorbanan para perintis awal yang memungkinkan pelita Kuang Hang bersinar terang hari ini."}
             </p>
           </div>
 
           {/* Archival Plates Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {activeMilestones.map((item, idx) => (
-              <div
-                key={idx}
-                className="bg-white border border-[#C5983A]/30 p-6 flex flex-col justify-between hover:border-[#7C1818] transition-all duration-300 shadow-sm group"
-              >
-                <div>
-                  <div className="flex items-center justify-between border-b border-stone-100 pb-3 mb-4">
-                    <span className="text-2xl font-serif font-bold text-[#7C1818]">
-                      {item.year}
-                    </span>
-                    <span className="font-chinese text-xs px-2 py-0.5 bg-[#FAF3E6] border border-[#C5983A]/30 text-[#7C1818]">
-                      {item.chineseTitle || "堂慶紀念"}
-                    </span>
+            {activeMilestones.map((item, idx) => {
+              const isExpanded = !!expandedMilestones[idx];
+              const isLongText = (item.description && item.description.length > 130) || (item.chineseDescription && item.chineseDescription.length > 65);
+
+              return (
+                <div
+                  key={idx}
+                  className="bg-white border border-[#C5983A]/30 p-6 flex flex-col justify-between hover:border-[#7C1818] transition-all duration-300 shadow-sm group"
+                >
+                  <div>
+                    <div className="flex items-center justify-between border-b border-stone-100 pb-3 mb-4">
+                      <span className="text-2xl font-serif font-bold text-[#7C1818]">
+                        {item.year}
+                      </span>
+                      <span className="font-chinese text-xs px-2 py-0.5 bg-[#FAF3E6] border border-[#C5983A]/30 text-[#7C1818]">
+                        {item.chineseTitle || "堂慶紀念"}
+                      </span>
+                    </div>
+
+                    {/* Milestone Photo - Click to Enlarge */}
+                    {item.image && (
+                      <div
+                        onClick={() =>
+                          setLightboxPhoto({
+                            src: item.image!,
+                            title: item.title,
+                            chineseTitle: item.chineseTitle,
+                            subtitle: `Tahun ${item.year} • ${item.location || "Palmerah"}`,
+                            description: item.description,
+                            category: "Kilas Sejarah",
+                          })
+                        }
+                        className="relative w-full aspect-[16/10] bg-stone-100 mb-4 overflow-hidden border border-stone-200 cursor-zoom-in group/img"
+                      >
+                        <Image
+                          src={item.image}
+                          alt={item.title}
+                          fill
+                          className="object-cover group-hover/img:scale-105 transition-transform duration-500"
+                          sizes="(max-width: 768px) 100vw, 350px"
+                        />
+                        <div className="absolute top-2 right-2 p-1 bg-black/60 text-[#E6C275] opacity-0 group-hover/img:opacity-100 transition-opacity">
+                          <Maximize2 className="w-3.5 h-3.5" />
+                        </div>
+                      </div>
+                    )}
+
+                    <h4 className="font-serif text-lg font-semibold text-[#1C1816] mb-2">
+                      {item.title}
+                    </h4>
+
+                    {/* Truncated Description with "Baca Selanjutnya" */}
+                    <div className="text-xs font-sans text-stone-600 leading-relaxed mb-2">
+                      {showId && (
+                        <p>
+                          {isExpanded || !isLongText
+                            ? item.description
+                            : `${item.description.slice(0, 130)}...`}
+                        </p>
+                      )}
+
+                      {showZh && item.chineseDescription && (
+                        <p className="text-xs font-chinese text-stone-500 leading-relaxed border-t border-stone-100 pt-2 mt-2">
+                          {isExpanded || !isLongText
+                            ? item.chineseDescription
+                            : `${item.chineseDescription.slice(0, 65)}...`}
+                        </p>
+                      )}
+                    </div>
+
+                    {/* Toggle Button for Long Text */}
+                    {isLongText && (
+                      <button
+                        type="button"
+                        onClick={() => toggleMilestoneExpand(idx)}
+                        className="inline-flex items-center gap-1 text-[11px] font-sans font-semibold text-[#7C1818] hover:text-[#551010] mt-1 mb-3 transition-colors"
+                      >
+                        {isExpanded ? (
+                          <>
+                            <span>Ciutkan</span>
+                            <span className="font-chinese font-normal">(收起)</span>
+                            <ChevronUp className="w-3.5 h-3.5" />
+                          </>
+                        ) : (
+                          <>
+                            <span>Baca Selengkapnya</span>
+                            <span className="font-chinese font-normal">(閱讀更多)</span>
+                            <ChevronDown className="w-3.5 h-3.5" />
+                          </>
+                        )}
+                      </button>
+                    )}
                   </div>
 
-                  {item.image && (
-                    <div className="relative w-full aspect-[16/10] bg-stone-100 mb-4 overflow-hidden border border-stone-200">
-                      <Image
-                        src={item.image}
-                        alt={item.title}
-                        fill
-                        className="object-cover group-hover:scale-105 transition-transform duration-500"
-                        sizes="(max-width: 768px) 100vw, 350px"
-                      />
-                    </div>
-                  )}
+                  <div className="pt-3 border-t border-stone-100 flex items-center justify-between text-[10px] font-sans text-stone-400">
+                    <span>{item.location || "Palmerah, Jakarta Barat"}</span>
+                    <span className="text-[#C5983A] font-semibold">{item.highlight || "Tonggak Sejarah"}</span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
 
-                  <h4 className="font-serif text-lg font-semibold text-[#1C1816] mb-2">
-                    {item.title}
-                  </h4>
+        </div>
+      </section>
 
-                  <p className="text-xs font-sans text-stone-600 leading-relaxed mb-4">
-                    {showId && item.description}
-                  </p>
-                  {showZh && item.chineseDescription && (
-                    <p className="text-xs font-chinese text-stone-500 leading-relaxed border-t border-stone-100 pt-2">
-                      {item.chineseDescription}
-                    </p>
-                  )}
+      {/* =========================================================================
+          6. CHAPTER 04: VISUAL ANTHOLOGY & PHOTO GALLERY (GALLERY SECTION)
+          ========================================================================= */}
+      <section id="section-gallery" className="relative px-4 sm:px-8 py-20 bg-[#F4EFE6] border-b border-[#C5983A]/20">
+        <div className="max-w-6xl mx-auto">
+          
+          <div className="flex items-center justify-between border-b border-[#C5983A]/30 pb-3 mb-12 text-[11px] font-sans uppercase tracking-[0.25em] text-[#C5983A]">
+            <div className="flex items-center gap-2">
+              <span className="font-bold">SECTION 04</span>
+              <span>//</span>
+              <span>
+                {cms.gallerySection?.headingZh || "歲月長廊 • 影像典藏"} • {cms.gallerySection?.badgeId || "Galeri Foto"}
+              </span>
+            </div>
+            <div className="text-stone-400">DOKUMENTASI FOTO</div>
+          </div>
+
+          <div className="text-center max-w-2xl mx-auto mb-10">
+            <span className="font-chinese text-sm text-[#7C1818] font-bold block mb-1">
+              {cms.gallerySection?.headingZh || "歲月長廊 • 影像典藏"}
+            </span>
+            <h3 className="text-3xl sm:text-4xl font-serif text-[#1C1816] font-semibold">
+              {cms.gallerySection?.headingId || "Dokumentasi Foto Dua Dasawarsa"}
+            </h3>
+            <p className="text-xs font-sans text-stone-500 mt-2">
+              {cms.gallerySection?.descriptionId ||
+                "Setiap bingkai foto menyimpan jejak dedikasi, senyuman umat, dan limpahan berkah Tian En Shi De yang abadi."}
+            </p>
+          </div>
+
+          {/* Category Filter Tabs */}
+          <div className="flex flex-wrap items-center justify-center gap-2 mb-10">
+            <button
+              onClick={() => setActiveGalleryFilter("all")}
+              className={`px-4 py-2 text-xs font-sans uppercase tracking-wider transition-all ${
+                activeGalleryFilter === "all"
+                  ? "bg-[#7C1818] text-white font-semibold shadow-sm"
+                  : "bg-white text-stone-700 border border-stone-300 hover:border-[#C5983A]"
+              }`}
+            >
+              {cms.gallerySection?.tabAllId || "Semua"} • {cms.gallerySection?.tabAllZh || "全部"}
+            </button>
+            <button
+              onClick={() => setActiveGalleryFilter("sejarah")}
+              className={`px-4 py-2 text-xs font-sans uppercase tracking-wider transition-all ${
+                activeGalleryFilter === "sejarah"
+                  ? "bg-[#7C1818] text-white font-semibold shadow-sm"
+                  : "bg-white text-stone-700 border border-stone-300 hover:border-[#C5983A]"
+              }`}
+            >
+              {cms.gallerySection?.tabHistoryId || "Sejarah & Pembangunan"} • {cms.gallerySection?.tabHistoryZh || "創堂歷史"}
+            </button>
+            <button
+              onClick={() => setActiveGalleryFilter("kegiatan")}
+              className={`px-4 py-2 text-xs font-sans uppercase tracking-wider transition-all ${
+                activeGalleryFilter === "kegiatan"
+                  ? "bg-[#7C1818] text-white font-semibold shadow-sm"
+                  : "bg-white text-stone-700 border border-stone-300 hover:border-[#C5983A]"
+              }`}
+            >
+              {cms.gallerySection?.tabActivityId || "Kegiatan Pembinaan"} • {cms.gallerySection?.tabActivityZh || "道育共修"}
+            </button>
+            <button
+              onClick={() => setActiveGalleryFilter("kebersamaan")}
+              className={`px-4 py-2 text-xs font-sans uppercase tracking-wider transition-all ${
+                activeGalleryFilter === "kebersamaan"
+                  ? "bg-[#7C1818] text-white font-semibold shadow-sm"
+                  : "bg-white text-stone-700 border border-stone-300 hover:border-[#C5983A]"
+              }`}
+            >
+              {cms.gallerySection?.tabFellowshipId || "Kebersamaan Umat"} • {cms.gallerySection?.tabFellowshipZh || "道親情誼"}
+            </button>
+          </div>
+
+          {/* Photo Gallery Grid with Zoom Inspection */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+            {filteredGallery.map((photo, idx) => (
+              <div
+                key={photo.id || idx}
+                onClick={() =>
+                  setLightboxPhoto({
+                    src: photo.src,
+                    title: photo.title,
+                    chineseTitle: photo.chineseTitle,
+                    category:
+                      photo.category === "sejarah"
+                        ? "Sejarah & Pembangunan"
+                        : photo.category === "kegiatan"
+                        ? "Kegiatan Pembinaan"
+                        : "Kebersamaan Umat",
+                  })
+                }
+                className="group relative bg-white border border-[#C5983A]/30 p-2.5 shadow-sm hover:border-[#7C1818] transition-all duration-300 cursor-zoom-in"
+              >
+                <div className="relative w-full aspect-[4/3] bg-stone-100 overflow-hidden">
+                  <Image
+                    src={photo.src}
+                    alt={photo.title}
+                    fill
+                    className="object-cover group-hover:scale-105 transition-transform duration-700"
+                    sizes="(max-width: 768px) 100vw, 360px"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+                  
+                  <div className="absolute top-2 right-2 p-1.5 bg-black/60 text-[#E6C275] opacity-0 group-hover:opacity-100 transition-opacity">
+                    <Maximize2 className="w-4 h-4" />
+                  </div>
                 </div>
 
-                <div className="pt-3 border-t border-stone-100 flex items-center justify-between text-[10px] font-sans text-stone-400">
-                  <span>{item.location || "Palmerah, Jakarta Barat"}</span>
-                  <span className="text-[#C5983A] font-semibold">{item.highlight || "Tonggak Sejarah"}</span>
+                <div className="pt-3 px-1.5 flex items-center justify-between">
+                  <div>
+                    <h5 className="font-serif text-sm font-semibold text-stone-900 group-hover:text-[#7C1818] transition-colors">
+                      {photo.title}
+                    </h5>
+                    {photo.chineseTitle && (
+                      <span className="font-chinese text-xs text-stone-500 block">
+                        {photo.chineseTitle}
+                      </span>
+                    )}
+                  </div>
+                  <span className="text-[10px] font-sans uppercase tracking-wider text-[#C5983A] font-semibold">
+                    {photo.category}
+                  </span>
                 </div>
               </div>
             ))}
@@ -831,16 +1198,18 @@ function Page11MonographContent() {
       </section>
 
       {/* =========================================================================
-          6. CHAPTER 04: CEREMONIAL PROTOCOL & TIMETABLE (SCHEDULE & DRESSCODE)
+          7. CHAPTER 05: CEREMONIAL PROTOCOL & TIMETABLE (SCHEDULE & DRESSCODE)
           ========================================================================= */}
-      <section className="relative px-4 sm:px-8 py-20 bg-[#F4EFE6] border-b border-[#C5983A]/20">
+      <section id="section-event" className="relative px-4 sm:px-8 py-20 border-b border-[#C5983A]/20">
         <div className="max-w-5xl mx-auto">
           
           <div className="flex items-center justify-between border-b border-[#C5983A]/30 pb-3 mb-12 text-[11px] font-sans uppercase tracking-[0.25em] text-[#C5983A]">
             <div className="flex items-center gap-2">
-              <span className="font-bold">SECTION 04</span>
+              <span className="font-bold">SECTION 05</span>
               <span>//</span>
-              <span>大典日程與禮節 • ITINERARY & PROTOCOL</span>
+              <span>
+                {cms.event?.headingZh || "慶典日程 • 會場導引"} • {cms.event?.headingId || "Waktu & Tempat Pelaksanaan"}
+              </span>
             </div>
             <div className="text-stone-500">14 NOV 2026</div>
           </div>
@@ -853,16 +1222,21 @@ function Page11MonographContent() {
                 <Clock className="w-4 h-4" />
                 <span>Rangkaian Acara Malam Syukur</span>
               </div>
-              <h3 className="text-2xl font-serif text-[#1C1816] font-semibold mb-6">
+              <h3 className="text-2xl font-serif text-[#1C1816] font-semibold mb-2">
                 {cms.event?.dateTextId || "Sabtu, 14 November 2026"}
               </h3>
+              <p className="text-xs font-chinese text-stone-500 mb-6">
+                {cms.event?.dateTextZh || "2026年11月14日（星期六）"} • {cms.event?.timeTextZh || "晚間七時正 (19:00 WIB)"}
+              </p>
 
               <div className="space-y-4 border-l-2 border-[#C5983A]/40 pl-4 py-1 font-sans text-xs">
                 <div className="relative">
                   <span className="absolute -left-[21px] top-1 w-2.5 h-2.5 rounded-full bg-[#7C1818] border-2 border-white" />
                   <span className="font-bold text-[#7C1818] block">18:30 WIB</span>
                   <span className="font-medium text-stone-800">Registrasi & Penyambutan Tamu Undangan</span>
-                  <span className="text-[10px] text-stone-500 block font-chinese">18:30 入席接待 • 簽到留念</span>
+                  <span className="text-[10px] text-stone-500 block font-chinese">
+                    {cms.event?.timeNotesZh || "18:30 入席接待"}
+                  </span>
                 </div>
 
                 <div className="relative">
@@ -898,6 +1272,9 @@ function Page11MonographContent() {
                   <CalendarPlus className="w-4 h-4 text-[#E6C275]" />
                   Simpan ke Google Calendar
                 </a>
+                <p className="text-[10px] text-stone-400 text-center mt-2 italic">
+                  {cms.event?.footerNotesId || "* Mohon hadir tepat waktu demi kelancaran kekhidmatan upacara."}
+                </p>
               </div>
             </div>
 
@@ -909,9 +1286,12 @@ function Page11MonographContent() {
                   <MapPin className="w-4 h-4" />
                   <span>Lokasi Tempat Pelaksanaan</span>
                 </div>
-                <h4 className="font-serif text-xl font-semibold text-[#1C1816] mb-2">
+                <h4 className="font-serif text-xl font-semibold text-[#1C1816] mb-1">
                   {cms.event?.venueNameId || "Kuang Hang Fo Thang (廣航佛堂)"}
                 </h4>
+                <div className="font-chinese text-xs text-stone-500 mb-2">
+                  {cms.event?.venueNameZh || "雅加達廣航佛堂"}
+                </div>
                 <p className="text-xs font-sans text-stone-600 leading-relaxed mb-4">
                   {cms.event?.address || "Jl. Palmerah Utara III No. 186A, Palmerah, Jakarta Barat 11480"}
                 </p>
@@ -960,16 +1340,18 @@ function Page11MonographContent() {
       </section>
 
       {/* =========================================================================
-          7. CHAPTER 05: HAUTE RSVP STATIONERY DESK (REPLY CARD & LIVE WISHES)
+          8. CHAPTER 06: HAUTE RSVP STATIONERY DESK (REPLY CARD & LIVE WISHES)
           ========================================================================= */}
-      <section id="rsvp-section" className="relative px-4 sm:px-8 py-20 border-b border-[#C5983A]/20">
+      <section id="rsvp-section" className="relative px-4 sm:px-8 py-20 bg-[#F4EFE6] border-b border-[#C5983A]/20">
         <div className="max-w-4xl mx-auto">
           
           <div className="flex items-center justify-between border-b border-[#C5983A]/30 pb-3 mb-10 text-[11px] font-sans uppercase tracking-[0.25em] text-[#C5983A]">
             <div className="flex items-center gap-2">
-              <span className="font-bold">SECTION 05</span>
+              <span className="font-bold">SECTION 06</span>
               <span>//</span>
-              <span>貴賓赴會函覆 • RSVP CONFIRMATION</span>
+              <span>
+                {cms.rsvpSection?.headingZh || "功德名冊 • 祈願雅集"} • {cms.rsvpSection?.badgeId || "RSVP"}
+              </span>
             </div>
             <div className="text-stone-400">KONFIRMASI RESMI</div>
           </div>
@@ -980,13 +1362,14 @@ function Page11MonographContent() {
             {/* Top Ornamental Header */}
             <div className="text-center mb-8">
               <div className="inline-flex items-center gap-2 font-chinese text-xs text-[#7C1818] font-bold border border-[#7C1818]/30 px-2.5 py-1 mb-2 bg-[#7C1818]/5">
-                <span>廣航廿週年堂慶</span> • <span>敬邀函覆</span>
+                <span>{cms.rsvpSection?.headingZh || "功德名冊 • 祈願雅集"}</span>
               </div>
               <h3 className="text-3xl font-serif text-[#1C1816] font-semibold">
-                Konfirmasi Kehadiran Tamu Undangan
+                {cms.rsvpSection?.headingId || "Konfirmasi Kehadiran Tamu Undangan"}
               </h3>
               <p className="text-xs font-sans text-stone-500 mt-1">
-                Mohon kesediaan Bapak / Ibu / Saudara/i untuk mengisi konfirmasi kehadiran demi kelancaran akomodasi panitia.
+                {cms.rsvpSection?.descriptionId ||
+                  "Kehadiran serta doa tulus dari Bapak/Ibu/Saudara/i sekalian adalah suluh penerang yang menyempurnakan peringatan 20 tahun Kuang Hang."}
               </p>
             </div>
 
@@ -996,19 +1379,25 @@ function Page11MonographContent() {
                 <div className="text-xl sm:text-2xl font-serif font-bold text-[#7C1818]">
                   {wishesSummary.totalResponses}
                 </div>
-                <div className="text-[10px] uppercase text-stone-500 tracking-wider">Total Respon</div>
+                <div className="text-[10px] uppercase text-stone-500 tracking-wider">
+                  {cms.rsvpSection?.ledgerLabelResponsesId || "Total Respon"}
+                </div>
               </div>
               <div>
                 <div className="text-xl sm:text-2xl font-serif font-bold text-[#C5983A]">
                   {wishesSummary.attending}
                 </div>
-                <div className="text-[10px] uppercase text-stone-500 tracking-wider">Pasti Hadir</div>
+                <div className="text-[10px] uppercase text-stone-500 tracking-wider">
+                  {cms.rsvpSection?.ledgerLabelAttendingId || "Pasti Hadir"}
+                </div>
               </div>
               <div>
                 <div className="text-xl sm:text-2xl font-serif font-bold text-stone-800">
                   {wishesSummary.totalGuests}
                 </div>
-                <div className="text-[10px] uppercase text-stone-500 tracking-wider">Jumlah Jiwa</div>
+                <div className="text-[10px] uppercase text-stone-500 tracking-wider">
+                  {cms.rsvpSection?.ledgerLabelGuestsId || "Jumlah Jiwa"}
+                </div>
               </div>
             </div>
 
@@ -1018,16 +1407,17 @@ function Page11MonographContent() {
                   <Check className="w-6 h-6 stroke-[3]" />
                 </div>
                 <h4 className="text-2xl font-serif text-[#7C1818] font-semibold mb-2">
-                  Terima Kasih Atas Konfirmasi Anda
+                  {cms.rsvpSection?.successTitleId || "Terima Kasih Atas Konfirmasi Anda!"}
                 </h4>
                 <p className="text-xs font-sans text-stone-600 max-w-md mx-auto mb-4">
-                  Data konfirmasi dan untaian doa Anda telah tersimpan rapi dalam buku tamu resmi panitia. Sampai jumpa di malam penuh berkah!
+                  {cms.rsvpSection?.successDescId ||
+                    "Konfirmasi kehadiran dan doa restu Anda telah tercatat dalam buku tamu resmi panitia 20 Tahun Kuang Hang Fo Thang."}
                 </p>
                 <button
                   onClick={() => setRsvpSubmitted(false)}
                   className="text-xs font-sans text-[#7C1818] underline hover:text-[#501010]"
                 >
-                  Ubah data atau kirimkan doa lainnya
+                  {cms.rsvpSection?.reopenFormTextId || "Ingin mengubah data atau mengirimkan doa tambahan?"}
                 </button>
               </div>
             ) : (
@@ -1203,7 +1593,7 @@ function Page11MonographContent() {
                       </p>
                     )}
                     <span className="text-[9px] text-stone-400 mt-1 block">
-                      {item.timestamp ? new Date(item.timestamp).toLocaleDateString("id-ID") : "14 Nov 2026"}
+                      {formatTestimonialDate(item.timestamp)}
                     </span>
                   </div>
                 ))}
@@ -1216,16 +1606,18 @@ function Page11MonographContent() {
       </section>
 
       {/* =========================================================================
-          8. CHAPTER 06: DANA KEBAJIKAN TRIBUTE & DONATION
+          9. CHAPTER 07: DANA KEBAJIKAN TRIBUTE & DONATION
           ========================================================================= */}
-      <section className="relative px-4 sm:px-8 py-20 bg-[#F4EFE6] border-b border-[#C5983A]/20">
+      <section className="relative px-4 sm:px-8 py-20 border-b border-[#C5983A]/20">
         <div className="max-w-4xl mx-auto">
           
           <div className="flex items-center justify-between border-b border-[#C5983A]/30 pb-3 mb-10 text-[11px] font-sans uppercase tracking-[0.25em] text-[#C5983A]">
             <div className="flex items-center gap-2">
-              <span className="font-bold">SECTION 06</span>
+              <span className="font-bold">SECTION 07</span>
               <span>//</span>
-              <span>功德芳名 • DANA KEBAJIKAN</span>
+              <span>
+                {cms.donation?.headingZh || "隨喜功德 • 廣種福田"} • {cms.donation?.headingId || "Dana Kebajikan"}
+              </span>
             </div>
             <div className="font-chinese text-stone-500">護持道場</div>
           </div>
@@ -1233,13 +1625,14 @@ function Page11MonographContent() {
           <div className="bg-[#FAF7F2] border border-[#C5983A]/40 p-8 sm:p-12 shadow-md">
             <div className="text-center max-w-xl mx-auto mb-8">
               <span className="font-chinese text-sm text-[#7C1818] font-bold block mb-1">
-                布施利他 • 功德無量
+                {cms.donation?.subheadingZh || "隨喜功德 · 廣種福田"}
               </span>
               <h3 className="text-2xl sm:text-3xl font-serif text-[#1C1816] font-semibold">
                 {cms.donation?.headingId || "Tali Kasih & Dana Kebajikan"}
               </h3>
               <p className="text-xs font-sans text-stone-600 mt-2 leading-relaxed">
-                Bagi saudara se-dharma yang tergerak untuk turut menyokong operasional dan kelancaran kegiatan perayaan 20 tahun Kuang Hang Fo Thang, donasi dapat disalurkan melalui rekening resmi berikut:
+                {cms.donation?.descriptionId ||
+                  "Doa restu serta kehadiran Bapak/Ibu/Saudara/i adalah karunia terindah bagi kami. Bagi yang hendak menyalurkan tali kasih sukarela demi kelancaran kegiatan wadah keTuhanan Kuang Hang:"}
               </p>
             </div>
 
@@ -1266,6 +1659,32 @@ function Page11MonographContent() {
                   {copiedAccount ? "Nomor Rekening Tersalin!" : "Salin Nomor Rekening"}
                 </button>
               )}
+
+              {/* QRIS Image if available */}
+              {cms.donation?.qrisImage && (
+                <div className="mt-5 pt-4 border-t border-stone-200">
+                  <div className="text-xs font-sans text-stone-500 mb-2 font-semibold">QRIS Resmi Donasi</div>
+                  <div
+                    onClick={() =>
+                      setLightboxPhoto({
+                        src: cms.donation!.qrisImage!,
+                        title: "QRIS Resmi Dana Kebajikan",
+                        chineseTitle: "功德隨喜 QRIS 碼",
+                        description: "Scan melalui aplikasi mobile banking atau dompet digital Anda.",
+                        category: "Donasi",
+                      })
+                    }
+                    className="relative w-48 h-48 mx-auto border border-stone-200 cursor-zoom-in"
+                  >
+                    <Image
+                      src={cms.donation.qrisImage}
+                      alt="QRIS Donasi"
+                      fill
+                      className="object-contain"
+                    />
+                  </div>
+                </div>
+              )}
             </div>
 
             <p className="text-[11px] font-sans text-stone-500 text-center mt-6 italic">
@@ -1277,30 +1696,159 @@ function Page11MonographContent() {
       </section>
 
       {/* =========================================================================
-          9. MONOGRAPH COLOPHON & FOOTER
+          10. CHAPTER 08: SANCTUARY COORDINATES & TRANSIT GUIDANCE (LOCATION)
+          ========================================================================= */}
+      <section id="section-location" className="relative px-4 sm:px-8 py-20 bg-[#F4EFE6] border-b border-[#C5983A]/20">
+        <div className="max-w-5xl mx-auto">
+          
+          <div className="flex items-center justify-between border-b border-[#C5983A]/30 pb-3 mb-10 text-[11px] font-sans uppercase tracking-[0.25em] text-[#C5983A]">
+            <div className="flex items-center gap-2">
+              <span className="font-bold">SECTION 08</span>
+              <span>//</span>
+              <span>
+                {cms.location?.headingZh || "道場座標 • 交通導引"} • {cms.location?.headingId || "Petunjuk Lokasi"}
+              </span>
+            </div>
+            <div className="text-stone-400">PETA LOKASI</div>
+          </div>
+
+          <div className="text-center max-w-xl mx-auto mb-10">
+            <h3 className="text-3xl font-serif text-[#1C1816] font-semibold">
+              {cms.location?.headingId || "Petunjuk Lokasi & Arah Menuju Gedung"}
+            </h3>
+            <p className="text-xs font-sans text-stone-600 mt-2">
+              {cms.location?.descriptionId ||
+                "Gedung Kuang Hang Fo Thang berlokasi strategis di Palmerah Utara, mudah dijangkau dari segala penjuru Jakarta."}
+            </p>
+          </div>
+
+          {/* Map Embed Card */}
+          <div className="bg-white border border-[#C5983A]/40 shadow-md overflow-hidden mb-8">
+            <div className="relative w-full h-72 sm:h-96 bg-stone-100">
+              <iframe
+                src={cms.location?.embedMapUrl || "https://maps.google.com/maps?q=Kuang+Hang+Fo+Thang+Palmerah+Jakarta+Barat&t=&z=16&ie=UTF8&iwloc=&output=embed"}
+                width="100%"
+                height="100%"
+                style={{ border: 0 }}
+                allowFullScreen={false}
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+                title="Google Maps Lokasi Kuang Hang Fo Thang"
+              />
+            </div>
+
+            <div className="p-6 bg-[#FAF7F2] border-t border-[#C5983A]/20 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+              <div>
+                <span className="text-xs font-sans uppercase tracking-wider text-[#7C1818] font-bold block mb-1">
+                  Alamat Lengkap Resmi
+                </span>
+                <p className="text-xs font-serif text-stone-800 leading-relaxed max-w-xl">
+                  {cms.location?.fullAddress || "Kuang Hang Fo Thang, Jl. Palmerah Utara III No. 186A, RT.002/RW.06, Palmerah, Jakarta Barat 11480"}
+                </p>
+                {cms.location?.addressZh && (
+                  <p className="font-chinese text-xs text-stone-500 mt-0.5">
+                    {cms.location.addressZh}
+                  </p>
+                )}
+              </div>
+
+              <div className="flex items-center gap-2 shrink-0">
+                <button
+                  onClick={copyAddress}
+                  className="inline-flex items-center gap-1.5 px-3 py-2 bg-white border border-stone-300 text-stone-700 text-xs font-sans hover:border-[#C5983A] transition-colors"
+                >
+                  <Copy className="w-3.5 h-3.5" />
+                  {copiedAddress ? "Tersalin!" : "Salin Alamat"}
+                </button>
+                <a
+                  href={cms.location?.googleMapsUrl || "https://maps.app.goo.gl/H2sa6pPhX2pn1KdJA"}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 px-4 py-2 bg-[#7C1818] text-white text-xs font-sans uppercase tracking-wider font-semibold hover:bg-[#601212] transition-colors"
+                >
+                  <ExternalLink className="w-3.5 h-3.5" /> Buka Google Maps
+                </a>
+              </div>
+            </div>
+          </div>
+
+          {/* Transit Advice Details */}
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="p-5 bg-white border border-[#C5983A]/30">
+              <div className="flex items-center gap-2 text-xs font-sans uppercase tracking-wider text-[#7C1818] font-bold mb-2">
+                <Train className="w-4 h-4 text-[#C5983A]" />
+                <span>{cms.location?.transitKrlTitle || "Kereta Commuter Line (KRL)"}</span>
+              </div>
+              <p className="text-xs font-sans text-stone-600 leading-relaxed">
+                {cms.location?.transitKrlDesc ||
+                  "Turun di Stasiun Palmerah (~5 menit perjalanan dengan ojek/kendaraan daring menuju gedung Kuang Hang)."}
+              </p>
+            </div>
+
+            <div className="p-5 bg-white border border-[#C5983A]/30">
+              <div className="flex items-center gap-2 text-xs font-sans uppercase tracking-wider text-[#7C1818] font-bold mb-2">
+                <Car className="w-4 h-4 text-[#C5983A]" />
+                <span>{cms.location?.transitCarTitle || "Kendaraan Pribadi"}</span>
+              </div>
+              <p className="text-xs font-sans text-stone-600 leading-relaxed">
+                {cms.location?.transitCarDesc ||
+                  "Dapat diakses melalui Jalan Palmerah Barat atau Jalan Gelora Senayan. Tersedia area parkir untuk kendaraan roda dua dan roda empat."}
+              </p>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      {/* =========================================================================
+          11. MONOGRAPH COLOPHON & FOOTER
           ========================================================================= */}
       <footer className="px-4 sm:px-8 py-16 text-center text-xs font-sans text-stone-500 bg-[#FBF9F5]">
         <div className="max-w-3xl mx-auto space-y-4">
           
           <div className="inline-flex items-center gap-3">
-            <span className="font-chinese text-base font-bold text-[#7C1818]">廣航佛堂</span>
+            <span className="font-chinese text-base font-bold text-[#7C1818]">
+              {cms.footer?.titleZh || "廣航佛堂"}
+            </span>
             <span>•</span>
             <span className="font-serif text-sm text-stone-800 font-semibold">
-              Kuang Hang Fo Thang 2006 — 2026
+              {cms.footer?.subtitleId || "Peringatan 20 Tahun Gedung Kuang Hang Fo Thang (2006 — 2026)"}
             </span>
           </div>
 
-          <p className="text-[11px] text-stone-400 max-w-lg mx-auto">
-            Gedung Kuang Hang Fo Thang, Jl. Palmerah Utara III No. 186A, Palmerah, Jakarta Barat 11480.
-            Peringatan 20 Tahun Peresmian Gedung.
+          {/* Sacred Footer Quote from CMS */}
+          <p className="text-xs font-serif italic text-stone-600 max-w-xl mx-auto">
+            &ldquo;{cms.footer?.quoteId ||
+              "Tiada kata yang mampu melukiskan rasa syukur atas Tian En Shi De serta ketulusan seluruh umat yang telah menyatukan hati dalam mengarungi samudra kebajikan selama dua dasawarsa."}&rdquo;
           </p>
+          {cms.footer?.quoteZh && (
+            <p className="font-chinese text-xs text-stone-500">
+              {cms.footer.quoteZh}
+            </p>
+          )}
+
+          {/* Social Instagram Link from CMS */}
+          {cms.footer?.instagramUrl && (
+            <div className="pt-2">
+              <a
+                href={cms.footer.instagramUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 text-xs text-stone-600 hover:text-[#7C1818] transition-colors"
+              >
+                <Instagram className="w-3.5 h-3.5 text-[#C5983A]" />
+                <span>{cms.footer.instagramHandle || "@guanghangfotang"}</span>
+              </a>
+            </div>
+          )}
 
           <div className="pt-4 flex items-center justify-center gap-3">
             <button
               onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
               className="inline-flex items-center gap-1.5 px-4 py-2 bg-white border border-stone-300 text-stone-700 hover:border-[#C5983A] transition-colors"
             >
-              <ArrowUp className="w-3.5 h-3.5 text-[#7C1818]" /> Ke Puncak Monograf
+              <ArrowUp className="w-3.5 h-3.5 text-[#7C1818]" />
+              <span>{cms.footer?.backToTopTextId || "Kembali ke Atas"}</span>
             </button>
             <button
               onClick={() => {
@@ -1309,12 +1857,13 @@ function Page11MonographContent() {
               }}
               className="inline-flex items-center gap-1.5 px-4 py-2 bg-[#7C1818] text-white hover:bg-[#601212] transition-colors"
             >
-              <ScrollText className="w-3.5 h-3.5 text-[#E6C275]" /> Tutup & Simpan Folio
+              <ScrollText className="w-3.5 h-3.5 text-[#E6C275]" />
+              <span>{cms.footer?.reopenTextId || "Buka Ulang Sampul"}</span>
             </button>
           </div>
 
           <div className="text-[10px] text-stone-400 pt-6 border-t border-stone-200">
-            © 2006 — 2026 Panitia 20 Tahun Guang Hang Fo Thang. Seluruh Hak Cipta Dilindungi.
+            {cms.footer?.copyrightText || "© 2006 — 2026 Kuang Hang Fo Thang. Seluruh Hak Dilindungi."}
           </div>
 
         </div>
