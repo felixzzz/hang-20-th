@@ -704,11 +704,11 @@ function Page11MonographContent() {
       {/* =========================================================================
           3. CHAPTER 01: THE SACRED INVOCATION (MAIN COVERAGE)
           ========================================================================= */}
-      <section id="section-hero" className="relative px-4 sm:px-8 pt-12 pb-20 border-b border-[#C5983A]/20">
+      <section id="section-hero" className="relative px-4 sm:px-8 pt-10 pb-20 border-b border-[#C5983A]/20">
         <div className="max-w-6xl mx-auto">
           
           {/* Chapter Stamp & Meta */}
-          <div className="flex items-center justify-between border-b border-[#C5983A]/30 pb-3 mb-10 text-[11px] font-sans uppercase tracking-[0.25em] text-[#C5983A]">
+          <div className="flex items-center justify-between border-b border-[#C5983A]/30 pb-3 mb-6 sm:mb-8 text-[11px] font-sans uppercase tracking-[0.25em] text-[#C5983A]">
             <div className="flex items-center gap-2">
               <span className="font-bold">SECTION 01</span>
               <span>//</span>
@@ -719,16 +719,133 @@ function Page11MonographContent() {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
+          {/* 1. FULL-WIDTH HERO SANCTUARY PHOTOGRAPH (IMAGE FIRST ON ALL DEVICES) */}
+          <div className="mb-8">
+            <div
+              onClick={() =>
+                setLightboxPhoto({
+                  src: "/images/guang-hang-10.jpg",
+                  title: cms.hero?.photoCaptionTitleId || "Altar Agung Kuang Hang Fo Thang",
+                  chineseTitle: cms.hero?.photoCaptionTitleZh || "廣航聖壇大殿",
+                  subtitle: cms.hero?.photoCaptionDate || "12 Nov 2006 — 14 Nov 2026",
+                  description: cms.hero?.photoCaptionDescId || "Pusat spiritual pembinaan kebajikan dan persaudaraan se-dharma di Palmerah Utara.",
+                  category: "Altar Suci",
+                })
+              }
+              className="relative group border border-[#C5983A]/40 p-2 sm:p-3 bg-white shadow-xl cursor-zoom-in overflow-hidden"
+            >
+              <div className="relative w-full aspect-[16/10] sm:aspect-[21/9] lg:aspect-[2.4/1] overflow-hidden bg-stone-100">
+                <Image
+                  src="/images/guang-hang-10.jpg"
+                  alt="Altar Agung Kuang Hang Fo Thang"
+                  fill
+                  className="object-cover transition-transform duration-700 group-hover:scale-105"
+                  sizes="(max-width: 1200px) 100vw, 1200px"
+                  priority
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/20 to-transparent" />
+
+                {/* Top Floating Badge */}
+                <div className="absolute top-3 left-3 sm:top-4 sm:left-4 flex items-center gap-2 px-2.5 py-1 bg-black/60 backdrop-blur-md border border-[#E6C275]/40 text-[#E6C275] text-[10px] sm:text-xs font-sans tracking-wider uppercase font-semibold">
+                  <span className="w-1.5 h-1.5 rounded-full bg-[#E6C275] animate-pulse" />
+                  <span>{cms.hero?.topBannerSealZh || "天恩師德"} • {cms.hero?.topBannerZh || "廿週年誌慶"}</span>
+                </div>
+
+                {/* Top Right Zoom Pill */}
+                <div className="absolute top-3 right-3 sm:top-4 sm:right-4 px-2.5 py-1 bg-black/60 backdrop-blur-md border border-[#C5983A]/40 text-white text-[10px] sm:text-xs font-sans flex items-center gap-1.5 opacity-90 group-hover:opacity-100 transition-opacity">
+                  <ZoomIn className="w-3.5 h-3.5 text-[#E6C275]" />
+                  <span className="hidden sm:inline">Klik perbesar</span>
+                  <span className="font-chinese text-[#E6C275]">(點擊放大)</span>
+                </div>
+
+                {/* Bottom Overlay Title on Image */}
+                <div className="absolute bottom-3 left-3 right-3 sm:bottom-5 sm:left-5 sm:right-5 text-white">
+                  <span className="text-[10px] sm:text-xs font-sans uppercase tracking-[0.2em] text-[#E6C275] block mb-1">
+                    {cms.hero?.photoCaptionDate || "12 Nov 2006 — 14 Nov 2026"} • Palmerah, Jakarta Barat
+                  </span>
+                  <h3 className="font-serif text-xl sm:text-3xl lg:text-4xl font-semibold drop-shadow-md">
+                    {cms.hero?.photoCaptionTitleId || "Altar Agung Kuang Hang Fo Thang"}
+                    <span className="font-chinese font-normal ml-3 text-lg sm:text-2xl text-[#E6C275] hidden sm:inline">
+                      {cms.hero?.photoCaptionTitleZh || "廣航聖壇大殿"}
+                    </span>
+                  </h3>
+                </div>
+              </div>
+
+              {/* Photo Inscription Ribbon */}
+              <div className="pt-2 px-1 text-[11px] font-sans text-stone-500 italic flex flex-wrap justify-between items-center gap-2">
+                <span>{cms.hero?.photoCaptionDescId || "Pusat spiritual pembinaan kebajikan di Palmerah Utara."}</span>
+                <span className="font-chinese text-stone-400">
+                  {cms.hero?.photoCaptionDescZh || "立足巴美拉，開拓萬家光明，度化十方有緣善信回歸覺路。"}
+                </span>
+              </div>
+            </div>
+          </div>
+
+          {/* 2. FULL-WIDTH COUNTDOWN & DATE MONOLITH */}
+          <div className="bg-[#1C1816] text-[#FAF5E8] p-5 sm:p-7 border border-[#C5983A]/40 mb-12 shadow-lg">
+            <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-b border-[#C5983A]/25 pb-4 mb-5">
+              <div>
+                <div className="flex items-center gap-2 text-xs font-sans uppercase tracking-[0.2em] text-[#C5983A] font-semibold">
+                  <Clock className="w-4 h-4 text-[#E6C275]" />
+                  <span>{cms.hero?.countdownHeadingId || "Hitung Mundur Malam Syukur"}</span>
+                  <span className="font-chinese text-xs text-[#E6C275] ml-1">
+                    ({cms.hero?.countdownHeadingZh || "倒計時迎接感恩之夜"})
+                  </span>
+                </div>
+                <p className="text-xs font-sans text-stone-400 mt-1">
+                  {cms.hero?.countdownSubtextId || "Waktu bersama untuk bersyukur, mengenang jejak perintis, dan mempererat tali dharma."}
+                </p>
+              </div>
+
+              <div className="text-xs font-sans text-[#E6C275] md:text-right shrink-0">
+                <span className="font-semibold block">{cms.event?.dateTextId || "Sabtu, 14 November 2026"}</span>
+                <span className="text-stone-400 text-[11px]">
+                  {cms.event?.timeTextId || "19:00 WIB"} ({cms.event?.timeNotesId || "18:30 WIB Registrasi"})
+                </span>
+              </div>
+            </div>
+
+            {/* Countdown Digits */}
+            <div className="grid grid-cols-4 gap-2 sm:gap-4 text-center">
+              <div className="p-3 sm:p-4 bg-[#2A2420] border border-[#C5983A]/25">
+                <div className="text-2xl sm:text-4xl font-serif text-[#E6C275] font-bold">
+                  {timeLeft.days}
+                </div>
+                <div className="text-[9px] sm:text-[10px] font-sans uppercase tracking-widest text-stone-400 mt-1">Hari (天)</div>
+              </div>
+              <div className="p-3 sm:p-4 bg-[#2A2420] border border-[#C5983A]/25">
+                <div className="text-2xl sm:text-4xl font-serif text-[#E6C275] font-bold">
+                  {timeLeft.hours}
+                </div>
+                <div className="text-[9px] sm:text-[10px] font-sans uppercase tracking-widest text-stone-400 mt-1">Jam (時)</div>
+              </div>
+              <div className="p-3 sm:p-4 bg-[#2A2420] border border-[#C5983A]/25">
+                <div className="text-2xl sm:text-4xl font-serif text-[#E6C275] font-bold">
+                  {timeLeft.minutes}
+                </div>
+                <div className="text-[9px] sm:text-[10px] font-sans uppercase tracking-widest text-stone-400 mt-1">Menit (分)</div>
+              </div>
+              <div className="p-3 sm:p-4 bg-[#2A2420] border border-[#C5983A]/25">
+                <div className="text-2xl sm:text-4xl font-serif text-[#E6C275] font-bold">
+                  {timeLeft.seconds}
+                </div>
+                <div className="text-[9px] sm:text-[10px] font-sans uppercase tracking-widest text-stone-400 mt-1">Detik (秒)</div>
+              </div>
+            </div>
+          </div>
+
+          {/* 3. EDITORIAL NARRATIVE & GUEST HONOR CARD (TWO-COLUMN DESKTOP / BALANCED MOBILE) */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-start">
             
-            {/* Left: Monumental Typography & Hero Framing */}
+            {/* Left: Main Titles, Slogan & Story */}
             <div className="lg:col-span-7">
-              <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#7C1818]/10 border border-[#7C1818]/30 text-[#7C1818] text-xs font-sans font-semibold tracking-wider mb-6">
+              <div className="inline-flex items-center gap-2 px-3 py-1 bg-[#7C1818]/10 border border-[#7C1818]/30 text-[#7C1818] text-xs font-sans font-semibold tracking-wider mb-4">
                 <span className="w-1.5 h-1.5 rounded-full bg-[#7C1818]" />
                 {cms.hero?.topBannerSealZh || "天恩師德"} • {cms.hero?.eventDateBadge || "14 November 2026"}
               </div>
 
-              <h2 className="text-4xl sm:text-6xl lg:text-7xl font-serif text-[#1C1816] leading-[1.05] tracking-tight mb-4">
+              <h2 className="text-3xl sm:text-5xl lg:text-6xl font-serif text-[#1C1816] leading-[1.08] tracking-tight mb-3">
                 <span className="font-chinese block text-[#7C1818] mb-1">
                   {cms.hero?.mainTitleZh || "廣航佛堂"}
                 </span>
@@ -737,13 +854,13 @@ function Page11MonographContent() {
                 </span>
               </h2>
 
-              <p className="text-lg sm:text-xl font-serif text-[#7C1818] italic mb-6">
+              <p className="text-base sm:text-xl font-serif text-[#7C1818] italic mb-6">
                 &ldquo;{cms.hero?.sloganId || "Dua Dasawarsa Menyalakan Pelita Kebajikan"}&rdquo;
               </p>
 
               {/* Sacred Chinese Inscription Banner */}
               {showZh && (
-                <div className="my-6 p-5 bg-[#FAF3E6] border-l-4 border-[#7C1818] text-[#423A36] font-chinese text-base leading-relaxed tracking-wider">
+                <div className="my-5 p-5 bg-[#FAF3E6] border-l-4 border-[#7C1818] text-[#423A36] font-chinese text-base leading-relaxed tracking-wider">
                   <div className="font-bold text-[#7C1818] mb-1 text-lg">
                     {cms.hero?.themeZh || "成立廿週年堂慶紀念 (2006 — 2026)"}
                   </div>
@@ -752,18 +869,25 @@ function Page11MonographContent() {
               )}
 
               {showId && (
-                <div className="text-stone-700 font-sans text-sm sm:text-base leading-relaxed space-y-4 mb-8">
+                <div className="text-stone-700 font-sans text-sm sm:text-base leading-relaxed space-y-4">
                   <p>
                     {cms.hero?.storyParagraphId ||
                       "Pada tanggal 12 November 2006, berkat karunia tak terhingga dari Tian En Shi De serta ketulusan hati para pendahulu, gedung Kuang Hang Fo Thang resmi berdiri kokoh di Palmerah. Hari ini, kami mengundang Anda untuk bersama menundukkan kepala dalam syukur dan memperbaharui ikrar kebajikan."}
                   </p>
+                  {showZh && cms.hero?.storyParagraphZh && (
+                    <p className="font-chinese text-xs sm:text-sm text-stone-500 border-t border-stone-200 pt-3">
+                      {cms.hero.storyParagraphZh}
+                    </p>
+                  )}
                 </div>
               )}
+            </div>
 
-              {/* Interactive Guest Certificate Card */}
-              <div className="p-6 bg-white border border-[#C5983A]/30 shadow-[0_4px_20px_rgba(0,0,0,0.03)] relative overflow-hidden">
+            {/* Right: Interactive Guest Certificate Card */}
+            <div className="lg:col-span-5">
+              <div className="p-6 sm:p-7 bg-white border border-[#C5983A]/40 shadow-lg relative overflow-hidden">
                 <div className="absolute top-0 right-0 w-24 h-24 bg-[radial-gradient(#C5983A_1px,transparent_1px)] [background-size:12px_12px] opacity-20 pointer-events-none" />
-                <div className="flex items-center justify-between border-b border-stone-100 pb-3 mb-3">
+                <div className="flex items-center justify-between border-b border-stone-100 pb-3 mb-4">
                   <span className="text-[10px] font-sans uppercase tracking-[0.2em] text-[#C5983A] font-bold">
                     {cms.hero?.guestHonorTitleId || "SURAT PENGHORMATAN TAMU UNDANGAN"}
                   </span>
@@ -771,23 +895,29 @@ function Page11MonographContent() {
                     {cms.hero?.guestHonorSealZh || "同沾法喜"}
                   </span>
                 </div>
-                <div className="text-xl font-serif text-[#7C1818] font-semibold mb-2">
+                
+                <div className="text-xs font-sans text-stone-500 uppercase tracking-wider mb-1">
+                  {cms.hero?.guestHonorGreetingId || "Kepada Yth. Bapak / Ibu / Saudara/i:"}
+                </div>
+                <div className="text-2xl font-serif text-[#7C1818] font-semibold mb-3">
                   {guestName}
                 </div>
-                <p className="text-xs text-stone-600 font-sans leading-relaxed mb-4">
+                
+                <p className="text-xs text-stone-600 font-sans leading-relaxed mb-6">
                   {cms.hero?.guestHonorMessageId ||
                     "Merupakan berkah dan kehormatan yang mendalam bagi segenap pengurus dan panitia untuk menyambut kehadiran Anda dalam Malam Puncak Peringatan 20 Tahun Kuang Hang Fo Thang."}
                 </p>
-                <div className="flex flex-wrap items-center gap-3">
+
+                <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3 pt-2 border-t border-stone-100">
                   <a
                     href="#rsvp-section"
-                    className="inline-flex items-center gap-2 px-4 py-2 bg-[#7C1818] text-white text-xs font-sans uppercase tracking-wider font-semibold hover:bg-[#601212] transition-colors"
+                    className="inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-[#7C1818] text-white text-xs font-sans uppercase tracking-wider font-semibold hover:bg-[#601212] transition-colors shadow-sm"
                   >
                     <Feather className="w-3.5 h-3.5" /> Konfirmasi Kehadiran
                   </a>
                   <button
                     onClick={shareMonograph}
-                    className="inline-flex items-center gap-2 px-4 py-2 bg-[#FAF7F2] border border-stone-300 text-stone-700 text-xs font-sans tracking-wider hover:border-[#C5983A] transition-colors"
+                    className="inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-[#FAF7F2] border border-stone-300 text-stone-700 text-xs font-sans tracking-wider hover:border-[#C5983A] transition-colors"
                   >
                     <Share2 className="w-3.5 h-3.5 text-[#7C1818]" />
                     {copiedShare ? "Undangan Disalin!" : "Bagikan Undangan"}
@@ -796,102 +926,8 @@ function Page11MonographContent() {
               </div>
             </div>
 
-            {/* Right: Altar Sanctuary Portrait & Live Countdown Slate */}
-            <div className="lg:col-span-5 space-y-6">
-              
-              {/* Altar Archival Photograph Frame with Click to Zoom */}
-              <div
-                onClick={() =>
-                  setLightboxPhoto({
-                    src: "/images/guang-hang-10.jpg",
-                    title: cms.hero?.photoCaptionTitleId || "Altar Agung Kuang Hang Fo Thang",
-                    chineseTitle: cms.hero?.photoCaptionTitleZh || "廣航聖壇大殿",
-                    subtitle: cms.hero?.photoCaptionDate || "12 Nov 2006 — 14 Nov 2026",
-                    description: cms.hero?.photoCaptionDescId || "Pusat spiritual pembinaan kebajikan dan persaudaraan se-dharma di Palmerah Utara.",
-                    category: "Altar Suci",
-                  })
-                }
-                className="relative group border border-[#C5983A]/40 p-2 bg-white shadow-lg cursor-zoom-in"
-              >
-                <div className="relative w-full aspect-[4/3] overflow-hidden bg-stone-100">
-                  <Image
-                    src="/images/guang-hang-10.jpg"
-                    alt="Altar Agung Kuang Hang Fo Thang"
-                    fill
-                    className="object-cover transition-transform duration-700 group-hover:scale-105"
-                    sizes="(max-width: 768px) 100vw, 500px"
-                    priority
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                  
-                  {/* Subtle Zoom Pill Indicator */}
-                  <div className="absolute top-3 right-3 px-2 py-1 bg-black/60 backdrop-blur-sm border border-[#C5983A]/40 text-white text-[10px] font-sans flex items-center gap-1.5 opacity-90 group-hover:opacity-100 transition-opacity">
-                    <ZoomIn className="w-3 h-3 text-[#E6C275]" />
-                    <span>Klik perbesar</span>
-                  </div>
-
-                  <div className="absolute bottom-3 left-3 right-3 text-white">
-                    <span className="text-[10px] font-sans uppercase tracking-[0.2em] text-[#E6C275] block">
-                      {cms.hero?.photoCaptionDate || "12 Nov 2006 — 14 Nov 2026"}
-                    </span>
-                    <span className="font-serif text-base font-semibold drop-shadow-md">
-                      {cms.hero?.photoCaptionTitleId || "Altar Agung Kuang Hang Fo Thang"}
-                    </span>
-                  </div>
-                </div>
-                <div className="pt-2 px-1 text-[11px] font-sans text-stone-500 italic flex justify-between items-center">
-                  <span>{cms.hero?.photoCaptionDescId || "Pusat spiritual pembinaan kebajikan di Palmerah Utara."}</span>
-                  <span className="font-chinese text-stone-400">廣航聖壇</span>
-                </div>
-              </div>
-
-              {/* Gilded Countdown Monolith */}
-              <div className="bg-[#1C1816] text-[#FAF5E8] p-6 border border-[#C5983A]/40 relative overflow-hidden">
-                <div className="flex items-center justify-between border-b border-[#C5983A]/20 pb-3 mb-4">
-                  <div className="flex items-center gap-2 text-xs font-sans uppercase tracking-[0.2em] text-[#C5983A]">
-                    <Clock className="w-3.5 h-3.5" />
-                    <span>{cms.hero?.countdownHeadingId || "Hitung Mundur Malam Syukur"}</span>
-                  </div>
-                  <span className="font-chinese text-xs text-[#E6C275]">
-                    {cms.hero?.countdownHeadingZh || "倒計時迎接感恩之夜"}
-                  </span>
-                </div>
-
-                <div className="grid grid-cols-4 gap-2 text-center my-4">
-                  <div className="p-2.5 bg-[#2A2420] border border-[#C5983A]/20">
-                    <div className="text-2xl sm:text-3xl font-serif text-[#E6C275] font-bold">
-                      {timeLeft.days}
-                    </div>
-                    <div className="text-[9px] font-sans uppercase tracking-widest text-stone-400 mt-1">Hari</div>
-                  </div>
-                  <div className="p-2.5 bg-[#2A2420] border border-[#C5983A]/20">
-                    <div className="text-2xl sm:text-3xl font-serif text-[#E6C275] font-bold">
-                      {timeLeft.hours}
-                    </div>
-                    <div className="text-[9px] font-sans uppercase tracking-widest text-stone-400 mt-1">Jam</div>
-                  </div>
-                  <div className="p-2.5 bg-[#2A2420] border border-[#C5983A]/20">
-                    <div className="text-2xl sm:text-3xl font-serif text-[#E6C275] font-bold">
-                      {timeLeft.minutes}
-                    </div>
-                    <div className="text-[9px] font-sans uppercase tracking-widest text-stone-400 mt-1">Menit</div>
-                  </div>
-                  <div className="p-2.5 bg-[#2A2420] border border-[#C5983A]/20">
-                    <div className="text-2xl sm:text-3xl font-serif text-[#E6C275] font-bold">
-                      {timeLeft.seconds}
-                    </div>
-                    <div className="text-[9px] font-sans uppercase tracking-widest text-stone-400 mt-1">Detik</div>
-                  </div>
-                </div>
-
-                <p className="text-[11px] font-sans text-stone-400 text-center">
-                  {cms.event?.dateTextId || "Sabtu, 14 November 2026"} • {cms.event?.timeTextId || "19:00 WIB"} ({cms.event?.timeNotesId || "18:30 WIB Registrasi"})
-                </p>
-              </div>
-
-            </div>
-
           </div>
+
         </div>
       </section>
 
