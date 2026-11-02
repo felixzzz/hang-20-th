@@ -12,11 +12,28 @@ export default function EventDetails() {
 
   const address = cms.event.address || "Kuang Hang Fo Thang, Jl. Palmerah Utara III No. 186A, Palmerah, Jakarta Barat 11480";
 
-  // Google Calendar URL generator
+  // Dynamic Google Calendar URL generator based on countdownDate
+  const getCalendarDates = () => {
+    try {
+      const startDate = cms.hero.countdownDate ? new Date(cms.hero.countdownDate) : new Date("2026-11-14T19:00:00+07:00");
+      if (isNaN(startDate.getTime())) {
+        return "20261114T120000Z/20261114T150000Z";
+      }
+      const endDate = new Date(startDate.getTime() + 3 * 60 * 60 * 1000); // 3 hours duration
+      const formatUtc = (d: Date) => d.toISOString().replace(/-|:|\.\d\d\d/g, "");
+      return `${formatUtc(startDate)}/${formatUtc(endDate)}`;
+    } catch {
+      return "20261114T120000Z/20261114T150000Z";
+    }
+  };
+
+  const calTitle = cms.event.calendarTitle || "20 Tahun Anniversary Kuang Hang Fo Thang (廣航佛堂廿週年堂慶)";
+  const calDesc = cms.event.calendarDescription || `Peringatan Peresmian Gedung 20 Tahun Kuang Hang Fo Thang (${cms.event.dateTextId}). Mengarungi Samudra Kebajikan Menabur Kasih Semesta. 廣航佛堂落成廿週年堂慶大典。`;
+
   const googleCalendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(
-    "20 Tahun Anniversary Kuang Hang Fo Thang (廣航佛堂廿週年堂慶)"
-  )}&dates=20261114T120000Z/20261114T150000Z&details=${encodeURIComponent(
-    "Peringatan Peresmian Gedung 20 Tahun Kuang Hang Fo Thang (Sabtu, 14 November 2026). Mengarungi Samudra Kebajikan Menabur Kasih Semesta. 廣航佛堂落成廿週年堂慶大典。"
+    calTitle
+  )}&dates=${getCalendarDates()}&details=${encodeURIComponent(
+    calDesc
   )}&location=${encodeURIComponent(address)}`;
 
   const copyAddress = () => {
@@ -170,7 +187,9 @@ export default function EventDetails() {
 
           {/* Footer note */}
           <div className="mt-6 pt-4 text-center text-xs text-stone-500 font-serif border-t border-stone-100">
-            * Mohon hadir tepat waktu demi kelancaran kekhidmatan upacara. • 為維護典禮莊嚴順暢，敬請準時入席。
+            {showId && (cms.event.footerNotesId || "* Mohon hadir tepat waktu demi kelancaran kekhidmatan upacara.")}
+            {showId && showZh && " • "}
+            {showZh && <span className="font-chinese">{cms.event.footerNotesZh || "為維護典禮莊嚴順暢，敬請準時入席。"}</span>}
           </div>
 
         </div>

@@ -41,6 +41,7 @@ import {
   Square,
   PanelBottom,
   Heart,
+  HeartHandshake,
   Instagram,
 } from "lucide-react";
 import { WishItem, initialWishes } from "@/data/defaultWishes";
@@ -145,7 +146,7 @@ export default function PanitiaDashboard() {
   const [copiedGuestId, setCopiedGuestId] = useState<string | null>(null);
   const [currentOrigin, setCurrentOrigin] = useState("");
 
-  const DEFAULT_PIN = "guanghang2026";
+  const DEFAULT_PIN = process.env.NEXT_PUBLIC_PANITIA_PIN || "guanghang2026";
 
   const showNotification = (msg: string, isError = false) => {
     if (isError) {
@@ -210,11 +211,21 @@ export default function PanitiaDashboard() {
         const sortedData: SiteCmsConfig = {
           ...defaultCms,
           ...jsonCms.data,
-          footer: {
-            ...defaultCms.footer,
-            ...(jsonCms.data.footer || {}),
-          },
+          navbar: { ...defaultCms.navbar, ...(jsonCms.data.navbar || {}) },
+          cover: { ...defaultCms.cover, ...(jsonCms.data.cover || {}) },
+          hero: { ...defaultCms.hero, ...(jsonCms.data.hero || {}) },
+          wisdom: { ...defaultCms.wisdom, ...(jsonCms.data.wisdom || {}) },
+          event: { ...defaultCms.event, ...(jsonCms.data.event || {}) },
+          donation: { ...defaultCms.donation, ...(jsonCms.data.donation || {}) },
+          location: { ...defaultCms.location, ...(jsonCms.data.location || {}) },
+          footer: { ...defaultCms.footer, ...(jsonCms.data.footer || {}) },
+          audio: { ...defaultCms.audio, ...(jsonCms.data.audio || {}) },
+          historySection: { ...defaultCms.historySection, ...(jsonCms.data.historySection || {}) },
+          gallerySection: { ...defaultCms.gallerySection, ...(jsonCms.data.gallerySection || {}) },
+          rsvpSection: { ...defaultCms.rsvpSection, ...(jsonCms.data.rsvpSection || {}) },
+          shareMessage: { ...defaultCms.shareMessage, ...(jsonCms.data.shareMessage || {}) },
           milestones: sortMilestonesByYear(jsonCms.data.milestones || []),
+          gallery: Array.isArray(jsonCms.data.gallery) ? jsonCms.data.gallery : defaultCms.gallery,
         };
         setCmsConfig(sortedData);
       }
@@ -250,11 +261,21 @@ export default function PanitiaDashboard() {
         const sortedData: SiteCmsConfig = {
           ...defaultCms,
           ...json.data,
-          footer: {
-            ...defaultCms.footer,
-            ...(json.data.footer || {}),
-          },
+          navbar: { ...defaultCms.navbar, ...(json.data.navbar || {}) },
+          cover: { ...defaultCms.cover, ...(json.data.cover || {}) },
+          hero: { ...defaultCms.hero, ...(json.data.hero || {}) },
+          wisdom: { ...defaultCms.wisdom, ...(json.data.wisdom || {}) },
+          event: { ...defaultCms.event, ...(json.data.event || {}) },
+          donation: { ...defaultCms.donation, ...(json.data.donation || {}) },
+          location: { ...defaultCms.location, ...(json.data.location || {}) },
+          footer: { ...defaultCms.footer, ...(json.data.footer || {}) },
+          audio: { ...defaultCms.audio, ...(json.data.audio || {}) },
+          historySection: { ...defaultCms.historySection, ...(json.data.historySection || {}) },
+          gallerySection: { ...defaultCms.gallerySection, ...(json.data.gallerySection || {}) },
+          rsvpSection: { ...defaultCms.rsvpSection, ...(json.data.rsvpSection || {}) },
+          shareMessage: { ...defaultCms.shareMessage, ...(json.data.shareMessage || {}) },
           milestones: sortMilestonesByYear(json.data.milestones || []),
+          gallery: Array.isArray(json.data.gallery) ? json.data.gallery : defaultCms.gallery,
         };
         setCmsConfig(sortedData);
         showNotification("Pengaturan berhasil disimpan ke Supabase!");
@@ -1592,6 +1613,60 @@ export default function PanitiaDashboard() {
                     className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none font-chinese text-sm"
                   />
                 </div>
+
+                <div>
+                  <label className="block text-[11px] uppercase tracking-wider text-stone-400 font-semibold mb-1">
+                    Segel Pojok Kiri Atas Sampul (Mandarin)
+                  </label>
+                  <input
+                    type="text"
+                    value={cmsConfig.cover.sealTopZh || ""}
+                    onChange={(e) =>
+                      setCmsConfig({
+                        ...cmsConfig,
+                        cover: { ...cmsConfig.cover, sealTopZh: e.target.value },
+                      })
+                    }
+                    placeholder="天恩師德"
+                    className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none font-chinese text-sm"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[11px] uppercase tracking-wider text-stone-400 font-semibold mb-1">
+                    Inskripsi Bawah Flap Sampul (Mandarin)
+                  </label>
+                  <input
+                    type="text"
+                    value={cmsConfig.cover.bottomInscriptionZh || ""}
+                    onChange={(e) =>
+                      setCmsConfig({
+                        ...cmsConfig,
+                        cover: { ...cmsConfig.cover, bottomInscriptionZh: e.target.value },
+                      })
+                    }
+                    placeholder="二零零六 — 二零二六 • 廿載同舟"
+                    className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none font-chinese text-sm"
+                  />
+                </div>
+
+                <div className="md:col-span-2">
+                  <label className="block text-[11px] uppercase tracking-wider text-stone-400 font-semibold mb-1">
+                    Nama Tamu Default (Jika tanpa parameter ?to=)
+                  </label>
+                  <input
+                    type="text"
+                    value={cmsConfig.cover.defaultGuestName || ""}
+                    onChange={(e) =>
+                      setCmsConfig({
+                        ...cmsConfig,
+                        cover: { ...cmsConfig.cover, defaultGuestName: e.target.value },
+                      })
+                    }
+                    placeholder="Saudara Se-Dharma & Umat Terkasih"
+                    className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none"
+                  />
+                </div>
               </div>
             </div>
 
@@ -2502,6 +2577,78 @@ export default function PanitiaDashboard() {
                     className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none"
                   />
                 </div>
+
+                <div>
+                  <label className="block text-[11px] uppercase tracking-wider text-stone-400 font-semibold mb-1">
+                    Judul Event Google Calendar
+                  </label>
+                  <input
+                    type="text"
+                    value={cmsConfig.event.calendarTitle || ""}
+                    onChange={(e) =>
+                      setCmsConfig({
+                        ...cmsConfig,
+                        event: { ...cmsConfig.event, calendarTitle: e.target.value },
+                      })
+                    }
+                    placeholder="20 Tahun Anniversary Kuang Hang Fo Thang (廣航佛堂廿週年堂慶)"
+                    className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[11px] uppercase tracking-wider text-stone-400 font-semibold mb-1">
+                    Deskripsi Event Google Calendar
+                  </label>
+                  <input
+                    type="text"
+                    value={cmsConfig.event.calendarDescription || ""}
+                    onChange={(e) =>
+                      setCmsConfig({
+                        ...cmsConfig,
+                        event: { ...cmsConfig.event, calendarDescription: e.target.value },
+                      })
+                    }
+                    placeholder="Peringatan Peresmian Gedung 20 Tahun..."
+                    className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[11px] uppercase tracking-wider text-stone-400 font-semibold mb-1">
+                    Catatan Kaki Acara (Indonesia)
+                  </label>
+                  <input
+                    type="text"
+                    value={cmsConfig.event.footerNotesId || ""}
+                    onChange={(e) =>
+                      setCmsConfig({
+                        ...cmsConfig,
+                        event: { ...cmsConfig.event, footerNotesId: e.target.value },
+                      })
+                    }
+                    placeholder="* Mohon hadir tepat waktu demi kelancaran kekhidmatan upacara."
+                    className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[11px] uppercase tracking-wider text-stone-400 font-semibold mb-1">
+                    Catatan Kaki Acara (Mandarin)
+                  </label>
+                  <input
+                    type="text"
+                    value={cmsConfig.event.footerNotesZh || ""}
+                    onChange={(e) =>
+                      setCmsConfig({
+                        ...cmsConfig,
+                        event: { ...cmsConfig.event, footerNotesZh: e.target.value },
+                      })
+                    }
+                    placeholder="為維護典禮莊嚴順暢，敬請準時入席。"
+                    className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none font-chinese text-sm"
+                  />
+                </div>
               </div>
             </div>
 
@@ -2676,6 +2823,96 @@ export default function PanitiaDashboard() {
                       })
                     }
                     placeholder="Kuang Hang Fo Thang, Jl. Palmerah Utara III No. 186A, RT.002/RW.06, Palmerah, Jakarta Barat 11480"
+                    className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none"
+                  />
+                </div>
+
+                <div className="md:col-span-2">
+                  <label className="block text-[11px] uppercase tracking-wider text-stone-400 font-semibold mb-1">
+                    Alamat Lengkap (Mandarin)
+                  </label>
+                  <input
+                    type="text"
+                    value={cmsConfig.location.addressZh || ""}
+                    onChange={(e) =>
+                      setCmsConfig({
+                        ...cmsConfig,
+                        location: { ...cmsConfig.location, addressZh: e.target.value },
+                      })
+                    }
+                    placeholder="印度尼西亞 雅加達西區 巴美拉北三路186A號"
+                    className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none font-chinese text-sm"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[11px] uppercase tracking-wider text-stone-400 font-semibold mb-1">
+                    Petunjuk KRL (Judul)
+                  </label>
+                  <input
+                    type="text"
+                    value={cmsConfig.location.transitKrlTitle || ""}
+                    onChange={(e) =>
+                      setCmsConfig({
+                        ...cmsConfig,
+                        location: { ...cmsConfig.location, transitKrlTitle: e.target.value },
+                      })
+                    }
+                    placeholder="Kereta Commuter Line (KRL)"
+                    className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[11px] uppercase tracking-wider text-stone-400 font-semibold mb-1">
+                    Petunjuk KRL (Keterangan)
+                  </label>
+                  <input
+                    type="text"
+                    value={cmsConfig.location.transitKrlDesc || ""}
+                    onChange={(e) =>
+                      setCmsConfig({
+                        ...cmsConfig,
+                        location: { ...cmsConfig.location, transitKrlDesc: e.target.value },
+                      })
+                    }
+                    placeholder="Turun di Stasiun Palmerah (~5 menit perjalanan dengan ojek/kendaraan daring)."
+                    className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[11px] uppercase tracking-wider text-stone-400 font-semibold mb-1">
+                    Petunjuk Kendaraan Pribadi (Judul)
+                  </label>
+                  <input
+                    type="text"
+                    value={cmsConfig.location.transitCarTitle || ""}
+                    onChange={(e) =>
+                      setCmsConfig({
+                        ...cmsConfig,
+                        location: { ...cmsConfig.location, transitCarTitle: e.target.value },
+                      })
+                    }
+                    placeholder="Kendaraan Pribadi"
+                    className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[11px] uppercase tracking-wider text-stone-400 font-semibold mb-1">
+                    Petunjuk Kendaraan Pribadi (Keterangan)
+                  </label>
+                  <input
+                    type="text"
+                    value={cmsConfig.location.transitCarDesc || ""}
+                    onChange={(e) =>
+                      setCmsConfig({
+                        ...cmsConfig,
+                        location: { ...cmsConfig.location, transitCarDesc: e.target.value },
+                      })
+                    }
+                    placeholder="Dapat diakses melalui Jalan Palmerah Barat atau Jalan Gelora Senayan. Tersedia area parkir."
                     className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none"
                   />
                 </div>
@@ -3001,6 +3238,385 @@ export default function PanitiaDashboard() {
               </div>
             </div>
 
+            {/* Section 9: Napak Tilas 20 Tahun (Header & Teks Sejarah) */}
+            <div className="p-5 sm:p-6 rounded-2xl bg-stone-900 border border-stone-800 space-y-4">
+              <div className="border-b border-stone-800/80 pb-3">
+                <h3 className="font-serif font-bold text-base text-amber-300 flex items-center gap-2">
+                  <Clock className="w-4 h-4 text-amber-400" />
+                  <span>Napak Tilas 20 Tahun (Header & Teks Kilas Sejarah)</span>
+                </h3>
+                <p className="text-xs text-stone-400 mt-0.5">
+                  Pengaturan judul dan narasi pengantar pada linimasa sejarah Kuang Hang Fo Thang.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-[11px] uppercase tracking-wider text-stone-400 font-semibold mb-1">
+                    Pita Lencana Atas (Indonesia)
+                  </label>
+                  <input
+                    type="text"
+                    value={cmsConfig.historySection?.badgeId || ""}
+                    onChange={(e) =>
+                      setCmsConfig({
+                        ...cmsConfig,
+                        historySection: { ...cmsConfig.historySection, badgeId: e.target.value },
+                      })
+                    }
+                    placeholder="Napak Tilas 20 Tahun Gedung (1997 — 2026)"
+                    className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[11px] uppercase tracking-wider text-stone-400 font-semibold mb-1">
+                    Judul Utama (Mandarin)
+                  </label>
+                  <input
+                    type="text"
+                    value={cmsConfig.historySection?.headingZh || ""}
+                    onChange={(e) =>
+                      setCmsConfig({
+                        ...cmsConfig,
+                        historySection: { ...cmsConfig.historySection, headingZh: e.target.value },
+                      })
+                    }
+                    placeholder="歲月印記 • 薪火相傳"
+                    className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none font-chinese text-sm"
+                  />
+                </div>
+
+                <div className="md:col-span-2">
+                  <label className="block text-[11px] uppercase tracking-wider text-stone-400 font-semibold mb-1">
+                    Narasi Pengantar Sejarah (Indonesia)
+                  </label>
+                  <textarea
+                    rows={2}
+                    value={cmsConfig.historySection?.descriptionId || ""}
+                    onChange={(e) =>
+                      setCmsConfig({
+                        ...cmsConfig,
+                        historySection: { ...cmsConfig.historySection, descriptionId: e.target.value },
+                      })
+                    }
+                    placeholder="Mengenang jejak tetesan keringat, doa tulus, dan pengorbanan para perintis awal..."
+                    className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none resize-y"
+                  />
+                </div>
+
+                <div className="md:col-span-2">
+                  <label className="block text-[11px] uppercase tracking-wider text-stone-400 font-semibold mb-1">
+                    Narasi Pengantar Sejarah (Mandarin)
+                  </label>
+                  <textarea
+                    rows={2}
+                    value={cmsConfig.historySection?.descriptionZh || ""}
+                    onChange={(e) =>
+                      setCmsConfig({
+                        ...cmsConfig,
+                        historySection: { ...cmsConfig.historySection, descriptionZh: e.target.value },
+                      })
+                    }
+                    placeholder="追思前賢開荒啟航之大願與辛勞，一磚一瓦凝聚願力，薪火相傳二十載，廣航慧燈恆久普照。"
+                    className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none resize-y font-chinese text-sm"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Section 10: Galeri Dokumentasi Foto (Header & Kategori Tabs) */}
+            <div className="p-5 sm:p-6 rounded-2xl bg-stone-900 border border-stone-800 space-y-4">
+              <div className="border-b border-stone-800/80 pb-3">
+                <h3 className="font-serif font-bold text-base text-amber-300 flex items-center gap-2">
+                  <ImageIcon className="w-4 h-4 text-amber-400" />
+                  <span>Galeri Foto (Header Section & Label Kategori)</span>
+                </h3>
+                <p className="text-xs text-stone-400 mt-0.5">
+                  Pengaturan judul, narasi pengantar, dan teks tab filter kategori galeri foto dua dasawarsa.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-[11px] uppercase tracking-wider text-stone-400 font-semibold mb-1">
+                    Pita Lencana Atas (Indonesia)
+                  </label>
+                  <input
+                    type="text"
+                    value={cmsConfig.gallerySection?.badgeId || ""}
+                    onChange={(e) =>
+                      setCmsConfig({
+                        ...cmsConfig,
+                        gallerySection: { ...cmsConfig.gallerySection, badgeId: e.target.value },
+                      })
+                    }
+                    placeholder="Dokumentasi Foto Dua Dasawarsa"
+                    className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[11px] uppercase tracking-wider text-stone-400 font-semibold mb-1">
+                    Judul Utama (Mandarin)
+                  </label>
+                  <input
+                    type="text"
+                    value={cmsConfig.gallerySection?.headingZh || ""}
+                    onChange={(e) =>
+                      setCmsConfig({
+                        ...cmsConfig,
+                        gallerySection: { ...cmsConfig.gallerySection, headingZh: e.target.value },
+                      })
+                    }
+                    placeholder="歲月長廊 • 影像典藏"
+                    className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none font-chinese text-sm"
+                  />
+                </div>
+
+                <div className="md:col-span-2">
+                  <label className="block text-[11px] uppercase tracking-wider text-stone-400 font-semibold mb-1">
+                    Deskripsi Pengantar Galeri (Indonesia)
+                  </label>
+                  <textarea
+                    rows={2}
+                    value={cmsConfig.gallerySection?.descriptionId || ""}
+                    onChange={(e) =>
+                      setCmsConfig({
+                        ...cmsConfig,
+                        gallerySection: { ...cmsConfig.gallerySection, descriptionId: e.target.value },
+                      })
+                    }
+                    placeholder="Setiap bingkai foto menyimpan jejak dedikasi, senyuman umat, dan limpahan berkah..."
+                    className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none resize-y"
+                  />
+                </div>
+
+                <div className="md:col-span-2">
+                  <label className="block text-[11px] uppercase tracking-wider text-stone-400 font-semibold mb-1">
+                    Deskripsi Pengantar Galeri (Mandarin)
+                  </label>
+                  <textarea
+                    rows={2}
+                    value={cmsConfig.gallerySection?.descriptionZh || ""}
+                    onChange={(e) =>
+                      setCmsConfig({
+                        ...cmsConfig,
+                        gallerySection: { ...cmsConfig.gallerySection, descriptionZh: e.target.value },
+                      })
+                    }
+                    placeholder="每一張泛黃相片，皆銘刻著道親之赤誠奉獻與天恩師德之浩瀚加被。"
+                    className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none resize-y font-chinese text-sm"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[11px] uppercase tracking-wider text-stone-400 font-semibold mb-1">
+                    Tab: Sejarah & Pembangunan (ID / ZH)
+                  </label>
+                  <div className="grid grid-cols-2 gap-2">
+                    <input
+                      type="text"
+                      value={cmsConfig.gallerySection?.tabHistoryId || ""}
+                      onChange={(e) =>
+                        setCmsConfig({
+                          ...cmsConfig,
+                          gallerySection: { ...cmsConfig.gallerySection, tabHistoryId: e.target.value },
+                        })
+                      }
+                      placeholder="Sejarah & Pembangunan"
+                      className="px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none"
+                    />
+                    <input
+                      type="text"
+                      value={cmsConfig.gallerySection?.tabHistoryZh || ""}
+                      onChange={(e) =>
+                        setCmsConfig({
+                          ...cmsConfig,
+                          gallerySection: { ...cmsConfig.gallerySection, tabHistoryZh: e.target.value },
+                        })
+                      }
+                      placeholder="創堂歷史"
+                      className="px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none font-chinese text-sm"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-[11px] uppercase tracking-wider text-stone-400 font-semibold mb-1">
+                    Tab: Kegiatan Pembinaan (ID / ZH)
+                  </label>
+                  <div className="grid grid-cols-2 gap-2">
+                    <input
+                      type="text"
+                      value={cmsConfig.gallerySection?.tabActivityId || ""}
+                      onChange={(e) =>
+                        setCmsConfig({
+                          ...cmsConfig,
+                          gallerySection: { ...cmsConfig.gallerySection, tabActivityId: e.target.value },
+                        })
+                      }
+                      placeholder="Kegiatan Pembinaan"
+                      className="px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none"
+                    />
+                    <input
+                      type="text"
+                      value={cmsConfig.gallerySection?.tabActivityZh || ""}
+                      onChange={(e) =>
+                        setCmsConfig({
+                          ...cmsConfig,
+                          gallerySection: { ...cmsConfig.gallerySection, tabActivityZh: e.target.value },
+                        })
+                      }
+                      placeholder="道育共修"
+                      className="px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none font-chinese text-sm"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Section 11: Buku Doa & Konfirmasi Kehadiran (RSVP) */}
+            <div className="p-5 sm:p-6 rounded-2xl bg-stone-900 border border-stone-800 space-y-4">
+              <div className="border-b border-stone-800/80 pb-3">
+                <h3 className="font-serif font-bold text-base text-amber-300 flex items-center gap-2">
+                  <HeartHandshake className="w-4 h-4 text-amber-400" />
+                  <span>Buku Doa & Konfirmasi Kehadiran (RSVP Section)</span>
+                </h3>
+                <p className="text-xs text-stone-400 mt-0.5">
+                  Pengaturan teks judul, narasi pengantar formulir, label buku kehadiran (ledger), dan pesan konfirmasi sukses.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div>
+                  <label className="block text-[11px] uppercase tracking-wider text-stone-400 font-semibold mb-1">
+                    Pita Lencana Atas (Indonesia)
+                  </label>
+                  <input
+                    type="text"
+                    value={cmsConfig.rsvpSection?.badgeId || ""}
+                    onChange={(e) =>
+                      setCmsConfig({
+                        ...cmsConfig,
+                        rsvpSection: { ...cmsConfig.rsvpSection, badgeId: e.target.value },
+                      })
+                    }
+                    placeholder="Konfirmasi Kehadiran & Doa Restu"
+                    className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[11px] uppercase tracking-wider text-stone-400 font-semibold mb-1">
+                    Judul Utama (Mandarin)
+                  </label>
+                  <input
+                    type="text"
+                    value={cmsConfig.rsvpSection?.headingZh || ""}
+                    onChange={(e) =>
+                      setCmsConfig({
+                        ...cmsConfig,
+                        rsvpSection: { ...cmsConfig.rsvpSection, headingZh: e.target.value },
+                      })
+                    }
+                    placeholder="功德名冊 • 祈願雅集"
+                    className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none font-chinese text-sm"
+                  />
+                </div>
+
+                <div className="md:col-span-2">
+                  <label className="block text-[11px] uppercase tracking-wider text-stone-400 font-semibold mb-1">
+                    Deskripsi Pengantar RSVP (Indonesia)
+                  </label>
+                  <textarea
+                    rows={2}
+                    value={cmsConfig.rsvpSection?.descriptionId || ""}
+                    onChange={(e) =>
+                      setCmsConfig({
+                        ...cmsConfig,
+                        rsvpSection: { ...cmsConfig.rsvpSection, descriptionId: e.target.value },
+                      })
+                    }
+                    placeholder="Kehadiran serta doa tulus dari Bapak/Ibu/Saudara/i sekalian..."
+                    className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none resize-y"
+                  />
+                </div>
+
+                <div className="md:col-span-2">
+                  <label className="block text-[11px] uppercase tracking-wider text-stone-400 font-semibold mb-1">
+                    Deskripsi Pengantar RSVP (Mandarin)
+                  </label>
+                  <textarea
+                    rows={2}
+                    value={cmsConfig.rsvpSection?.descriptionZh || ""}
+                    onChange={(e) =>
+                      setCmsConfig({
+                        ...cmsConfig,
+                        rsvpSection: { ...cmsConfig.rsvpSection, descriptionZh: e.target.value },
+                      })
+                    }
+                    placeholder="各位前賢道親之蒞臨與至誠祈願，乃成就廣航廿週年堂慶之無上殊勝善緣。"
+                    className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none resize-y font-chinese text-sm"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[11px] uppercase tracking-wider text-stone-400 font-semibold mb-1">
+                    Judul Pesan Sukses (Indonesia)
+                  </label>
+                  <input
+                    type="text"
+                    value={cmsConfig.rsvpSection?.successTitleId || ""}
+                    onChange={(e) =>
+                      setCmsConfig({
+                        ...cmsConfig,
+                        rsvpSection: { ...cmsConfig.rsvpSection, successTitleId: e.target.value },
+                      })
+                    }
+                    placeholder="Terima Kasih Atas Konfirmasi Anda!"
+                    className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[11px] uppercase tracking-wider text-stone-400 font-semibold mb-1">
+                    Judul Pesan Sukses (Mandarin)
+                  </label>
+                  <input
+                    type="text"
+                    value={cmsConfig.rsvpSection?.successTitleZh || ""}
+                    onChange={(e) =>
+                      setCmsConfig({
+                        ...cmsConfig,
+                        rsvpSection: { ...cmsConfig.rsvpSection, successTitleZh: e.target.value },
+                      })
+                    }
+                    placeholder="感謝您的殊勝賜復！"
+                    className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none font-chinese text-sm"
+                  />
+                </div>
+
+                <div className="md:col-span-2">
+                  <label className="block text-[11px] uppercase tracking-wider text-stone-400 font-semibold mb-1">
+                    Keterangan Pesan Sukses (Indonesia)
+                  </label>
+                  <input
+                    type="text"
+                    value={cmsConfig.rsvpSection?.successDescId || ""}
+                    onChange={(e) =>
+                      setCmsConfig({
+                        ...cmsConfig,
+                        rsvpSection: { ...cmsConfig.rsvpSection, successDescId: e.target.value },
+                      })
+                    }
+                    placeholder="Konfirmasi kehadiran dan doa restu Anda telah tercatat..."
+                    className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none"
+                  />
+                </div>
+              </div>
+            </div>
+
             {/* Bottom Save Button */}
             <div className="flex justify-end pt-4">
               <button
@@ -3079,6 +3695,87 @@ export default function PanitiaDashboard() {
                 aspectRatio="square"
                 description="Scan barcode QRIS untuk memudahkan transfer dana sukarela."
               />
+            </div>
+
+            {/* Audio & Musik Latar (YouTube Video ID & Judul Lagu) */}
+            <div className="p-6 rounded-2xl bg-stone-900 border border-stone-800 space-y-4">
+              <div className="border-b border-stone-800/80 pb-3">
+                <h3 className="font-serif font-bold text-base text-amber-300 flex items-center gap-2">
+                  <Sparkles className="w-4 h-4 text-amber-400" />
+                  <span>Musik Latar Undangan (YouTube Player)</span>
+                </h3>
+                <p className="text-xs text-stone-400 mt-0.5">
+                  Lagu bernuansa khidmat yang otomatis diputar saat tamu membuka sampul surat undangan.
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <div>
+                  <label className="block text-[11px] uppercase tracking-wider text-stone-400 font-semibold mb-1">
+                    YouTube Video ID / URL
+                  </label>
+                  <input
+                    type="text"
+                    value={cmsConfig.audio?.youtubeVideoId || ""}
+                    onChange={(e) => {
+                      let val = e.target.value.trim();
+                      // Extract video ID if user pasted full YouTube link
+                      if (val.includes("v=")) {
+                        const match = val.match(/v=([a-zA-Z0-9_-]+)/);
+                        if (match && match[1]) val = match[1];
+                      } else if (val.includes("youtu.be/")) {
+                        const match = val.match(/youtu\.be\/([a-zA-Z0-9_-]+)/);
+                        if (match && match[1]) val = match[1];
+                      }
+                      setCmsConfig({
+                        ...cmsConfig,
+                        audio: { ...cmsConfig.audio, youtubeVideoId: val },
+                      });
+                    }}
+                    placeholder="__vWA6Lv9pE"
+                    className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none font-mono"
+                  />
+                  <span className="text-[10px] text-stone-500 mt-1 block">
+                    Contoh: <code className="text-amber-400">__vWA6Lv9pE</code> atau link lengkap YouTube
+                  </span>
+                </div>
+
+                <div>
+                  <label className="block text-[11px] uppercase tracking-wider text-stone-400 font-semibold mb-1">
+                    Label Musik (Indonesia)
+                  </label>
+                  <input
+                    type="text"
+                    value={cmsConfig.audio?.titleId || ""}
+                    onChange={(e) =>
+                      setCmsConfig({
+                        ...cmsConfig,
+                        audio: { ...cmsConfig.audio, titleId: e.target.value },
+                      })
+                    }
+                    placeholder="Musik Khidmat"
+                    className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label className="block text-[11px] uppercase tracking-wider text-stone-400 font-semibold mb-1">
+                    Label Musik (Mandarin)
+                  </label>
+                  <input
+                    type="text"
+                    value={cmsConfig.audio?.titleZh || ""}
+                    onChange={(e) =>
+                      setCmsConfig({
+                        ...cmsConfig,
+                        audio: { ...cmsConfig.audio, titleZh: e.target.value },
+                      })
+                    }
+                    placeholder="梵音清曲"
+                    className="w-full px-3 py-2 rounded-xl bg-stone-950 border border-stone-800 text-xs text-white focus:border-amber-500 outline-none font-chinese text-sm"
+                  />
+                </div>
+              </div>
             </div>
 
             {/* Gallery Section Manager */}

@@ -239,7 +239,7 @@ export default function HeroSection({ guestName }: HeroSectionProps) {
               </div>
 
               <div className="text-2xl sm:text-3xl font-serif font-bold text-[#7c1818] tracking-wide">
-                {guestName || "Saudara Se-Dharma & Umat Terkasih"}
+                {guestName || cms.cover.defaultGuestName || "Saudara Se-Dharma & Umat Terkasih"}
               </div>
 
               <div className="text-xs sm:text-sm text-stone-600 font-serif leading-relaxed pt-1">

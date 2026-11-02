@@ -3,7 +3,7 @@
 import React, { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { LanguageProvider } from "@/context/LanguageContext";
-import { CmsProvider } from "@/context/CmsContext";
+import { CmsProvider, useCms } from "@/context/CmsContext";
 import HeroCover from "@/components/HeroCover";
 import Navbar from "@/components/Navbar";
 import HeroSection from "@/components/HeroSection";
@@ -18,9 +18,11 @@ import Footer from "@/components/Footer";
 import AudioPlayer from "@/components/AudioPlayer";
 
 function InvitationContent() {
+  const { cms } = useCms();
   const searchParams = useSearchParams();
   const rawTo = searchParams.get("to") || "";
-  const guestName = rawTo ? rawTo.replace(/\+/g, " ") : "Bapak / Ibu / Saudara/i";
+  const defaultGuestName = cms.cover.defaultGuestName || "Bapak / Ibu / Saudara/i";
+  const guestName = rawTo ? rawTo.replace(/\+/g, " ") : defaultGuestName;
 
   const [isOpened, setIsOpened] = useState(false);
   const [hasStartedAudio, setHasStartedAudio] = useState(false);
@@ -82,7 +84,7 @@ function InvitationContent() {
         <EventDetails />
         <HistoryTimeline />
         <PhotoGallery />
-        <RsvpSection initialGuestName={guestName === "Bapak / Ibu / Saudara/i" ? "" : guestName} />
+        <RsvpSection initialGuestName={guestName === defaultGuestName ? "" : guestName} />
         <DonationSection />
         <LocationMap />
         <Footer onReopenEnvelope={handleReopen} />

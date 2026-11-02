@@ -81,7 +81,7 @@ export default function LocationMap() {
                 )}
                 {showZh && (
                   <p className="text-xs font-chinese text-stone-500 mt-0.5">
-                    印度尼西亞 雅加達西區 巴美拉北三路186A號
+                    {loc.addressZh || "印度尼西亞 雅加達西區 巴美拉北三路186A號"}
                   </p>
                 )}
               </div>
@@ -132,15 +132,23 @@ export default function LocationMap() {
               <div className="flex items-start gap-2.5">
                 <Train className="w-4 h-4 text-[#9e7631] shrink-0 mt-0.5" />
                 <div>
-                  <strong className="text-stone-800 block mb-0.5">Kereta Commuter Line (KRL)</strong>
-                  <span>Turun di Stasiun Palmerah (~5 menit perjalanan dengan ojek/kendaraan daring).</span>
+                  <strong className="text-stone-800 block mb-0.5">
+                    {loc.transitKrlTitle || "Kereta Commuter Line (KRL)"}
+                  </strong>
+                  <span>
+                    {loc.transitKrlDesc || "Turun di Stasiun Palmerah (~5 menit perjalanan dengan ojek/kendaraan daring)."}
+                  </span>
                 </div>
               </div>
               <div className="flex items-start gap-2.5">
                 <Car className="w-4 h-4 text-[#9e7631] shrink-0 mt-0.5" />
                 <div>
-                  <strong className="text-stone-800 block mb-0.5">Kendaraan Pribadi</strong>
-                  <span>Dapat diakses melalui Jalan Palmerah Barat atau Jalan Gelora Senayan. Tersedia area parkir.</span>
+                  <strong className="text-stone-800 block mb-0.5">
+                    {loc.transitCarTitle || "Kendaraan Pribadi"}
+                  </strong>
+                  <span>
+                    {loc.transitCarDesc || "Dapat diakses melalui Jalan Palmerah Barat atau Jalan Gelora Senayan. Tersedia area parkir."}
+                  </span>
                 </div>
               </div>
             </div>

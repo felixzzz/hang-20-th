@@ -36,6 +36,7 @@ export interface SiteCmsConfig {
     subtitleZh: string;
     guestPrefixId: string;
     guestPrefixZh: string;
+    defaultGuestName?: string;
     inviteTextId: string;
     inviteTextZh: string;
     bgImage: string;
@@ -44,6 +45,8 @@ export interface SiteCmsConfig {
     buttonTextZh: string;
     buttonSubtextId: string;
     buttonSubtextZh: string;
+    bottomInscriptionZh?: string;
+    sealTopZh?: string;
   };
   hero: {
     topBannerSealZh: string;
@@ -112,6 +115,10 @@ export interface SiteCmsConfig {
     dresscodeNotesId: string;
     dresscodeNotesZh: string;
     googleMapsUrl: string;
+    calendarTitle?: string;
+    calendarDescription?: string;
+    footerNotesId?: string;
+    footerNotesZh?: string;
   };
   donation: {
     headingId: string;
@@ -135,8 +142,62 @@ export interface SiteCmsConfig {
     descriptionId: string;
     descriptionZh: string;
     fullAddress: string;
+    addressZh?: string;
     googleMapsUrl: string;
     embedMapUrl: string;
+    transitKrlTitle?: string;
+    transitKrlDesc?: string;
+    transitCarTitle?: string;
+    transitCarDesc?: string;
+  };
+  audio: {
+    youtubeVideoId: string;
+    titleId: string;
+    titleZh: string;
+  };
+  historySection: {
+    badgeId: string;
+    badgeZh: string;
+    headingZh: string;
+    headingId: string;
+    descriptionId: string;
+    descriptionZh: string;
+  };
+  gallerySection: {
+    badgeId: string;
+    badgeZh: string;
+    headingZh: string;
+    headingId: string;
+    descriptionId: string;
+    descriptionZh: string;
+    tabAllId: string;
+    tabAllZh: string;
+    tabHistoryId: string;
+    tabHistoryZh: string;
+    tabActivityId: string;
+    tabActivityZh: string;
+    tabFellowshipId: string;
+    tabFellowshipZh: string;
+  };
+  rsvpSection: {
+    badgeId: string;
+    badgeZh: string;
+    headingZh: string;
+    headingId: string;
+    descriptionId: string;
+    descriptionZh: string;
+    ledgerLabelResponsesId: string;
+    ledgerLabelResponsesZh: string;
+    ledgerLabelAttendingId: string;
+    ledgerLabelAttendingZh: string;
+    ledgerLabelGuestsId: string;
+    ledgerLabelGuestsZh: string;
+    successTitleId: string;
+    successTitleZh: string;
+    successDescId: string;
+    successDescZh: string;
+    reopenFormTextId?: string;
+    reopenFormTextZh?: string;
   };
   footer: {
     logoImage?: string;

@@ -74,7 +74,7 @@ export default function HeroCover({ guestName, isOpen, onOpen }: HeroCoverProps)
             {/* Top Seal */}
             <div className="relative z-10 w-full flex items-center justify-between pb-3 border-b border-[#dfba6d]/20">
               <span className="chinese-seal-filled text-[10px] px-2 py-0.5 border-[#dfba6d]/60">
-                天恩師德
+                {cms.cover.sealTopZh || "天恩師德"}
               </span>
               <span className="text-[10px] font-serif tracking-[0.2em] text-[#dfba6d] uppercase">
                 {showId && "Undangan Resmi"}
@@ -124,7 +124,7 @@ export default function HeroCover({ guestName, isOpen, onOpen }: HeroCoverProps)
 
             {/* Bottom Lacquer Seal Inscription */}
             <div className="relative z-10 w-full pt-3 border-t border-[#dfba6d]/20 text-[10px] font-chinese text-[#dfba6d]/80 tracking-widest">
-              二零零六 — 二零二六 • 廿載同舟
+              {cms.cover.bottomInscriptionZh || "二零零六 — 二零二六 • 廿載同舟"}
             </div>
           </div>
 
@@ -159,7 +159,7 @@ export default function HeroCover({ guestName, isOpen, onOpen }: HeroCoverProps)
               </div>
 
               <div className="text-xl sm:text-2xl font-serif font-bold text-[#1c1815] tracking-wide my-1">
-                {guestName || "Saudara Se-Dharma & Umat Terkasih"}
+                {guestName || cms.cover.defaultGuestName || "Saudara Se-Dharma & Umat Terkasih"}
               </div>
 
               <p className="text-xs text-stone-600 font-serif italic mt-1 leading-relaxed">

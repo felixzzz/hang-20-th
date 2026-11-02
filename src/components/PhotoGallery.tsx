@@ -54,20 +54,28 @@ export default function PhotoGallery() {
         {/* Section Header */}
         <div className="flex flex-col items-center text-center mb-10">
           <span className="text-xs font-serif tracking-[0.25em] text-[#9e7631] uppercase mb-1 font-semibold">
-            Dokumentasi Foto Dua Dasawarsa
+            {showId && (cms.gallerySection?.badgeId || "Dokumentasi Foto Dua Dasawarsa")}
+            {showId && showZh && " • "}
+            {showZh && (
+              <span className="font-chinese font-normal">
+                {cms.gallerySection?.badgeZh || "二十載影像記憶"}
+              </span>
+            )}
           </span>
           <h2 className="text-3xl sm:text-5xl font-chinese font-bold text-[#7c1818] mb-2">
-            歲月長廊 • 影像典藏
+            {cms.gallerySection?.headingZh || "歲月長廊 • 影像典藏"}
           </h2>
           <div className="text-sm font-serif text-stone-600 max-w-lg">
             {showId && (
               <p>
-                Setiap bingkai foto menyimpan jejak dedikasi, senyuman umat, dan limpahan berkah Tian En Shi De yang abadi.
+                {cms.gallerySection?.descriptionId ||
+                  "Setiap bingkai foto menyimpan jejak dedikasi, senyuman umat, dan limpahan berkah Tian En Shi De yang abadi."}
               </p>
             )}
             {showZh && (
               <p className="font-chinese text-xs sm:text-sm text-stone-500 mt-1">
-                每一張泛黃相片，皆銘刻著道親之赤誠奉獻與天恩師德之浩瀚加被。
+                {cms.gallerySection?.descriptionZh ||
+                  "每一張泛黃相片，皆銘刻著道親之赤誠奉獻與天恩師德之浩瀚加被。"}
               </p>
             )}
           </div>
@@ -76,10 +84,26 @@ export default function PhotoGallery() {
         {/* Filter Tabs */}
         <div className="flex flex-wrap items-center justify-center gap-2 mb-10">
           {[
-            { id: "all", labelId: "Semua", labelZh: "全部" },
-            { id: "sejarah", labelId: "Sejarah & Pembangunan", labelZh: "創堂歷史" },
-            { id: "kegiatan", labelId: "Kegiatan Pembinaan", labelZh: "道育共修" },
-            { id: "kebersamaan", labelId: "Kebersamaan Umat", labelZh: "道親情誼" },
+            {
+              id: "all",
+              labelId: cms.gallerySection?.tabAllId || "Semua",
+              labelZh: cms.gallerySection?.tabAllZh || "全部",
+            },
+            {
+              id: "sejarah",
+              labelId: cms.gallerySection?.tabHistoryId || "Sejarah & Pembangunan",
+              labelZh: cms.gallerySection?.tabHistoryZh || "創堂歷史",
+            },
+            {
+              id: "kegiatan",
+              labelId: cms.gallerySection?.tabActivityId || "Kegiatan Pembinaan",
+              labelZh: cms.gallerySection?.tabActivityZh || "道育共修",
+            },
+            {
+              id: "kebersamaan",
+              labelId: cms.gallerySection?.tabFellowshipId || "Kebersamaan Umat",
+              labelZh: cms.gallerySection?.tabFellowshipZh || "道親情誼",
+            },
           ].map((tab) => (
             <button
               key={tab.id}

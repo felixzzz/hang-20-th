@@ -2,6 +2,8 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import { Volume2, VolumeX, Music2 } from "lucide-react";
+import { useCms } from "@/context/CmsContext";
+import { useLanguage } from "@/context/LanguageContext";
 
 declare global {
   interface Window {
@@ -15,6 +17,12 @@ interface AudioPlayerProps {
 }
 
 export default function AudioPlayer({ autoPlayTrigger }: AudioPlayerProps) {
+  const { cms } = useCms();
+  const { showId, showZh } = useLanguage();
+  const videoId = cms.audio?.youtubeVideoId || "__vWA6Lv9pE";
+  const titleId = cms.audio?.titleId || "Musik Khidmat";
+  const titleZh = cms.audio?.titleZh || "梵音清曲";
+
   const [isPlaying, setIsPlaying] = useState<boolean>(false);
   const [isReady, setIsReady] = useState<boolean>(false);
   const playerRef = useRef<any>(null);
@@ -41,11 +49,11 @@ export default function AudioPlayer({ autoPlayTrigger }: AudioPlayerProps) {
       playerRef.current = new window.YT.Player("youtube-hidden-player", {
         height: "1",
         width: "1",
-        videoId: "__vWA6Lv9pE",
+        videoId: videoId,
         playerVars: {
           autoplay: 0,
           loop: 1,
-          playlist: "__vWA6Lv9pE",
+          playlist: videoId,
           controls: 0,
           showinfo: 0,
           modestbranding: 1,
@@ -73,12 +81,13 @@ export default function AudioPlayer({ autoPlayTrigger }: AudioPlayerProps) {
       if (playerRef.current && playerRef.current.destroy) {
         try {
           playerRef.current.destroy();
+          playerRef.current = null;
         } catch (e) {
           // ignore
         }
       }
     };
-  }, []);
+  }, [videoId]);
 
   // When parent opens invitation, trigger play
   useEffect(() => {
@@ -134,7 +143,19 @@ export default function AudioPlayer({ autoPlayTrigger }: AudioPlayerProps) {
           </div>
 
           <span className="text-[11px] font-serif font-medium tracking-wide pr-1 hidden sm:inline">
-            {isPlaying ? "Musik Khidmat • 梵音" : "Putar Musik • 樂曲"}
+            {isPlaying ? (
+              <>
+                {showId && <span>{titleId}</span>}
+                {showId && showZh && <span> • </span>}
+                {showZh && <span className="font-chinese">{titleZh}</span>}
+              </>
+            ) : (
+              <>
+                {showId && <span>Putar Musik</span>}
+                {showId && showZh && <span> • </span>}
+                {showZh && <span className="font-chinese">播放樂曲</span>}
+              </>
+            )}
           </span>
 
           {isPlaying ? (

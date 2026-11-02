@@ -31,11 +31,21 @@ export function CmsProvider({ children }: { children: React.ReactNode }) {
         const sortedData: SiteCmsConfig = {
           ...defaultCms,
           ...json.data,
-          footer: {
-            ...defaultCms.footer,
-            ...(json.data.footer || {}),
-          },
+          navbar: { ...defaultCms.navbar, ...(json.data.navbar || {}) },
+          cover: { ...defaultCms.cover, ...(json.data.cover || {}) },
+          hero: { ...defaultCms.hero, ...(json.data.hero || {}) },
+          wisdom: { ...defaultCms.wisdom, ...(json.data.wisdom || {}) },
+          event: { ...defaultCms.event, ...(json.data.event || {}) },
+          donation: { ...defaultCms.donation, ...(json.data.donation || {}) },
+          location: { ...defaultCms.location, ...(json.data.location || {}) },
+          footer: { ...defaultCms.footer, ...(json.data.footer || {}) },
+          audio: { ...defaultCms.audio, ...(json.data.audio || {}) },
+          historySection: { ...defaultCms.historySection, ...(json.data.historySection || {}) },
+          gallerySection: { ...defaultCms.gallerySection, ...(json.data.gallerySection || {}) },
+          rsvpSection: { ...defaultCms.rsvpSection, ...(json.data.rsvpSection || {}) },
+          shareMessage: { ...defaultCms.shareMessage, ...(json.data.shareMessage || {}) },
           milestones: sortMilestonesByYear(json.data.milestones || []),
+          gallery: Array.isArray(json.data.gallery) ? json.data.gallery : defaultCms.gallery,
         };
         setCms(sortedData);
         // Cache to sessionStorage for instantaneous navigation
@@ -57,13 +67,23 @@ export function CmsProvider({ children }: { children: React.ReactNode }) {
         const normalizedCached: SiteCmsConfig = {
           ...defaultCms,
           ...parsed,
-          footer: {
-            ...defaultCms.footer,
-            ...(parsed.footer || {}),
-          },
+          navbar: { ...defaultCms.navbar, ...(parsed.navbar || {}) },
+          cover: { ...defaultCms.cover, ...(parsed.cover || {}) },
+          hero: { ...defaultCms.hero, ...(parsed.hero || {}) },
+          wisdom: { ...defaultCms.wisdom, ...(parsed.wisdom || {}) },
+          event: { ...defaultCms.event, ...(parsed.event || {}) },
+          donation: { ...defaultCms.donation, ...(parsed.donation || {}) },
+          location: { ...defaultCms.location, ...(parsed.location || {}) },
+          footer: { ...defaultCms.footer, ...(parsed.footer || {}) },
+          audio: { ...defaultCms.audio, ...(parsed.audio || {}) },
+          historySection: { ...defaultCms.historySection, ...(parsed.historySection || {}) },
+          gallerySection: { ...defaultCms.gallerySection, ...(parsed.gallerySection || {}) },
+          rsvpSection: { ...defaultCms.rsvpSection, ...(parsed.rsvpSection || {}) },
+          shareMessage: { ...defaultCms.shareMessage, ...(parsed.shareMessage || {}) },
           milestones: sortMilestonesByYear(
             Array.isArray(parsed.milestones) ? parsed.milestones : defaultCms.milestones
           ),
+          gallery: Array.isArray(parsed.gallery) ? parsed.gallery : defaultCms.gallery,
         };
         setCms((prev) => ({ ...prev, ...normalizedCached }));
       }
@@ -91,11 +111,21 @@ export function CmsProvider({ children }: { children: React.ReactNode }) {
         const sortedData: SiteCmsConfig = {
           ...defaultCms,
           ...json.data,
-          footer: {
-            ...defaultCms.footer,
-            ...(json.data.footer || {}),
-          },
+          navbar: { ...defaultCms.navbar, ...(json.data.navbar || {}) },
+          cover: { ...defaultCms.cover, ...(json.data.cover || {}) },
+          hero: { ...defaultCms.hero, ...(json.data.hero || {}) },
+          wisdom: { ...defaultCms.wisdom, ...(json.data.wisdom || {}) },
+          event: { ...defaultCms.event, ...(json.data.event || {}) },
+          donation: { ...defaultCms.donation, ...(json.data.donation || {}) },
+          location: { ...defaultCms.location, ...(json.data.location || {}) },
+          footer: { ...defaultCms.footer, ...(json.data.footer || {}) },
+          audio: { ...defaultCms.audio, ...(json.data.audio || {}) },
+          historySection: { ...defaultCms.historySection, ...(json.data.historySection || {}) },
+          gallerySection: { ...defaultCms.gallerySection, ...(json.data.gallerySection || {}) },
+          rsvpSection: { ...defaultCms.rsvpSection, ...(json.data.rsvpSection || {}) },
+          shareMessage: { ...defaultCms.shareMessage, ...(json.data.shareMessage || {}) },
           milestones: sortMilestonesByYear(json.data.milestones || []),
+          gallery: Array.isArray(json.data.gallery) ? json.data.gallery : defaultCms.gallery,
         };
         setCms(sortedData);
         sessionStorage.setItem("guanghang_cms_cache", JSON.stringify(sortedData));

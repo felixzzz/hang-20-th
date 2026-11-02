@@ -54,6 +54,10 @@ export async function GET() {
       location: { ...defaultCms.location, ...(parsed.location || {}) },
       footer: { ...defaultCms.footer, ...(parsed.footer || {}) },
       shareMessage: { ...defaultCms.shareMessage, ...(parsed.shareMessage || {}) },
+      audio: { ...defaultCms.audio, ...(parsed.audio || {}) },
+      historySection: { ...defaultCms.historySection, ...(parsed.historySection || {}) },
+      gallerySection: { ...defaultCms.gallerySection, ...(parsed.gallerySection || {}) },
+      rsvpSection: { ...defaultCms.rsvpSection, ...(parsed.rsvpSection || {}) },
       milestones: sortMilestonesByYear(
         Array.isArray(parsed.milestones) ? parsed.milestones : defaultCms.milestones
       ),
@@ -113,6 +117,10 @@ export async function POST(request: Request) {
       location: { ...defaultCms.location, ...(existingConfig.location || {}), ...(body.location || {}) },
       footer: { ...defaultCms.footer, ...(existingConfig.footer || {}), ...(body.footer || {}) },
       shareMessage: { ...defaultCms.shareMessage, ...(existingConfig.shareMessage || {}), ...(body.shareMessage || {}) },
+      audio: { ...defaultCms.audio, ...(existingConfig.audio || {}), ...(body.audio || {}) },
+      historySection: { ...defaultCms.historySection, ...(existingConfig.historySection || {}), ...(body.historySection || {}) },
+      gallerySection: { ...defaultCms.gallerySection, ...(existingConfig.gallerySection || {}), ...(body.gallerySection || {}) },
+      rsvpSection: { ...defaultCms.rsvpSection, ...(existingConfig.rsvpSection || {}), ...(body.rsvpSection || {}) },
       milestones: sortMilestonesByYear(
         Array.isArray(body.milestones) && body.milestones.length > 0
           ? body.milestones

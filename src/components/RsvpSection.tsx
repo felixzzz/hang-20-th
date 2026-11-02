@@ -5,6 +5,7 @@ import confetti from "canvas-confetti";
 import { Send, CheckCircle2, Flame, Users, HeartHandshake } from "lucide-react";
 import { WishItem, initialWishes } from "@/data/defaultWishes";
 import { useLanguage } from "@/context/LanguageContext";
+import { useCms } from "@/context/CmsContext";
 
 interface RsvpSectionProps {
   initialGuestName?: string;
@@ -12,6 +13,8 @@ interface RsvpSectionProps {
 
 export default function RsvpSection({ initialGuestName = "" }: RsvpSectionProps) {
   const { showId, showZh } = useLanguage();
+  const { cms } = useCms();
+  const rsvpSec = cms.rsvpSection;
   const [name, setName] = useState(initialGuestName);
   const [status, setStatus] = useState<"hadir" | "tidak_hadir">("hadir");
   const [guests, setGuests] = useState("1");
@@ -155,20 +158,24 @@ export default function RsvpSection({ initialGuestName = "" }: RsvpSectionProps)
         {/* Section Header */}
         <div className="flex flex-col items-center text-center mb-10">
           <span className="text-xs font-serif tracking-[0.25em] text-[#9e7631] uppercase mb-1 font-semibold">
-            Konfirmasi Kehadiran & Doa Restu
+            {showId && (rsvpSec?.badgeId || "Konfirmasi Kehadiran & Doa Restu")}
+            {showId && showZh && " • "}
+            {showZh && <span className="font-chinese font-normal">{rsvpSec?.badgeZh || "功德名冊 • 祈願雅集"}</span>}
           </span>
           <h2 className="text-3xl sm:text-5xl font-chinese font-bold text-[#7c1818] mb-2">
-            功德名冊 • 祈願雅集
+            {rsvpSec?.headingZh || "功德名冊 • 祈願雅集"}
           </h2>
           <div className="text-sm font-serif text-stone-600 max-w-lg">
             {showId && (
               <p>
-                Kehadiran serta doa tulus dari Bapak/Ibu/Saudara/i sekalian adalah suluh penerang yang menyempurnakan peringatan 20 tahun Kuang Hang.
+                {rsvpSec?.descriptionId ||
+                  "Kehadiran serta doa tulus dari Bapak/Ibu/Saudara/i sekalian adalah suluh penerang yang menyempurnakan peringatan 20 tahun Kuang Hang."}
               </p>
             )}
             {showZh && (
               <p className="font-chinese text-xs sm:text-sm text-stone-500 mt-1">
-                各位前賢道親之蒞臨與至誠祈願，乃成就廣航廿週年堂慶之無上殊勝善緣。
+                {rsvpSec?.descriptionZh ||
+                  "各位前賢道親之蒞臨與至誠祈願，乃成就廣航廿週年堂慶之無上殊勝善緣。"}
               </p>
             )}
           </div>
@@ -180,22 +187,46 @@ export default function RsvpSection({ initialGuestName = "" }: RsvpSectionProps)
             <span className="block text-2xl sm:text-3xl font-serif font-bold text-[#7c1818]">
               {summary.totalResponses}
             </span>
-            {showId && <span className="text-xs text-stone-500 font-serif block">Konfirmasi Masuk</span>}
-            {showZh && <span className="text-[11px] text-stone-400 font-chinese font-medium">回函賜帖</span>}
+            {showId && (
+              <span className="text-xs text-stone-500 font-serif block">
+                {rsvpSec?.ledgerLabelResponsesId || "Konfirmasi Masuk"}
+              </span>
+            )}
+            {showZh && (
+              <span className="text-[11px] text-stone-400 font-chinese font-medium">
+                {rsvpSec?.ledgerLabelResponsesZh || "回函賜帖"}
+              </span>
+            )}
           </div>
           <div className="px-2">
             <span className="block text-2xl sm:text-3xl font-serif font-bold text-emerald-700">
               {summary.attending}
             </span>
-            {showId && <span className="text-xs text-stone-500 font-serif block">Keluarga Hadir</span>}
-            {showZh && <span className="text-[11px] text-stone-400 font-chinese font-medium">出席道親</span>}
+            {showId && (
+              <span className="text-xs text-stone-500 font-serif block">
+                {rsvpSec?.ledgerLabelAttendingId || "Keluarga Hadir"}
+              </span>
+            )}
+            {showZh && (
+              <span className="text-[11px] text-stone-400 font-chinese font-medium">
+                {rsvpSec?.ledgerLabelAttendingZh || "出席道親"}
+              </span>
+            )}
           </div>
           <div className="px-2">
             <span className="block text-2xl sm:text-3xl font-serif font-bold text-[#9e7631]">
               {summary.totalGuests}
             </span>
-            {showId && <span className="text-xs text-stone-500 font-serif block">Estimasi Umat</span>}
-            {showZh && <span className="text-[11px] text-stone-400 font-chinese font-medium">總人數</span>}
+            {showId && (
+              <span className="text-xs text-stone-500 font-serif block">
+                {rsvpSec?.ledgerLabelGuestsId || "Estimasi Umat"}
+              </span>
+            )}
+            {showZh && (
+              <span className="text-[11px] text-stone-400 font-chinese font-medium">
+                {rsvpSec?.ledgerLabelGuestsZh || "總人數"}
+              </span>
+            )}
           </div>
         </div>
 
@@ -208,26 +239,30 @@ export default function RsvpSection({ initialGuestName = "" }: RsvpSectionProps)
                 <CheckCircle2 className="w-7 h-7" />
               </div>
               <h3 className="text-2xl font-serif font-bold text-[#211c19] mb-1">
-                Terima Kasih Atas Konfirmasi Anda!
+                {rsvpSec?.successTitleId || "Terima Kasih Atas Konfirmasi Anda!"}
               </h3>
               <p className="text-base font-chinese font-bold text-emerald-800 mb-2">
-                感謝您的殊勝賜復！
+                {rsvpSec?.successTitleZh || "感謝您的殊勝賜復！"}
               </p>
               {showId && (
                 <p className="text-xs sm:text-sm font-serif text-stone-600 max-w-md mx-auto mb-2 leading-relaxed">
-                  Konfirmasi kehadiran dan doa restu Anda telah tercatat dalam buku tamu resmi panitia 20 Tahun Kuang Hang Fo Thang.
+                  {rsvpSec?.successDescId ||
+                    "Konfirmasi kehadiran dan doa restu Anda telah tercatat dalam buku tamu resmi panitia 20 Tahun Kuang Hang Fo Thang."}
                 </p>
               )}
               {showZh && (
                 <p className="text-xs font-chinese text-stone-500 max-w-md mx-auto mb-4">
-                  您的出席確認與祝願已妥善登記於籌備處功德名冊中，感恩天恩師德。
+                  {rsvpSec?.successDescZh ||
+                    "您的出席確認與祝願已妥善登記於籌備處功德名冊中，感恩天恩師德。"}
                 </p>
               )}
               <button
                 onClick={() => setSubmitted(false)}
                 className="text-xs font-serif font-semibold text-[#7c1818] hover:underline underline-offset-4 cursor-pointer mt-2"
               >
-                Ingin mengubah data atau mengirimkan doa tambahan? • 欲修改或增添祝福請點擊
+                {showId && (rsvpSec?.reopenFormTextId || "Ingin mengubah data atau mengirimkan doa tambahan?")}
+                {showId && showZh && " • "}
+                {showZh && <span className="font-chinese font-normal">{rsvpSec?.reopenFormTextZh || "欲修改或增添祝福請點擊"}</span>}
               </button>
             </div>
           ) : (

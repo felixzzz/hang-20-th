@@ -39,20 +39,28 @@ export default function HistoryTimeline() {
         {/* Section Header */}
         <div className="flex flex-col items-center text-center mb-10">
           <span className="text-xs font-serif tracking-[0.25em] text-[#9e7631] uppercase mb-1 font-semibold">
-            Napak Tilas 20 Tahun Gedung (1997 — 2026)
+            {showId && (cms.historySection?.badgeId || "Napak Tilas 20 Tahun Gedung (1997 — 2026)")}
+            {showId && showZh && " • "}
+            {showZh && (
+              <span className="font-chinese font-normal">
+                {cms.historySection?.badgeZh || "歲月印記 • 薪火相傳"}
+              </span>
+            )}
           </span>
           <h2 className="text-3xl sm:text-5xl font-chinese font-bold text-[#7c1818] mb-2">
-            歲月印記 • 薪火相傳
+            {cms.historySection?.headingZh || "歲月印記 • 薪火相傳"}
           </h2>
           <div className="text-sm font-serif text-stone-600 max-w-xl">
             {showId && (
               <p>
-                Mengenang jejak tetesan keringat, doa tulus, dan pengorbanan para perintis awal yang memungkinkan pelita Kuang Hang bersinar terang hari ini.
+                {cms.historySection?.descriptionId ||
+                  "Mengenang jejak tetesan keringat, doa tulus, dan pengorbanan para perintis awal yang memungkinkan pelita Kuang Hang bersinar terang hari ini."}
               </p>
             )}
             {showZh && (
               <p className="font-chinese text-xs sm:text-sm text-stone-500 mt-1">
-                追思前賢開荒啟航之大願與辛勞，一磚一瓦凝聚願力，薪火相傳二十載，廣航慧燈恆久普照。
+                {cms.historySection?.descriptionZh ||
+                  "追思前賢開荒啟航之大願與辛勞，一磚一瓦凝聚願力，薪火相傳二十載，廣航慧燈恆久普照。"}
               </p>
             )}
           </div>
