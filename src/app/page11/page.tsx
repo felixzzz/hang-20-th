@@ -616,7 +616,7 @@ function Page11MonographContent() {
               <a
                 key={item.href}
                 href={item.href}
-                className={`transition-colors py-1 ${
+                className={`group transition-all py-1 px-1.5 flex flex-col items-center ${
                   item.isHighlight
                     ? "font-bold text-[#7C1818] border-b-2 border-[#7C1818]"
                     : "hover:text-[#7C1818]"
@@ -627,9 +627,19 @@ function Page11MonographContent() {
                 ) : lang === "id" ? (
                   <span>{item.id}</span>
                 ) : (
-                  <span className="inline-flex items-center gap-1">
-                    <span>{item.id}</span>
-                    <span className="font-chinese text-[11px] text-stone-400 font-normal">({item.zh})</span>
+                  <span className="inline-flex flex-col items-center leading-tight text-center">
+                    <span className="text-[11px] font-sans uppercase tracking-wider font-semibold">
+                      {item.id}
+                    </span>
+                    <span
+                      className={`font-chinese text-[10px] tracking-widest font-normal ${
+                        item.isHighlight
+                          ? "text-[#7C1818]/85 font-medium"
+                          : "text-stone-400 group-hover:text-[#7C1818]/80 transition-colors"
+                      }`}
+                    >
+                      {item.zh}
+                    </span>
                   </span>
                 )}
               </a>
