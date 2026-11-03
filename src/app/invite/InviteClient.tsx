@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect, useMemo, Suspense } from "react";
 import Link from "next/link";
-import Image from "next/image";
 import {
   Share2,
   Copy,
@@ -14,7 +13,6 @@ import {
   Users,
   User,
   RotateCcw,
-  BookOpen,
   Send,
   FileText,
   SlidersHorizontal,
@@ -29,7 +27,6 @@ import { defaultCms } from "@/data/defaultCms";
 interface SavedTemplate {
   id: string;
   title: string;
-  category: "resmi" | "santai" | "ringkas" | "mandarin" | "bilingual" | "muda";
   tag: string;
   description: string;
   body: string;
@@ -40,7 +37,7 @@ function InviteGeneratorContent() {
   const [recipient, setRecipient] = useState("");
   const [currentOrigin, setCurrentOrigin] = useState("");
   const [activeTab, setActiveTab] = useState<"single" | "batch">("single");
-  const [selectedTemplateId, setSelectedTemplateId] = useState<string>("resmi");
+  const [selectedTemplateId, setSelectedTemplateId] = useState<string>("panitia");
   const [customTemplateText, setCustomTemplateText] = useState<string>("");
   const [isEditingTemplate, setIsEditingTemplate] = useState<boolean>(false);
 
@@ -59,131 +56,41 @@ function InviteGeneratorContent() {
     }
   }, []);
 
-  // Built-in saved templates
+  // Built-in saved templates (Hanya 2 template: Sesuai Database Panitia & Versi Mandarin)
   const savedTemplates: SavedTemplate[] = useMemo(() => {
-    const defaultOfficial =
+    const databaseTemplate =
       cms.shareMessage?.template || defaultCms.shareMessage.template;
+
+    const mandarinTemplate = `《邀請函：廣航佛堂成立二十週年慶典》
+
+{nama} 您好！
+感念天恩師德，廣航佛堂誠摯邀請您蒞臨同歡，共慶：
+
+《廣航佛堂成立二十週年慶典》
+慈航相伴二十載，携手同行播大愛（2006年—2026年）
+
+📅 時間： 2026年11月14日（星期六）晚上 19:00 WIB 至結束
+📍 地點： 廣航佛堂
+請點擊電子邀請函連結並確認出席（RSVP）：
+{url}
+
+誠摯期待前賢光臨，共襄盛舉。
+感恩，順頌 時祺。`;
 
     return [
       {
-        id: "resmi",
-        title: "Resmi & Khidmat",
-        category: "resmi",
-        tag: "Rekomendasi Panitia",
-        description: "Format surat resmi dengan Tian En Shi De, cocok untuk sesepuh, umat, dan tamu terhormat.",
-        body: defaultOfficial,
-      },
-      {
-        id: "santai",
-        title: "Hangat & Kekeluargaan",
-        category: "santai",
-        tag: "Keluarga & Sahabat",
-        description: "Bahasa lebih hangat dan santai, cocok untuk kerabat dekat, sahabat, dan rekan seangkatan.",
-        body: `Halo {nama},
-
-Semoga senantiasa sehat, bahagia, dan selalu dalam lindungan Tian En Shi De (天恩師德).
-
-Kami mengundang Bapak / Ibu / Saudara sekeluarga untuk hadir bersama dalam malam penuh syukur:
-*Peringatan 20 Tahun Gedung Kuang Hang Fo Thang (廣航佛堂)*
-"Mengarungi Samudra Kebajikan Selama Dua Dasawarsa (2006 — 2026)"
-
-📅 *Hari/Tanggal:* {tanggal}
-⏰ *Waktu:* {waktu}
-📍 *Tempat:* {tempat}
-
-Detail acara lengkap & konfirmasi kehadiran (RSVP) dapat dibuka melalui tautan undangan digital kami:
-{url}
-
-Kehadiran serta doa restu Bapak / Ibu / Saudara/i sangat berarti bagi kita semua. Terima kasih dan sampai jumpa! 🙏`,
-      },
-      {
-        id: "ringkas",
-        title: "Ringkas & Praktis",
-        category: "ringkas",
-        tag: "Grup WhatsApp",
-        description: "Pesan to-the-point dan padat, cocok disebarkan ke grup percakapan atau kontak aktif.",
-        body: `*Undangan Resmi 20 Tahun Kuang Hang Fo Thang (廣航佛堂)*
-
-Yth. {nama},
-
-Mari hadir bersama dalam Malam Syukur Peringatan 20 Tahun Gedung Kuang Hang Fo Thang:
-📅 {tanggal} • ⏰ {waktu}
-📍 {tempat}
-
-Buka undangan digital personal & konfirmasi kehadiran (RSVP) di:
-{url}
-
-Terima kasih atas perhatian dan doa restunya. Sampai jumpa! 🙏`,
+        id: "panitia",
+        title: "Format Database Panitia (Bahasa Indonesia)",
+        tag: "Database Panitia",
+        description: "Template resmi yang tersimpan di sistem / CMS panitia.",
+        body: databaseTemplate,
       },
       {
         id: "mandarin",
-        title: "華語正式版 (Mandarin)",
-        category: "mandarin",
-        tag: "Bahasa Mandarin",
-        description: "Undangan resmi berbahasa Mandarin penuh untuk sesepuh, qianxian, atau kerabat Tionghoa.",
-        body: `*廣航佛堂 成立廿週年堂慶大典 • 尊榮邀請函*
-
-恭請 貴賓尊鑒：
-*{nama}*
-
-叩謝天恩師德，廣航佛堂全體同修誠摯敬邀閣下撥冗蒞臨：
-*廣航佛堂落成廿週年感恩大典*
-同舟共濟度眾生 • 薪火相傳護慧命 (2006 — 2026)
-
-📅 *日期：* {tanggal} • {waktu}
-📍 *地點：* {tempat}
-
-敬請點擊下方專屬數位邀請函連結確認出席（回函）：
-{url}
-
-誠摯期待您的光臨與祝願，共沐法喜天恩。
-感恩合十。`,
-      },
-      {
-        id: "bilingual",
-        title: "Dwibahasa (ID + 中文)",
-        category: "bilingual",
-        tag: "Bilingual",
-        description: "Kombinasi bahasa Indonesia dan Mandarin yang seimbang dan elegan.",
-        body: `*廣航佛堂 成立廿週年堂慶 • Undangan Resmi 20 Tahun Kuang Hang Fo Thang*
-
-Kepada Yth. / 恭請 尊鑒：
-*{nama}*
-
-叩謝天恩師德，誠摯敬邀您撥冗蒞臨感恩大典：
-Dengan penuh rasa syukur atas Tian En Shi De, kami mengundang kehadiran Bapak/Ibu/Saudara/i dalam Malam Syukur 20 Tahun Kuang Hang Fo Thang.
-
-📅 *Tanggal / 日期:* {tanggal}
-⏰ *Waktu / 時間:* {waktu}
-📍 *Tempat / 地點:* {tempat}
-
-Silakan buka undangan digital & konfirmasi kehadiran:
-敬請點擊專屬連結確認出席（回函）：
-{url}
-
-Terima kasih atas doa restu dan kehadirannya.
-期待共沐法喜，感恩合十。🙏`,
-      },
-      {
-        id: "muda",
-        title: "Muda-Mudi & Alumni",
-        category: "muda",
-        tag: "Generasi Muda",
-        description: "Sentuhan ceria untuk mengundang muda-mudi, alumni kebaktian, dan relawan vihara.",
-        body: `Halo {nama}! ✨
-
-Yuk kumpul bareng dan nostalgia di momen bersejarah:
-*Malam Syukur 20 Tahun Gedung Kuang Hang Fo Thang (廣航佛堂)*
-"Mengarungi Samudra Kebajikan • Menyalakan Pelita Jiwa"
-
-📅 *Hari/Tanggal:* {tanggal}
-⏰ *Waktu:* {waktu}
-📍 *Tempat:* {tempat}
-
-Buka undangan digital keren kamu dan isi RSVP di link ini ya:
-{url}
-
-Ditunggu banget kehadirannya, yuk ramaikan dan temu kangen bersama! 🌟🎉`,
+        title: "華語正式版 (Versi Mandarin)",
+        tag: "Versi Mandarin",
+        description: "Format undangan resmi Bahasa Mandarin untuk sesepuh, qianxian, dan umat.",
+        body: mandarinTemplate,
       },
     ];
   }, [cms]);
@@ -202,7 +109,11 @@ Ditunggu banget kehadirannya, yuk ramaikan dan temu kangen bersama! 🌟🎉`,
 
   // Generate target URL for a given name
   const generateUrlForName = (name: string) => {
-    const origin = currentOrigin || "";
+    const origin =
+      currentOrigin ||
+      (typeof window !== "undefined"
+        ? window.location.origin
+        : "https://hang-20-th.vercel.app");
     const clean = name.trim();
     if (!clean) return `${origin}/`;
     return `${origin}/?to=${encodeURIComponent(clean)}`;
@@ -210,19 +121,20 @@ Ditunggu banget kehadirannya, yuk ramaikan dan temu kangen bersama! 🌟🎉`,
 
   // Replace placeholders in template
   const compileTemplate = (templateBody: string, targetName: string) => {
-    const nameToUse = targetName.trim() || "Saudara Se-Dharma";
+    const isMandarin = selectedTemplateId === "mandarin";
+    const nameToUse =
+      targetName.trim() || (isMandarin ? "點傳師" : "Saudara Se-Dharma");
     const targetUrl = generateUrlForName(targetName);
 
-    const isMandarin = selectedTemplateId === "mandarin";
     const dateText = isMandarin
-      ? (cms.event?.dateTextZh || "2026年11月14日（星期六）")
-      : (cms.event?.dateTextId || "Sabtu, 14 November 2026");
+      ? cms.event?.dateTextZh || "2026年11月14日（星期六）"
+      : cms.event?.dateTextId || "Sabtu, 14 November 2026";
     const timeText = isMandarin
-      ? (cms.event?.timeTextZh || "晚間19:00 WIB")
-      : (cms.event?.timeTextId || "19.00 WIB s/d Selesai");
+      ? cms.event?.timeTextZh || "晚上 19:00 WIB"
+      : cms.event?.timeTextId || "19.00 WIB s/d Selesai";
     const placeText = isMandarin
-      ? (cms.event?.venueNameZh || "雅加達巴美拉 廣航佛堂")
-      : (cms.event?.venueNameId || "Kuang Hang Fo Thang (Palmerah, Jakarta Barat)");
+      ? cms.event?.venueNameZh || "廣航佛堂"
+      : cms.event?.venueNameId || "Kuang Hang Fo Thang (Palmerah, Jakarta Barat)";
 
     return templateBody
       .replace(/{nama}/g, nameToUse)
@@ -255,19 +167,6 @@ Ditunggu banget kehadirannya, yuk ramaikan dan temu kangen bersama! 🌟🎉`,
   const handleShareWhatsapp = () => {
     const waUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(compiledSingleMessage)}`;
     window.open(waUrl, "_blank");
-  };
-
-  // Quick prefix injector
-  const applyPrefix = (prefix: string) => {
-    const current = recipient.trim();
-    if (!current) {
-      setRecipient(`${prefix} `);
-    } else if (current.startsWith(prefix)) {
-      // already has prefix
-      return;
-    } else {
-      setRecipient(`${prefix} ${current}`);
-    }
   };
 
   // Batch Names parsed
@@ -352,7 +251,7 @@ Ditunggu banget kehadirannya, yuk ramaikan dan temu kangen bersama! 🌟🎉`,
           Bagikan Undangan Resmi dengan Nama Kustom
         </h1>
         <p className="text-xs sm:text-base text-stone-300 max-w-2xl mx-auto leading-relaxed">
-          Pilih salah satu template ucapan yang telah tersimpan, ketikkan nama tamu atau keluarga, lalu salin tautan personal atau kirim langsung ke WhatsApp.
+          Ketikkan nama penerima undangan, pilih template ucapan, lalu salin tautan personal atau bagikan langsung via WhatsApp.
         </p>
 
         {/* Tab Switcher: Single vs Batch */}
@@ -417,38 +316,16 @@ Ditunggu banget kehadirannya, yuk ramaikan dan temu kangen bersama! 🌟🎉`,
                     type="text"
                     value={recipient}
                     onChange={(e) => setRecipient(e.target.value)}
-                    placeholder="Contoh: Bpk. Budi Santoso & Keluarga"
+                    placeholder={
+                      selectedTemplateId === "mandarin"
+                        ? "Ketik nama tamu (contoh: 梁講師 atau 點傳師)"
+                        : "Ketik nama tamu (contoh: Bpk. Budi Santoso / Saudara Se-Dharma)"
+                    }
                     className="w-full px-4 py-3 rounded-2xl bg-black/60 border border-[#c5983a]/30 focus:border-[#e8c87b] text-sm sm:text-base text-white placeholder-stone-500 outline-none transition shadow-inner"
                   />
                   <p className="mt-2 text-[11px] text-stone-400">
-                    Nama ini akan tercantum di surat undangan digital dan membuka halaman dengan sambutan nama tersebut.
+                    Nama ini akan otomatis disematkan ke dalam ucapan pesan dan tautan personal undangan digital.
                   </p>
-                </div>
-
-                {/* Quick Prefix Buttons */}
-                <div className="pt-1">
-                  <span className="text-[11px] text-stone-400 block mb-2 font-medium">
-                    Pintasan Awalan Cepat:
-                  </span>
-                  <div className="flex flex-wrap gap-1.5">
-                    {[
-                      "Bpk. / Ibu",
-                      "Keluarga Besar",
-                      "Saudara/i",
-                      "Shixiong",
-                      "Shijie",
-                      "Teman-Teman",
-                    ].map((prefix) => (
-                      <button
-                        key={prefix}
-                        type="button"
-                        onClick={() => applyPrefix(prefix)}
-                        className="px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/15 border border-white/10 text-[11px] text-stone-300 transition cursor-pointer active:scale-95"
-                      >
-                        +{prefix}
-                      </button>
-                    ))}
-                  </div>
                 </div>
               </div>
 
@@ -460,7 +337,7 @@ Ditunggu banget kehadirannya, yuk ramaikan dan temu kangen bersama! 🌟🎉`,
                       2
                     </span>
                     <h2 className="text-sm sm:text-base font-serif font-bold text-[#fbf5e8]">
-                      Pilih Template Ucapan Tersimpan
+                      Pilih Template Tersimpan (2 Pilihan)
                     </h2>
                   </div>
 
@@ -473,22 +350,22 @@ Ditunggu banget kehadirannya, yuk ramaikan dan temu kangen bersama! 🌟🎉`,
                   </button>
                 </div>
 
-                {/* Template Selector Cards Grid */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {/* 2 Template Selector Cards */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                   {savedTemplates.map((tpl) => {
                     const isSelected = selectedTemplateId === tpl.id;
                     return (
                       <div
                         key={tpl.id}
                         onClick={() => setSelectedTemplateId(tpl.id)}
-                        className={`p-3.5 rounded-2xl border transition-all cursor-pointer flex flex-col justify-between text-left ${
+                        className={`p-4 rounded-2xl border transition-all cursor-pointer flex flex-col justify-between text-left ${
                           isSelected
                             ? "bg-[#2d1212] border-[#c5983a] shadow-[0_0_15px_rgba(197,152,58,0.2)] ring-1 ring-[#c5983a]"
                             : "bg-black/40 border-stone-800 hover:border-stone-700 hover:bg-white/5"
                         }`}
                       >
                         <div>
-                          <div className="flex items-center justify-between mb-1.5">
+                          <div className="flex items-center justify-between mb-2">
                             <span className="text-[10px] font-mono px-2 py-0.5 rounded-md bg-[#c5983a]/15 text-[#e8c87b] border border-[#c5983a]/25">
                               {tpl.tag}
                             </span>
@@ -496,7 +373,7 @@ Ditunggu banget kehadirannya, yuk ramaikan dan temu kangen bersama! 🌟🎉`,
                               <CheckCircle2 className="w-4 h-4 text-[#e8c87b]" />
                             )}
                           </div>
-                          <h3 className="font-serif font-bold text-sm text-[#fbf5e8] mb-1">
+                          <h3 className="font-serif font-bold text-sm text-[#fbf5e8] mb-1.5">
                             {tpl.title}
                           </h3>
                           <p className="text-[11px] text-stone-400 line-clamp-2 leading-relaxed">
@@ -536,9 +413,6 @@ Ditunggu banget kehadirannya, yuk ramaikan dan temu kangen bersama! 🌟🎉`,
                       <span>Tag Otomatis:</span>
                       <code className="px-1.5 py-0.5 rounded bg-white/10 text-[#e8c87b]">{"{nama}"}</code>
                       <code className="px-1.5 py-0.5 rounded bg-white/10 text-[#e8c87b]">{"{url}"}</code>
-                      <code className="px-1.5 py-0.5 rounded bg-white/10 text-[#e8c87b]">{"{tanggal}"}</code>
-                      <code className="px-1.5 py-0.5 rounded bg-white/10 text-[#e8c87b]">{"{waktu}"}</code>
-                      <code className="px-1.5 py-0.5 rounded bg-white/10 text-[#e8c87b]">{"{tempat}"}</code>
                     </div>
                   </div>
                 )}
@@ -606,7 +480,7 @@ Ditunggu banget kehadirannya, yuk ramaikan dan temu kangen bersama! 🌟🎉`,
                 {/* WhatsApp Chat Balloon Mockup */}
                 <div className="relative p-4 rounded-2xl bg-[#005c4b] text-white text-xs font-sans leading-relaxed shadow-xl border border-emerald-300/20 max-h-[420px] overflow-y-auto whitespace-pre-wrap select-text">
                   <div className="text-[10px] text-emerald-200/70 mb-2 font-mono">
-                    Kepada: {recipient.trim() || "Saudara Se-Dharma"}
+                    Kepada: {recipient.trim() || (selectedTemplateId === "mandarin" ? "點傳師" : "Saudara Se-Dharma")}
                   </div>
                   {compiledSingleMessage}
                   <div className="mt-2 text-right text-[10px] text-emerald-200/60 flex items-center justify-end gap-1 font-mono">
@@ -731,7 +605,7 @@ Ditunggu banget kehadirannya, yuk ramaikan dan temu kangen bersama! 🌟🎉`,
                   rows={6}
                   value={batchRawNames}
                   onChange={(e) => setBatchRawNames(e.target.value)}
-                  placeholder={"Contoh:\nBpk. Felix Salim\nIbu Linda & Keluarga\nSdr. Hendra Tan\nKeluarga Besar Vihara Maitreya"}
+                  placeholder={"Contoh:\n梁講師\n點傳師\nBpk. Felix Salim\nKeluarga Besar Tan"}
                   className="w-full px-4 py-3 rounded-2xl bg-black/60 border border-stone-800 focus:border-[#c5983a] text-xs sm:text-sm text-white placeholder-stone-600 outline-none font-sans leading-relaxed"
                 />
                 <div className="flex items-center justify-between mt-2 text-[11px] text-stone-400">
@@ -739,7 +613,7 @@ Ditunggu banget kehadirannya, yuk ramaikan dan temu kangen bersama! 🌟🎉`,
                   {batchRawNames && (
                     <button
                       onClick={() => setBatchRawNames("")}
-                      className="text-stone-400 hover:text-rose-400"
+                      className="text-stone-400 hover:text-rose-400 cursor-pointer"
                     >
                       Kosongkan Daftar
                     </button>
