@@ -1747,34 +1747,6 @@ function Page11MonographContent() {
               </div>
             </div>
 
-            {/* Live Ticker Summary */}
-            <div className="grid grid-cols-3 gap-3 my-6 p-4 bg-[#FAF7F2] border border-[#C5983A]/25 text-center font-sans">
-              <div>
-                <div className="text-xl sm:text-2xl font-serif font-bold text-[#7C1818]">
-                  {wishesSummary.totalResponses}
-                </div>
-                <div className="text-[10px] uppercase text-stone-500 tracking-wider">
-                  {showZh ? (showId ? `${cms.rsvpSection?.ledgerLabelResponsesId || "Total Respon"} (${cms.rsvpSection?.ledgerLabelResponsesZh || "回函"})` : (cms.rsvpSection?.ledgerLabelResponsesZh || "回函賜帖")) : (cms.rsvpSection?.ledgerLabelResponsesId || "Total Respon")}
-                </div>
-              </div>
-              <div>
-                <div className="text-xl sm:text-2xl font-serif font-bold text-[#C5983A]">
-                  {wishesSummary.attending}
-                </div>
-                <div className="text-[10px] uppercase text-stone-500 tracking-wider">
-                  {showZh ? (showId ? `${cms.rsvpSection?.ledgerLabelAttendingId || "Pasti Hadir"} (${cms.rsvpSection?.ledgerLabelAttendingZh || "出席"})` : (cms.rsvpSection?.ledgerLabelAttendingZh || "出席道親")) : (cms.rsvpSection?.ledgerLabelAttendingId || "Pasti Hadir")}
-                </div>
-              </div>
-              <div>
-                <div className="text-xl sm:text-2xl font-serif font-bold text-stone-800">
-                  {wishesSummary.totalGuests}
-                </div>
-                <div className="text-[10px] uppercase text-stone-500 tracking-wider">
-                  {showZh ? (showId ? `${cms.rsvpSection?.ledgerLabelGuestsId || "Jumlah Jiwa"} (${cms.rsvpSection?.ledgerLabelGuestsZh || "人數"})` : (cms.rsvpSection?.ledgerLabelGuestsZh || "總人數")) : (cms.rsvpSection?.ledgerLabelGuestsId || "Jumlah Jiwa")}
-                </div>
-              </div>
-            </div>
-
             {rsvpSubmitted ? (
               <div className="text-center py-10 bg-[#FAF7F2] border border-[#C5983A]/30 p-8">
                 <div className="w-12 h-12 rounded-full bg-[#7C1818] text-[#E6C275] flex items-center justify-center mx-auto mb-3 shadow-md">
