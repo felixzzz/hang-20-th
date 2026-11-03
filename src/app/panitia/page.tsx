@@ -3992,14 +3992,25 @@ export default function PanitiaDashboard() {
                 </p>
               </div>
 
-              <button
-                onClick={() => handleSaveCms()}
-                disabled={isSavingCms}
-                className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-500 disabled:opacity-50 text-stone-950 font-bold text-xs shadow-lg transition cursor-pointer shrink-0"
-              >
-                <Save className="w-4 h-4" />
-                <span>{isSavingCms ? "Menyimpan..." : "Simpan Template ke Supabase"}</span>
-              </button>
+              <div className="flex items-center gap-2 shrink-0">
+                <Link
+                  href="/invite"
+                  target="_blank"
+                  className="inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/15 text-amber-300 font-semibold text-xs border border-amber-500/30 transition cursor-pointer"
+                >
+                  <ExternalLink className="w-3.5 h-3.5" />
+                  <span>Buka Generator Publik (/invite)</span>
+                </Link>
+
+                <button
+                  onClick={() => handleSaveCms()}
+                  disabled={isSavingCms}
+                  className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-500 disabled:opacity-50 text-stone-950 font-bold text-xs shadow-lg transition cursor-pointer shrink-0"
+                >
+                  <Save className="w-4 h-4" />
+                  <span>{isSavingCms ? "Menyimpan..." : "Simpan Template ke Supabase"}</span>
+                </button>
+              </div>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">

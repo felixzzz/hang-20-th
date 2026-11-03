@@ -2,7 +2,8 @@
 
 import React from "react";
 import Image from "next/image";
-import { Heart, Instagram, MailOpen, ArrowUp } from "lucide-react";
+import Link from "next/link";
+import { Heart, Instagram, MailOpen, ArrowUp, Share2 } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import { useCms } from "@/context/CmsContext";
 import { defaultCms } from "@/data/defaultCms";
@@ -86,6 +87,14 @@ export default function Footer({ onReopenEnvelope }: FooterProps) {
               <span>{footer.instagramHandle || "@guanghangfotang"}</span>
             </a>
           )}
+
+          <Link
+            href="/invite"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/10 hover:bg-white/15 border border-[#dfba6d]/40 text-xs font-serif text-[#dfba6d] transition cursor-pointer"
+          >
+            <Share2 className="w-3.5 h-3.5" />
+            <span>{showZh ? (showId ? "Buat Undangan / 訂製邀請函" : "訂製邀請函") : "Buat Undangan Personal"}</span>
+          </Link>
 
           <button
             onClick={onReopenEnvelope}

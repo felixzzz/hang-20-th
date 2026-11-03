@@ -1,7 +1,8 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Share2, Copy, Check, MessageCircle } from "lucide-react";
+import Link from "next/link";
+import { Share2, Copy, Check, MessageCircle, ExternalLink } from "lucide-react";
 import { useCms } from "@/context/CmsContext";
 import { defaultCms } from "@/data/defaultCms";
 
@@ -113,6 +114,14 @@ export default function ShareGenerator() {
               {copiedMsg ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
               <span>{copiedMsg ? "Pesan Disalin!" : "Salin Teks WhatsApp"}</span>
             </button>
+
+            <Link
+              href="/invite"
+              className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 text-amber-300 font-semibold text-xs border border-amber-500/30 transition cursor-pointer"
+            >
+              <ExternalLink className="w-3.5 h-3.5" />
+              <span>Buka Generator Lengkap & Pilihan Template</span>
+            </Link>
           </div>
         </div>
       </div>

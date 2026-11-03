@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef, Suspense } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import confetti from "canvas-confetti";
@@ -1079,6 +1080,14 @@ function Page11MonographContent() {
                       ? (showZh ? (showId ? "Undangan Disalin! / 已複製" : "邀請函已複製！") : "Undangan Disalin!")
                       : (showZh ? (showId ? "Bagikan / 分享邀請函" : "分享邀請函") : "Bagikan Undangan")}
                   </button>
+                  <Link
+                    href="/invite"
+                    className="inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-[#FAF7F2] border border-[#C5983A]/50 text-[#7C1818] text-xs font-sans tracking-wider hover:bg-[#FAF0E6] hover:border-[#7C1818] transition-colors"
+                    title="Buat undangan dengan nama kustom"
+                  >
+                    <Sparkles className="w-3.5 h-3.5 text-[#C5983A]" />
+                    <span>{showZh ? (showId ? "Kustom Nama / 訂製姓名" : "訂製邀請函") : "Buat Nama Kustom"}</span>
+                  </Link>
                 </div>
               </div>
             </div>
