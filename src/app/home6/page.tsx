@@ -255,7 +255,7 @@ function Home6FreshContent() {
           <div className="inline-flex flex-col sm:flex-row items-center justify-center gap-2 sm:gap-6 text-sm font-mono text-stone-800 border-y border-stone-200 py-3 px-8">
             <span className="font-bold tracking-wider">2026.11.14 (Sat)</span>
             <span className="hidden sm:inline text-stone-300">•</span>
-            <span>18:30 受付 (Reception)</span>
+            <span>18:00 共享素宴 (Dinner)</span>
             <span className="hidden sm:inline text-stone-300">•</span>
             <span>19:00 開式 (Opening)</span>
           </div>
@@ -364,10 +364,10 @@ function Home6FreshContent() {
 
             <div className="py-4 grid grid-cols-1 sm:grid-cols-12 gap-2 items-baseline">
               <span className="sm:col-span-4 text-xs font-mono uppercase text-stone-400 tracking-wider">
-                Reception / 受付
+                Dinner / 素宴
               </span>
               <span className="sm:col-span-8 text-sm text-stone-800 font-mono">
-                18:30 —
+                18:00 — (Makan Malam Bersama / 共享素宴)
               </span>
             </div>
 

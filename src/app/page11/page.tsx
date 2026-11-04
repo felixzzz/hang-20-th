@@ -910,7 +910,7 @@ function Page11MonographContent() {
                   {showZh ? (showId ? `${cms.event?.dateTextId || "Sabtu, 14 November 2026"} (${cms.event?.dateTextZh || "11月14日"})` : (cms.event?.dateTextZh || "2026年11月14日（星期六）")) : (cms.event?.dateTextId || "Sabtu, 14 November 2026")}
                 </span>
                 <span className="text-stone-400 text-[11px]">
-                  {showZh ? (showId ? `${cms.event?.timeTextId || "19:00 WIB"} (${cms.event?.timeNotesZh || "18:30 入席"})` : `${cms.event?.timeTextZh || "19:00 WIB"} • ${cms.event?.timeNotesZh || "18:30 入席接待"}`) : `${cms.event?.timeTextId || "19:00 WIB"} (${cms.event?.timeNotesId || "18:30 WIB Registrasi"})`}
+                  {showZh ? (showId ? `${cms.event?.timeTextId || "19:00 WIB"} (${cms.event?.timeNotesZh || "18:00 共享素宴"})` : `${cms.event?.timeTextZh || "19:00 WIB"} • ${cms.event?.timeNotesZh || "18:00 共享素宴"}`) : `${cms.event?.timeTextId || "19:00 WIB"} (${cms.event?.timeNotesId || "18:00 WIB Makan Malam Bersama"})`}
                 </span>
               </div>
             </div>
@@ -1539,18 +1539,18 @@ function Page11MonographContent() {
                   </span>
                 )}
                 {showId && !showZh && (
-                  <span>{cms.event?.timeTextId || "19:00 WIB"} ({cms.event?.timeNotesId || "18:30 WIB Registrasi"})</span>
+                  <span>{cms.event?.timeTextId || "19:00 WIB"} ({cms.event?.timeNotesId || "18:00 WIB Makan Malam Bersama"})</span>
                 )}
               </p>
 
               <div className="space-y-4 border-l-2 border-[#C5983A]/40 pl-4 py-1 font-sans text-xs">
                 <div className="relative">
                   <span className="absolute -left-[21px] top-1 w-2.5 h-2.5 rounded-full bg-[#7C1818] border-2 border-white" />
-                  <span className="font-bold text-[#7C1818] block">18:30 WIB</span>
-                  {showId && <span className="font-medium text-stone-800">Registrasi & Penyambutan Tamu Undangan</span>}
+                  <span className="font-bold text-[#7C1818] block">18:00 WIB</span>
+                  {showId && <span className="font-medium text-stone-800">Makan Malam Bersama</span>}
                   {showZh && (
                     <span className={`text-stone-600 block font-chinese ${showId ? "text-[10px] text-stone-500 mt-0.5" : "text-xs font-medium"}`}>
-                      {cms.event?.timeNotesZh || "18:30 入席接待"}
+                      18:00 共享素宴
                     </span>
                   )}
                 </div>
@@ -1558,10 +1558,10 @@ function Page11MonographContent() {
                 <div className="relative">
                   <span className="absolute -left-[21px] top-1 w-2.5 h-2.5 rounded-full bg-[#C5983A] border-2 border-white" />
                   <span className="font-bold text-[#7C1818] block">19:00 WIB</span>
-                  {showId && <span className="font-medium text-stone-800">Pembukaan Resmi & Sambutan Panitia</span>}
+                  {showId && <span className="font-medium text-stone-800">Pembukaan Acara</span>}
                   {showZh && (
                     <span className={`text-stone-600 block font-chinese ${showId ? "text-[10px] text-stone-500 mt-0.5" : "text-xs font-medium"}`}>
-                      19:00 慶典開幕 • 貴賓致辭
+                      19:00 慶典開幕
                     </span>
                   )}
                 </div>
@@ -1569,21 +1569,21 @@ function Page11MonographContent() {
                 <div className="relative">
                   <span className="absolute -left-[21px] top-1 w-2.5 h-2.5 rounded-full bg-[#C5983A] border-2 border-white" />
                   <span className="font-bold text-[#7C1818] block">19:30 WIB</span>
-                  {showId && <span className="font-medium text-stone-800">Penayangan Kilas Sejarah 20 Tahun & Doa Syukur Bersama</span>}
+                  {showId && <span className="font-medium text-stone-800">Kilas Sejarah 20 Tahun</span>}
                   {showZh && (
                     <span className={`text-stone-600 block font-chinese ${showId ? "text-[10px] text-stone-500 mt-0.5" : "text-xs font-medium"}`}>
-                      19:30 廿週年歷史回顧 • 感恩祈福
+                      19:30 廿週年歷史回顧
                     </span>
                   )}
                 </div>
 
                 <div className="relative">
                   <span className="absolute -left-[21px] top-1 w-2.5 h-2.5 rounded-full bg-[#C5983A] border-2 border-white" />
-                  <span className="font-bold text-[#7C1818] block">20:30 WIB</span>
-                  {showId && <span className="font-medium text-stone-800">Ramah Tamah Persaudaraan Se-Dharma & Penutupan</span>}
+                  <span className="font-bold text-[#7C1818] block">21:00 WIB</span>
+                  {showId && <span className="font-medium text-stone-800">Foto Bersama dan Penutupan</span>}
                   {showZh && (
                     <span className={`text-stone-600 block font-chinese ${showId ? "text-[10px] text-stone-500 mt-0.5" : "text-xs font-medium"}`}>
-                      20:30 素宴同樂 • 圓滿落幕
+                      21:00 大合照 • 圓滿落幕
                     </span>
                   )}
                 </div>
