@@ -489,6 +489,7 @@ function Page11MonographContent() {
                   className="object-contain"
                   sizes="100vw"
                   priority
+                  unoptimized
                 />
               </div>
 
@@ -1257,6 +1258,7 @@ function Page11MonographContent() {
                           fill
                           className="object-cover group-hover/img:scale-105 transition-transform duration-500"
                           sizes="(max-width: 768px) 100vw, 350px"
+                          unoptimized
                         />
                         <div className="absolute top-2 right-2 p-1 bg-black/60 text-[#E6C275] opacity-0 group-hover/img:opacity-100 transition-opacity">
                           <Maximize2 className="w-3.5 h-3.5" />
@@ -1462,6 +1464,7 @@ function Page11MonographContent() {
                     fill
                     className="object-cover group-hover:scale-105 transition-transform duration-700"
                     sizes="(max-width: 768px) 100vw, 360px"
+                    unoptimized
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
                   
